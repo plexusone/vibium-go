@@ -27,11 +27,18 @@ func (b *browserLauncher) Launch(ctx context.Context, opts *LaunchOptions) (*Vib
 		opts = &LaunchOptions{}
 	}
 
+	// Set up debug logging if enabled
+	if logger := NewDebugLogger(); logger != nil {
+		ctx = ContextWithLogger(ctx, logger)
+		debugLog(ctx, "launching browser", "headless", opts.Headless, "port", opts.Port)
+	}
+
 	// Start clicker process
 	clicker, err := StartClicker(ctx, *opts)
 	if err != nil {
 		return nil, err
 	}
+	debugLog(ctx, "clicker started", "url", clicker.WebSocketURL())
 
 	// Connect BiDi client
 	client := NewBiDiClient()
@@ -39,6 +46,7 @@ func (b *browserLauncher) Launch(ctx context.Context, opts *LaunchOptions) (*Vib
 		_ = clicker.Stop()
 		return nil, err
 	}
+	debugLog(ctx, "BiDi client connected")
 
 	return &Vibe{
 		client:  client,
@@ -89,6 +97,7 @@ func (v *Vibe) Go(ctx context.Context, url string) error {
 	if v.closed {
 		return ErrConnectionClosed
 	}
+	debugLog(ctx, "navigating", "url", url)
 
 	browsingCtx, err := v.getContext(ctx)
 	if err != nil {
@@ -102,6 +111,72 @@ func (v *Vibe) Go(ctx context.Context, url string) error {
 	}
 
 	_, err = v.client.Send(ctx, "browsingContext.navigate", params)
+	if err == nil {
+		debugLog(ctx, "navigation complete", "url", url)
+	}
+	return err
+}
+
+// Reload reloads the current page.
+func (v *Vibe) Reload(ctx context.Context) error {
+	if v.closed {
+		return ErrConnectionClosed
+	}
+	debugLog(ctx, "reloading page")
+
+	browsingCtx, err := v.getContext(ctx)
+	if err != nil {
+		return err
+	}
+
+	params := map[string]interface{}{
+		"context": browsingCtx,
+		"wait":    "complete",
+	}
+
+	_, err = v.client.Send(ctx, "browsingContext.reload", params)
+	return err
+}
+
+// Back navigates back in history.
+func (v *Vibe) Back(ctx context.Context) error {
+	if v.closed {
+		return ErrConnectionClosed
+	}
+	debugLog(ctx, "navigating back")
+
+	browsingCtx, err := v.getContext(ctx)
+	if err != nil {
+		return err
+	}
+
+	params := map[string]interface{}{
+		"context": browsingCtx,
+		"delta":   -1,
+	}
+
+	_, err = v.client.Send(ctx, "browsingContext.traverseHistory", params)
+	return err
+}
+
+// Forward navigates forward in history.
+func (v *Vibe) Forward(ctx context.Context) error {
+	if v.closed {
+		return ErrConnectionClosed
+	}
+	debugLog(ctx, "navigating forward")
+
+	browsingCtx, err := v.getContext(ctx)
+	if err != nil {
+		return err
+	}
+
+	params := map[string]interface{}{
+		"context": browsingCtx,
+		"delta":   1,
+	}
+
+	_, err = v.client.Send(ctx, "browsingContext.traverseHistory", params)
 	return err
 }
 
@@ -144,6 +219,7 @@ func (v *Vibe) Find(ctx context.Context, selector string, opts *FindOptions) (*E
 	if v.closed {
 		return nil, ErrConnectionClosed
 	}
+	debugLog(ctx, "finding element", "selector", selector)
 
 	browsingCtx, err := v.getContext(ctx)
 	if err != nil {
@@ -174,7 +250,82 @@ func (v *Vibe) Find(ctx context.Context, selector string, opts *FindOptions) (*E
 		return nil, fmt.Errorf("failed to parse element info: %w", err)
 	}
 
+	debugLog(ctx, "element found", "selector", selector, "tag", info.Tag)
 	return NewElement(v.client, browsingCtx, selector, info), nil
+}
+
+// FindAll finds all elements matching the CSS selector.
+func (v *Vibe) FindAll(ctx context.Context, selector string) ([]*Element, error) {
+	if v.closed {
+		return nil, ErrConnectionClosed
+	}
+	debugLog(ctx, "finding all elements", "selector", selector)
+
+	browsingCtx, err := v.getContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	// Use JavaScript to find all matching elements and get their info
+	script := `(selector) => {
+		const elements = document.querySelectorAll(selector);
+		return Array.from(elements).map((el, index) => {
+			const rect = el.getBoundingClientRect();
+			return {
+				index: index,
+				tag: el.tagName.toLowerCase(),
+				text: (el.textContent || '').trim().substring(0, 100),
+				box: { x: rect.x, y: rect.y, width: rect.width, height: rect.height }
+			};
+		});
+	}`
+
+	params := map[string]interface{}{
+		"functionDeclaration": script,
+		"target":              map[string]interface{}{"context": browsingCtx},
+		"arguments": []interface{}{
+			map[string]interface{}{
+				"type":  "string",
+				"value": selector,
+			},
+		},
+		"awaitPromise":    false,
+		"resultOwnership": "root",
+	}
+
+	result, err := v.client.Send(ctx, "script.callFunction", params)
+	if err != nil {
+		return nil, err
+	}
+
+	var resp struct {
+		Result struct {
+			Value []struct {
+				Index int         `json:"index"`
+				Tag   string      `json:"tag"`
+				Text  string      `json:"text"`
+				Box   BoundingBox `json:"box"`
+			} `json:"value"`
+		} `json:"result"`
+	}
+	if err := json.Unmarshal(result, &resp); err != nil {
+		return nil, fmt.Errorf("failed to parse elements: %w", err)
+	}
+
+	elements := make([]*Element, len(resp.Result.Value))
+	for i, item := range resp.Result.Value {
+		// Create indexed selector for each element
+		indexedSelector := fmt.Sprintf("%s:nth-of-type(%d)", selector, item.Index+1)
+		info := ElementInfo{
+			Tag:  item.Tag,
+			Text: item.Text,
+			Box:  item.Box,
+		}
+		elements[i] = NewElement(v.client, browsingCtx, indexedSelector, info)
+	}
+
+	debugLog(ctx, "elements found", "selector", selector, "count", len(elements))
+	return elements, nil
 }
 
 // MustFind finds an element by CSS selector and panics if not found.
