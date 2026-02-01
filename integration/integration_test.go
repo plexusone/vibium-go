@@ -38,7 +38,7 @@ func newBrowserTest(t *testing.T) *browserTest {
 	ctx, cancel := context.WithTimeout(context.Background(), testTimeout)
 
 	// Use headless mode in CI, visible mode locally for debugging
-	headless := os.Getenv("CI") != "" || os.Getenv("HEADLESS") == "1"
+	headless := os.Getenv("CI") != "" || os.Getenv("VIBIUM_HEADLESS") == "1"
 
 	vibe, err := vibium.Browser.Launch(ctx, &vibium.LaunchOptions{
 		Headless: headless,
