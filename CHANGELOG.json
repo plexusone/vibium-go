@@ -1,0 +1,52 @@
+{
+  "ir_version": "1.0",
+  "project": "vibium-go",
+  "repository": "https://github.com/grokify/vibium-go",
+  "versioning": "semver",
+  "commit_convention": "conventional",
+  "maintainers": ["grokify"],
+  "releases": [
+    {
+      "version": "v0.1.0",
+      "date": "2026-01-31",
+      "highlights": [
+        { "description": "Go client for Vibium browser automation platform with full feature parity with JavaScript and Python clients" }
+      ],
+      "added": [
+        { "description": "Core types: `BoundingBox`, `ElementInfo`, `LaunchOptions`, `FindOptions`, `ActionOptions`", "commit": "e6ba8d0" },
+        { "description": "Custom error types: `ConnectionError`, `TimeoutError`, `ElementNotFoundError`, `BrowserCrashedError`, `BiDiError`", "commit": "e6ba8d0" },
+        { "description": "BiDi WebSocket client for browser communication", "commit": "4f73d02" },
+        { "description": "Clicker process management with binary discovery via `VIBIUM_CLICKER_PATH`, PATH, and cache directory", "commit": "3f36cf0" },
+        { "description": "`Element` type with `Click()`, `Type()`, `Text()`, `GetAttribute()`, `BoundingBox()`, `Center()`, `WaitFor()` methods", "commit": "b33b123" },
+        { "description": "`Vibe` browser control with `Launch()`, `Go()`, `Screenshot()`, `Find()`, `Evaluate()`, `Quit()` methods", "commit": "b33b123" },
+        { "description": "Debug logging with `slog` via `VIBIUM_DEBUG` environment variable", "commit": "48598c6" },
+        { "description": "Navigation methods: `Reload()`, `Back()`, `Forward()`, `WaitForNavigation()`", "commit": "91ad5be" },
+        { "description": "`FindAll()` method for finding multiple elements by CSS selector", "commit": "91ad5be" }
+      ],
+      "changed": [
+        { "description": "Environment variable renamed from `HEADLESS` to `VIBIUM_HEADLESS` for consistency", "commit": "a404d5e" }
+      ],
+      "fixed": [
+        { "description": "Format `bidi.go` with gofmt and tighten file permissions to 0600", "commit": "f60f34f" },
+        { "description": "`FindAll` parsing to handle BiDi array serialization by returning JSON from JavaScript", "commit": "a839387" },
+        { "description": "Relaxed test assertions for example.com content changes", "commit": "a839387" }
+      ],
+      "tests": [
+        { "description": "Example tests with testable examples for documentation", "commit": "5c4aeac" },
+        { "description": "Integration tests for `example.com` with page title, element finding, screenshots, and JavaScript evaluation", "commit": "3f184e8" },
+        { "description": "Integration tests for `the-internet.herokuapp.com` with dynamic elements, inputs, checkboxes, dropdowns, and navigation", "commit": "3f184e8" }
+      ],
+      "documentation": [
+        { "description": "Package documentation with godoc comments", "commit": "8236d7e" },
+        { "description": "README with feature parity table, installation, quick start, and API reference", "commit": "8236d7e" },
+        { "description": "Documentation for debug logging, navigation methods, and `FindAll`", "commit": "91fd20f" },
+        { "description": "Testing section with unit and integration test instructions", "commit": "84388af" },
+        { "description": "Repository badges for build status, lint, Go Report Card, and license", "commit": "df0b67c" }
+      ],
+      "infrastructure": [
+        { "description": "Go module files (`go.mod`, `go.sum`)", "commit": "cb7a6f9" },
+        { "description": "Project configuration files", "commit": "1e66b00" }
+      ]
+    }
+  ]
+}
