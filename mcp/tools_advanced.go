@@ -6,9 +6,10 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/modelcontextprotocol/go-sdk/mcp"
+
 	vibium "github.com/plexusone/vibium-go"
 	"github.com/plexusone/vibium-go/mcp/report"
-	"github.com/modelcontextprotocol/go-sdk/mcp"
 )
 
 // DragTo tool

@@ -5,8 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 
-	vibium "github.com/plexusone/vibium-go"
 	"github.com/modelcontextprotocol/go-sdk/mcp"
+
+	vibium "github.com/plexusone/vibium-go"
 )
 
 // NewPage tool

@@ -5,8 +5,9 @@ import (
 	"fmt"
 	"time"
 
-	vibium "github.com/plexusone/vibium-go"
 	"github.com/modelcontextprotocol/go-sdk/mcp"
+
+	vibium "github.com/plexusone/vibium-go"
 )
 
 // elementOp performs a common element operation pattern:

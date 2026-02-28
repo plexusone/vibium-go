@@ -6,8 +6,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/plexusone/vibium-go/script"
 	"github.com/invopop/jsonschema"
+
+	"github.com/plexusone/vibium-go/script"
 )
 
 func main() {
