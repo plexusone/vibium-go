@@ -330,7 +330,7 @@ func (r *Result) SaveReport(filename string) error {
 	if err != nil {
 		return fmt.Errorf("failed to marshal report: %w", err)
 	}
-	return os.WriteFile(filename, data, 0644)
+	return os.WriteFile(filename, data, 0600)
 }
 
 func truncate(s string, maxLen int) string {

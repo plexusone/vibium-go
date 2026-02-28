@@ -141,7 +141,7 @@ Examples:
 
 		// Write output
 		if vpatOutput != "" {
-			if err := os.WriteFile(vpatOutput, []byte(output), 0644); err != nil {
+			if err := os.WriteFile(vpatOutput, []byte(output), 0600); err != nil {
 				return fmt.Errorf("failed to write output: %w", err)
 			}
 			fmt.Printf("VPAT report written to: %s\n", vpatOutput)
