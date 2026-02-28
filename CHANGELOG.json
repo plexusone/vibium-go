@@ -7,6 +7,21 @@
   "maintainers": ["plexusone"],
   "releases": [
     {
+      "version": "v0.2.1",
+      "date": "2026-02-28",
+      "highlights": [
+        { "description": "Complete migration to `plexusone` GitHub organization" }
+      ],
+      "fixed": [
+        { "description": "Update all Go imports from `agentplexus` to `plexusone` organization", "commit": "13c030b" },
+        { "description": "Fix gofmt formatting issues", "commit": "d6be948" }
+      ],
+      "infrastructure": [
+        { "description": "Migrate CI/CD to organization-level reusable workflows from `plexusone/.github`", "commit": "1eeff28" },
+        { "description": "Update CHANGELOG, README, go.mod, and mkdocs.yml for plexusone organization", "commit": "f15b18f" }
+      ]
+    },
+    {
       "version": "v0.2.0",
       "date": "2026-02-28",
       "highlights": [
