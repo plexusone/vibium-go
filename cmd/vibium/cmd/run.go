@@ -10,7 +10,6 @@ import (
 	"time"
 
 	vibium "github.com/agentplexus/vibium-go"
-	"github.com/agentplexus/vibium-go/a11y"
 	"github.com/agentplexus/vibium-go/script"
 	"github.com/spf13/cobra"
 	"gopkg.in/yaml.v3"
@@ -529,70 +528,11 @@ func executeStep(ctx context.Context, vibe *vibium.Vibe, step script.Step) error
 		return nil
 
 	case script.ActionAssertAccessibility:
-		return executeAccessibilityCheck(ctx, vibe, step)
+		return fmt.Errorf("assertAccessibility has moved to agent-a11y; use github.com/agentplexus/agent-a11y for accessibility testing")
 
 	default:
 		return fmt.Errorf("unknown action: %s", step.Action)
 	}
-}
-
-func executeAccessibilityCheck(ctx context.Context, vibe *vibium.Vibe, step script.Step) error {
-	opts := a11y.DefaultOptions()
-
-	// Apply step options
-	if step.A11y != nil {
-		if step.A11y.Standard != "" {
-			opts.Standard = a11y.Standard(step.A11y.Standard)
-		}
-		if step.A11y.IncludeSelector != "" {
-			opts.IncludeSelector = step.A11y.IncludeSelector
-		}
-		if step.A11y.ExcludeSelector != "" {
-			opts.ExcludeSelector = step.A11y.ExcludeSelector
-		}
-		if len(step.A11y.Rules) > 0 {
-			opts.Rules = step.A11y.Rules
-		}
-		if len(step.A11y.DisabledRules) > 0 {
-			opts.DisabledRules = step.A11y.DisabledRules
-		}
-		if step.A11y.FailOn != "" {
-			opts.FailOn = a11y.Impact(step.A11y.FailOn)
-		}
-	}
-
-	// Run accessibility check
-	result, err := a11y.Check(ctx, vibe, opts)
-	if err != nil {
-		return fmt.Errorf("accessibility check failed: %w", err)
-	}
-
-	// Save report if requested
-	if step.A11y != nil && step.A11y.ReportFile != "" {
-		if err := result.SaveReport(step.A11y.ReportFile); err != nil {
-			return fmt.Errorf("failed to save accessibility report: %w", err)
-		}
-		if verbose {
-			fmt.Printf("  Saved report to %s\n", step.A11y.ReportFile)
-		}
-	}
-
-	// Print summary
-	if verbose {
-		fmt.Printf("  %s\n", strings.ReplaceAll(result.Summary(), "\n", "\n  "))
-	}
-
-	// Check for failures
-	if result.HasFailures(opts.FailOn) {
-		violations := result.FilterViolations(opts.FailOn)
-		var msgs []string
-		for _, v := range violations {
-			msgs = append(msgs, fmt.Sprintf("[%s] %s: %s", v.Impact, v.ID, v.Help))
-		}
-		return fmt.Errorf("accessibility violations found:\n  %s", strings.Join(msgs, "\n  "))
-	}
-
-	return nil
 }
 
 func init() {

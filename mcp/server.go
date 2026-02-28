@@ -491,18 +491,6 @@ func (s *Server) registerTools() {
 		Name:        "clear_recording",
 		Description: "Clear all recorded steps without stopping recording.",
 	}, s.handleClearRecording)
-
-	// === Accessibility Testing ===
-
-	mcp.AddTool(s.mcpServer, &mcp.Tool{
-		Name:        "check_accessibility",
-		Description: "Run WCAG accessibility checks on the current page using axe-core. Returns violations, passes, and a summary. Default standard is WCAG 2.2 AA.",
-	}, s.handleCheckAccessibility)
-
-	mcp.AddTool(s.mcpServer, &mcp.Tool{
-		Name:        "get_a11y_tree",
-		Description: "Get the accessibility tree (a11y tree) for the current page. Useful for understanding how assistive technologies see the page.",
-	}, s.handleGetA11yTree)
 }
 
 // Run starts the MCP server.
