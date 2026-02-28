@@ -4,31 +4,18 @@
 
 - Go 1.21 or later
 - Chrome, Chromium, or Chrome for Testing
-- Node.js (for installing clicker via npm)
+- Vibium Clicker binary (see below)
 
 ## Vibium Clicker
 
 The clicker is a lightweight binary that bridges WebDriver BiDi with the browser.
 
-### Install via npm
+!!! warning "Clicker Availability"
+    The clicker binary is not yet publicly distributed. Contact the maintainers for access, or check the [releases page](https://github.com/agentplexus/vibium-go/releases) for updates.
 
-```bash
-npm install -g vibium
-```
+### Specifying the Clicker Path
 
-### Manual Installation
-
-Download from [Vibium releases](https://github.com/VibiumDev/vibium/releases) for your platform:
-
-- `vibium-darwin-arm64` - macOS Apple Silicon
-- `vibium-darwin-x64` - macOS Intel
-- `vibium-linux-arm64` - Linux ARM64
-- `vibium-linux-x64` - Linux x64
-- `vibium-win32-x64.exe` - Windows x64
-
-### Specify Path
-
-If the clicker is not in your PATH:
+Once you have the clicker binary, specify its location:
 
 ```bash
 export VIBIUM_CLICKER_PATH=/path/to/clicker
@@ -42,14 +29,25 @@ vibe, err := vibium.Browser.Launch(ctx, &vibium.LaunchOptions{
 })
 ```
 
+### Platform Binaries
+
+When available, binaries will be provided for:
+
+| Platform | Binary Name |
+|----------|-------------|
+| macOS Apple Silicon | `clicker-darwin-arm64` |
+| macOS Intel | `clicker-darwin-x64` |
+| Linux ARM64 | `clicker-linux-arm64` |
+| Linux x64 | `clicker-linux-x64` |
+| Windows x64 | `clicker-win32-x64.exe` |
+
 ## Browser
 
 Chrome for Testing is recommended:
 
 ```bash
-# Install via clicker
-vibium install
-
-# Or use existing Chrome/Chromium
+# Use existing Chrome/Chromium
 export CHROME_PATH=/path/to/chrome
 ```
+
+The clicker will automatically detect Chrome installations in standard locations.

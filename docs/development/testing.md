@@ -12,13 +12,13 @@ go test -v ./...
 
 Integration tests require the Vibium clicker binary.
 
+!!! warning "Clicker Required"
+    The clicker binary is not yet publicly distributed. See [Prerequisites](../getting-started/prerequisites.md) for details.
+
 ### Setup
 
 ```bash
-# Install clicker
-npm install -g vibium
-
-# Or set path
+# Set path to clicker binary
 export VIBIUM_CLICKER_PATH=/path/to/clicker
 ```
 
@@ -89,8 +89,9 @@ gocoverbadge -dir . -exclude cmd -badge-only
 
 See `.github/workflows/` for:
 
-- `ci.yaml` - Build and test
+- `ci.yaml` - Build and unit tests
 - `lint.yaml` - Linting
+- `e2e.yaml` - E2E tests (manual trigger only, requires clicker URL)
 
 ## Writing Tests
 

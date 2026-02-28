@@ -2,6 +2,9 @@
 
 Run deterministic test scripts in CI/CD pipelines without an LLM.
 
+!!! warning "Clicker Binary Required"
+    E2E tests require the Vibium clicker binary, which is not yet publicly distributed. The examples below assume you have access to the clicker binary. See [Prerequisites](../getting-started/prerequisites.md) for details.
+
 ## Overview
 
 ```
@@ -40,7 +43,13 @@ Run deterministic test scripts in CI/CD pipelines without an LLM.
 ```yaml
 name: E2E Tests
 
-on: [push, pull_request]
+on:
+  workflow_dispatch:
+    inputs:
+      clicker_url:
+        description: 'URL to download clicker binary'
+        required: true
+        type: string
 
 jobs:
   e2e:
@@ -53,15 +62,14 @@ jobs:
         with:
           go-version: '1.22'
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Install Vibium
+      - name: Download Clicker
         run: |
-          npm install -g vibium
-          go install github.com/grokify/vibium-go/cmd/vibium@latest
+          curl -L -o clicker "${{ github.event.inputs.clicker_url }}"
+          chmod +x clicker
+          echo "VIBIUM_CLICKER_PATH=$PWD/clicker" >> $GITHUB_ENV
+
+      - name: Install Vibium CLI
+        run: go install github.com/agentplexus/vibium-go/cmd/vibium@latest
 
       - name: Run E2E Tests
         env:
@@ -70,6 +78,9 @@ jobs:
           vibium run tests/login.json
           vibium run tests/checkout.json
 ```
+
+!!! note "Manual Trigger"
+    Until the clicker is publicly distributed, E2E workflows should use `workflow_dispatch` with a `clicker_url` input rather than automatic triggers on push/PR.
 
 ### Matrix Strategy
 
@@ -87,10 +98,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup
+      - name: Download Clicker
         run: |
-          npm install -g vibium
-          go install github.com/grokify/vibium-go/cmd/vibium@latest
+          curl -L -o clicker "${{ github.event.inputs.clicker_url }}"
+          chmod +x clicker
+          echo "VIBIUM_CLICKER_PATH=$PWD/clicker" >> $GITHUB_ENV
+
+      - name: Setup
+        run: go install github.com/agentplexus/vibium-go/cmd/vibium@latest
 
       - name: Run ${{ matrix.test }} tests
         env:
@@ -129,15 +144,19 @@ on:
 
 ```yaml
 e2e:
-  image: node:20
+  image: golang:1.22
+
+  variables:
+    CLICKER_URL: "$CLICKER_URL"  # Set in CI/CD variables
+    VIBIUM_HEADLESS: "1"
 
   before_script:
-    - npm install -g vibium
-    - apt-get update && apt-get install -y golang
-    - go install github.com/grokify/vibium-go/cmd/vibium@latest
+    - curl -L -o clicker "$CLICKER_URL"
+    - chmod +x clicker
+    - export VIBIUM_CLICKER_PATH=$PWD/clicker
+    - go install github.com/agentplexus/vibium-go/cmd/vibium@latest
 
   script:
-    - export VIBIUM_HEADLESS=1
     - vibium run tests/smoke.json
     - vibium run tests/auth.json
 
@@ -146,6 +165,9 @@ e2e:
     paths:
       - screenshots/
     expire_in: 1 week
+
+  rules:
+    - when: manual  # Manual trigger until clicker is public
 ```
 
 ## CircleCI
@@ -156,14 +178,18 @@ version: 2.1
 jobs:
   e2e:
     docker:
-      - image: cimg/go:1.22-node
+      - image: cimg/go:1.22
     steps:
       - checkout
       - run:
-          name: Install Vibium
+          name: Download Clicker
           command: |
-            npm install -g vibium
-            go install github.com/grokify/vibium-go/cmd/vibium@latest
+            curl -L -o clicker "$CLICKER_URL"
+            chmod +x clicker
+            echo "export VIBIUM_CLICKER_PATH=$PWD/clicker" >> $BASH_ENV
+      - run:
+          name: Install Vibium CLI
+          command: go install github.com/agentplexus/vibium-go/cmd/vibium@latest
       - run:
           name: Run E2E Tests
           environment:
@@ -178,7 +204,9 @@ jobs:
 workflows:
   test:
     jobs:
-      - e2e
+      - e2e:
+          # Manual approval until clicker is public
+          type: approval
 ```
 
 ## Jenkins
@@ -187,6 +215,10 @@ workflows:
 pipeline {
     agent any
 
+    parameters {
+        string(name: 'CLICKER_URL', description: 'URL to download clicker binary')
+    }
+
     environment {
         VIBIUM_HEADLESS = '1'
     }
@@ -194,12 +226,18 @@ pipeline {
     stages {
         stage('Setup') {
             steps {
-                sh 'npm install -g vibium'
-                sh 'go install github.com/grokify/vibium-go/cmd/vibium@latest'
+                sh '''
+                    curl -L -o clicker "${CLICKER_URL}"
+                    chmod +x clicker
+                '''
+                sh 'go install github.com/agentplexus/vibium-go/cmd/vibium@latest'
             }
         }
 
         stage('E2E Tests') {
+            environment {
+                VIBIUM_CLICKER_PATH = "${WORKSPACE}/clicker"
+            }
             steps {
                 sh 'vibium run tests/smoke.json'
                 sh 'vibium run tests/auth.json'
@@ -218,25 +256,29 @@ pipeline {
 ## Azure Pipelines
 
 ```yaml
-trigger:
-  - main
+trigger: none  # Manual trigger until clicker is public
+
+parameters:
+  - name: clickerUrl
+    displayName: 'Clicker Download URL'
+    type: string
 
 pool:
   vmImage: 'ubuntu-latest'
 
 steps:
-  - task: NodeTool@0
-    inputs:
-      versionSpec: '20.x'
-
   - task: GoTool@0
     inputs:
       version: '1.22'
 
   - script: |
-      npm install -g vibium
-      go install github.com/grokify/vibium-go/cmd/vibium@latest
-    displayName: 'Install Vibium'
+      curl -L -o clicker "${{ parameters.clickerUrl }}"
+      chmod +x clicker
+      echo "##vso[task.setvariable variable=VIBIUM_CLICKER_PATH]$(pwd)/clicker"
+    displayName: 'Download Clicker'
+
+  - script: go install github.com/agentplexus/vibium-go/cmd/vibium@latest
+    displayName: 'Install Vibium CLI'
 
   - script: |
       export VIBIUM_HEADLESS=1
@@ -367,12 +409,17 @@ VIBIUM_HEADLESS=1 vibium run tests/failing-test.json
 
 ## Accessibility Testing in CI/CD
 
-For WCAG 2.2 accessibility testing in CI/CD, use [vibium-wcag](https://github.com/agentplexus/vibium-wcag):
+For WCAG 2.2 accessibility testing in CI/CD, use [agent-a11y](https://github.com/agentplexus/agent-a11y):
 
 ```yaml
 name: Accessibility
 
-on: [push, pull_request]
+on:
+  workflow_dispatch:
+    inputs:
+      clicker_url:
+        description: 'URL to download clicker binary'
+        required: true
 
 jobs:
   wcag:
@@ -380,16 +427,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup
+      - name: Download Clicker
         run: |
-          npm install -g vibium
-          go install github.com/agentplexus/vibium-wcag/cmd/vibium-wcag@latest
+          curl -L -o clicker "${{ github.event.inputs.clicker_url }}"
+          chmod +x clicker
+          echo "VIBIUM_CLICKER_PATH=$PWD/clicker" >> $GITHUB_ENV
+
+      - name: Setup
+        run: go install github.com/agentplexus/agent-a11y/cmd/agent-a11y@latest
 
       - name: Run WCAG 2.2 AA Evaluation
         env:
           VIBIUM_HEADLESS: "1"
         run: |
-          vibium-wcag evaluate https://staging.example.com \
+          agent-a11y vpat https://staging.example.com \
             --format json --output wcag-results.json
 
       - name: Upload WCAG Results
@@ -399,13 +450,13 @@ jobs:
           path: wcag-results.json
 ```
 
-vibium-wcag combines:
+agent-a11y combines:
 
 - **Automated testing** (~40% coverage) - axe-core rule-based checks
 - **Specialized automation** (~25% coverage) - keyboard, focus, reflow tests
 - **LLM-as-a-Judge** (~25% coverage) - semantic evaluation (optional)
 
-See the [vibium-wcag documentation](https://github.com/agentplexus/vibium-wcag) for details.
+See the [agent-a11y documentation](https://github.com/agentplexus/agent-a11y) for details.
 
 ## Example: Complete Workflow
 
