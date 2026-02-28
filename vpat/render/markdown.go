@@ -88,8 +88,8 @@ func Markdown(report *vpat.Report) string {
 
 	// Group by principle
 	principles := []struct {
-		name     string
-		prefix   string
+		name   string
+		prefix string
 	}{
 		{"1. Perceivable", "1."},
 		{"2. Operable", "2."},

@@ -13,13 +13,13 @@ import (
 type Standard string
 
 const (
-	WCAG2A   Standard = "wcag2a"
-	WCAG2AA  Standard = "wcag2aa"
-	WCAG2AAA Standard = "wcag2aaa"
-	WCAG21A  Standard = "wcag21a"
-	WCAG21AA Standard = "wcag21aa"
+	WCAG2A    Standard = "wcag2a"
+	WCAG2AA   Standard = "wcag2aa"
+	WCAG2AAA  Standard = "wcag2aaa"
+	WCAG21A   Standard = "wcag21a"
+	WCAG21AA  Standard = "wcag21aa"
 	WCAG21AAA Standard = "wcag21aaa"
-	WCAG22AA Standard = "wcag22aa"
+	WCAG22AA  Standard = "wcag22aa"
 )
 
 // Impact represents the severity of an accessibility violation.
@@ -64,14 +64,14 @@ func DefaultOptions() *Options {
 
 // Result contains the accessibility check results.
 type Result struct {
-	Violations     []Violation `json:"violations"`
-	Passes         []Rule      `json:"passes"`
-	Incomplete     []Rule      `json:"incomplete"`
-	Inapplicable   []Rule      `json:"inapplicable"`
-	URL            string      `json:"url"`
-	Timestamp      string      `json:"timestamp"`
-	TestEngine     TestEngine  `json:"testEngine"`
-	TestRunner     TestRunner  `json:"testRunner"`
+	Violations      []Violation     `json:"violations"`
+	Passes          []Rule          `json:"passes"`
+	Incomplete      []Rule          `json:"incomplete"`
+	Inapplicable    []Rule          `json:"inapplicable"`
+	URL             string          `json:"url"`
+	Timestamp       string          `json:"timestamp"`
+	TestEngine      TestEngine      `json:"testEngine"`
+	TestRunner      TestRunner      `json:"testRunner"`
 	TestEnvironment TestEnvironment `json:"testEnvironment"`
 }
 
@@ -117,10 +117,10 @@ type Rule struct {
 
 // Node represents a DOM element that violated or passed a rule.
 type Node struct {
-	HTML          string   `json:"html"`
-	Target        []string `json:"target"`
-	FailureSummary string  `json:"failureSummary,omitempty"`
-	Impact        Impact   `json:"impact,omitempty"`
+	HTML           string   `json:"html"`
+	Target         []string `json:"target"`
+	FailureSummary string   `json:"failureSummary,omitempty"`
+	Impact         Impact   `json:"impact,omitempty"`
 }
 
 // Evaluator is the interface for JavaScript evaluation.

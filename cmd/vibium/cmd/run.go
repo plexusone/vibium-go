@@ -337,14 +337,14 @@ func executeStep(ctx context.Context, vibe *vibium.Vibe, step script.Step) error
 		if err != nil {
 			return err
 		}
-		return os.WriteFile(step.File, data, 0644)
+		return os.WriteFile(step.File, data, 0600)
 
 	case script.ActionPDF:
 		data, err := vibe.PDF(ctx, nil)
 		if err != nil {
 			return err
 		}
-		return os.WriteFile(step.File, data, 0644)
+		return os.WriteFile(step.File, data, 0600)
 
 	case script.ActionEval:
 		_, err := vibe.Evaluate(ctx, step.Script)

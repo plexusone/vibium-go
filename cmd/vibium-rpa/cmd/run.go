@@ -201,7 +201,7 @@ func writeOutput(result *rpa.WorkflowResult, path, format string) error {
 		return err
 	}
 
-	return os.WriteFile(path, data, 0644)
+	return os.WriteFile(path, data, 600)
 }
 
 func formatMarkdown(result *rpa.WorkflowResult) []byte {

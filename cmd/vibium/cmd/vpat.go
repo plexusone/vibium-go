@@ -15,15 +15,15 @@ import (
 )
 
 var (
-	vpatFormat      string
-	vpatOutput      string
-	vpatProduct     string
-	vpatVersion     string
-	vpatVendor      string
-	vpatEvaluator   string
-	vpatScope       string
-	vpatStandard    string
-	vpatTimeout     time.Duration
+	vpatFormat    string
+	vpatOutput    string
+	vpatProduct   string
+	vpatVersion   string
+	vpatVendor    string
+	vpatEvaluator string
+	vpatScope     string
+	vpatStandard  string
+	vpatTimeout   time.Duration
 )
 
 var vpatCmd = &cobra.Command{
