@@ -8,8 +8,8 @@ import (
 	"os"
 	"time"
 
-	vibium "github.com/agentplexus/vibium-go"
-	"github.com/agentplexus/vibium-go/rpa/activity"
+	vibium "github.com/plexusone/vibium-go"
+	"github.com/plexusone/vibium-go/rpa/activity"
 )
 
 // ExecutorConfig configures the workflow executor.

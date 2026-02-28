@@ -5,7 +5,7 @@ import (
 	"context"
 	"log/slog"
 
-	vibium "github.com/agentplexus/vibium-go"
+	vibium "github.com/plexusone/vibium-go"
 )
 
 // Activity represents an executable RPA action.

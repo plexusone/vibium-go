@@ -4,7 +4,7 @@ package main
 import (
 	"os"
 
-	"github.com/agentplexus/vibium-go/cmd/vibium/cmd"
+	"github.com/plexusone/vibium-go/cmd/vibium/cmd"
 )
 
 func main() {

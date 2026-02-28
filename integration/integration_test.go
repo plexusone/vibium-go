@@ -10,7 +10,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/agentplexus/vibium-go"
+	"github.com/plexusone/vibium-go"
 )
 
 // testTimeout is the default timeout for test operations.

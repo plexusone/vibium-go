@@ -3,10 +3,10 @@ module github.com/plexusone/vibium-go
 go 1.24.0
 
 require (
-	github.com/plexusone/multi-agent-spec/sdk/go v0.8.0
 	github.com/gorilla/websocket v1.5.3
 	github.com/invopop/jsonschema v0.13.0
 	github.com/modelcontextprotocol/go-sdk v1.4.0
+	github.com/plexusone/multi-agent-spec/sdk/go v0.8.0
 	github.com/spf13/cobra v1.10.2
 	gopkg.in/yaml.v3 v3.0.1
 )

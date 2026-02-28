@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/agentplexus/vibium-go/cmd/vibium-rpa/cmd"
+	"github.com/plexusone/vibium-go/cmd/vibium-rpa/cmd"
 )
 
 func main() {

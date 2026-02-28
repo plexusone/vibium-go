@@ -9,8 +9,8 @@ import (
 	"strings"
 	"time"
 
-	vibium "github.com/agentplexus/vibium-go"
-	"github.com/agentplexus/vibium-go/script"
+	vibium "github.com/plexusone/vibium-go"
+	"github.com/plexusone/vibium-go/script"
 	"github.com/spf13/cobra"
 	"gopkg.in/yaml.v3"
 )

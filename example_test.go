@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/agentplexus/vibium-go"
+	"github.com/plexusone/vibium-go"
 )
 
 func Example() {

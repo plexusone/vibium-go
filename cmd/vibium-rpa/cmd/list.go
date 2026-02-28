@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"sort"
 
-	"github.com/agentplexus/vibium-go/rpa/activity"
+	"github.com/plexusone/vibium-go/rpa/activity"
 	"github.com/spf13/cobra"
 )
 

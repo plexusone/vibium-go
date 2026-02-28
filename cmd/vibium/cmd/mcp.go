@@ -8,7 +8,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/agentplexus/vibium-go/mcp"
+	"github.com/plexusone/vibium-go/mcp"
 	"github.com/spf13/cobra"
 )
 

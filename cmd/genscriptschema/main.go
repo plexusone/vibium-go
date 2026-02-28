@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/agentplexus/vibium-go/script"
+	"github.com/plexusone/vibium-go/script"
 	"github.com/invopop/jsonschema"
 )
 
@@ -15,7 +15,7 @@ func main() {
 	r.ExpandedStruct = true
 
 	schema := r.Reflect(&script.Script{})
-	schema.ID = "https://github.com/agentplexus/vibium-go/script/vibium-script.schema.json"
+	schema.ID = "https://github.com/plexusone/vibium-go/script/vibium-script.schema.json"
 	schema.Title = "Vibium Test Script"
 	schema.Description = "Schema for Vibium browser automation test scripts"
 

@@ -7,7 +7,7 @@ import (
 	"os"
 	"path/filepath"
 
-	vibium "github.com/agentplexus/vibium-go"
+	vibium "github.com/plexusone/vibium-go"
 )
 
 // SessionInfo stores information about a running browser session

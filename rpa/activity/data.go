@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"time"
 
-	vibium "github.com/agentplexus/vibium-go"
+	vibium "github.com/plexusone/vibium-go"
 )
 
 // ScrapeTableActivity extracts data from an HTML table.

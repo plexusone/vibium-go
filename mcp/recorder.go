@@ -5,7 +5,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/agentplexus/vibium-go/script"
+	"github.com/plexusone/vibium-go/script"
 )
 
 // Recorder captures MCP tool calls and converts them to a script.

@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"time"
 
-	vibium "github.com/agentplexus/vibium-go"
-	"github.com/agentplexus/vibium-go/mcp/report"
+	vibium "github.com/plexusone/vibium-go"
+	"github.com/plexusone/vibium-go/mcp/report"
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 )
 

@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/agentplexus/vibium-go/rpa"
+	"github.com/plexusone/vibium-go/rpa"
 	"github.com/spf13/cobra"
 )
 

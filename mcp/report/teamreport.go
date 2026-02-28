@@ -5,7 +5,7 @@ import (
 	"strings"
 	"time"
 
-	multiagentspec "github.com/agentplexus/multi-agent-spec/sdk/go"
+	multiagentspec "github.com/plexusone/multi-agent-spec/sdk/go"
 )
 
 // ToTeamReport converts a TestResult to a multi-agent-spec TeamReport.
