@@ -1,9 +1,9 @@
 {
-  "ir_version": "1.0",
+  "irVersion": "1.0",
   "project": "vibium-go",
   "repository": "https://github.com/agentplexus/vibium-go",
   "versioning": "semver",
-  "commit_convention": "conventional",
+  "commitConvention": "conventional",
   "maintainers": ["agentplexus"],
   "releases": [
     {
