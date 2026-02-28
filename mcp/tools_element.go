@@ -9,6 +9,29 @@ import (
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 )
 
+// elementOp performs a common element operation pattern:
+// 1. Gets vibe from session
+// 2. Finds element by selector with timeout
+// 3. Calls the provided operation function on the element
+func (s *Server) elementOp(ctx context.Context, selector string, timeoutMS int, op func(*vibium.Element) (any, error)) (any, error) {
+	vibe, err := s.session.Vibe(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("browser not available: %w", err)
+	}
+
+	if timeoutMS == 0 {
+		timeoutMS = 5000
+	}
+	timeout := time.Duration(timeoutMS) * time.Millisecond
+
+	elem, err := vibe.Find(ctx, selector, &vibium.FindOptions{Timeout: timeout})
+	if err != nil {
+		return nil, fmt.Errorf("element not found: %s", selector)
+	}
+
+	return op(elem)
+}
+
 // GetValue tool
 
 type GetValueInput struct {
@@ -25,27 +48,13 @@ func (s *Server) handleGetValue(
 	req *mcp.CallToolRequest,
 	input GetValueInput,
 ) (*mcp.CallToolResult, GetValueOutput, error) {
-	vibe, err := s.session.Vibe(ctx)
+	result, err := s.elementOp(ctx, input.Selector, input.TimeoutMS, func(elem *vibium.Element) (any, error) {
+		return elem.Value(ctx)
+	})
 	if err != nil {
-		return nil, GetValueOutput{}, fmt.Errorf("browser not available: %w", err)
+		return nil, GetValueOutput{}, err
 	}
-
-	if input.TimeoutMS == 0 {
-		input.TimeoutMS = 5000
-	}
-	timeout := time.Duration(input.TimeoutMS) * time.Millisecond
-
-	elem, err := vibe.Find(ctx, input.Selector, &vibium.FindOptions{Timeout: timeout})
-	if err != nil {
-		return nil, GetValueOutput{}, fmt.Errorf("element not found: %s", input.Selector)
-	}
-
-	value, err := elem.Value(ctx)
-	if err != nil {
-		return nil, GetValueOutput{}, fmt.Errorf("get value failed: %w", err)
-	}
-
-	return nil, GetValueOutput{Value: value}, nil
+	return nil, GetValueOutput{Value: result.(string)}, nil
 }
 
 // GetInnerHTML tool
@@ -64,27 +73,13 @@ func (s *Server) handleGetInnerHTML(
 	req *mcp.CallToolRequest,
 	input GetInnerHTMLInput,
 ) (*mcp.CallToolResult, GetInnerHTMLOutput, error) {
-	vibe, err := s.session.Vibe(ctx)
+	result, err := s.elementOp(ctx, input.Selector, input.TimeoutMS, func(elem *vibium.Element) (any, error) {
+		return elem.InnerHTML(ctx)
+	})
 	if err != nil {
-		return nil, GetInnerHTMLOutput{}, fmt.Errorf("browser not available: %w", err)
+		return nil, GetInnerHTMLOutput{}, err
 	}
-
-	if input.TimeoutMS == 0 {
-		input.TimeoutMS = 5000
-	}
-	timeout := time.Duration(input.TimeoutMS) * time.Millisecond
-
-	elem, err := vibe.Find(ctx, input.Selector, &vibium.FindOptions{Timeout: timeout})
-	if err != nil {
-		return nil, GetInnerHTMLOutput{}, fmt.Errorf("element not found: %s", input.Selector)
-	}
-
-	html, err := elem.InnerHTML(ctx)
-	if err != nil {
-		return nil, GetInnerHTMLOutput{}, fmt.Errorf("get innerHTML failed: %w", err)
-	}
-
-	return nil, GetInnerHTMLOutput{HTML: html}, nil
+	return nil, GetInnerHTMLOutput{HTML: result.(string)}, nil
 }
 
 // GetInnerText tool
@@ -103,27 +98,13 @@ func (s *Server) handleGetInnerText(
 	req *mcp.CallToolRequest,
 	input GetInnerTextInput,
 ) (*mcp.CallToolResult, GetInnerTextOutput, error) {
-	vibe, err := s.session.Vibe(ctx)
+	result, err := s.elementOp(ctx, input.Selector, input.TimeoutMS, func(elem *vibium.Element) (any, error) {
+		return elem.InnerText(ctx)
+	})
 	if err != nil {
-		return nil, GetInnerTextOutput{}, fmt.Errorf("browser not available: %w", err)
+		return nil, GetInnerTextOutput{}, err
 	}
-
-	if input.TimeoutMS == 0 {
-		input.TimeoutMS = 5000
-	}
-	timeout := time.Duration(input.TimeoutMS) * time.Millisecond
-
-	elem, err := vibe.Find(ctx, input.Selector, &vibium.FindOptions{Timeout: timeout})
-	if err != nil {
-		return nil, GetInnerTextOutput{}, fmt.Errorf("element not found: %s", input.Selector)
-	}
-
-	text, err := elem.InnerText(ctx)
-	if err != nil {
-		return nil, GetInnerTextOutput{}, fmt.Errorf("get innerText failed: %w", err)
-	}
-
-	return nil, GetInnerTextOutput{Text: text}, nil
+	return nil, GetInnerTextOutput{Text: result.(string)}, nil
 }
 
 // GetAttribute tool
@@ -143,27 +124,13 @@ func (s *Server) handleGetAttribute(
 	req *mcp.CallToolRequest,
 	input GetAttributeInput,
 ) (*mcp.CallToolResult, GetAttributeOutput, error) {
-	vibe, err := s.session.Vibe(ctx)
+	result, err := s.elementOp(ctx, input.Selector, input.TimeoutMS, func(elem *vibium.Element) (any, error) {
+		return elem.GetAttribute(ctx, input.Name)
+	})
 	if err != nil {
-		return nil, GetAttributeOutput{}, fmt.Errorf("browser not available: %w", err)
+		return nil, GetAttributeOutput{}, err
 	}
-
-	if input.TimeoutMS == 0 {
-		input.TimeoutMS = 5000
-	}
-	timeout := time.Duration(input.TimeoutMS) * time.Millisecond
-
-	elem, err := vibe.Find(ctx, input.Selector, &vibium.FindOptions{Timeout: timeout})
-	if err != nil {
-		return nil, GetAttributeOutput{}, fmt.Errorf("element not found: %s", input.Selector)
-	}
-
-	value, err := elem.GetAttribute(ctx, input.Name)
-	if err != nil {
-		return nil, GetAttributeOutput{}, fmt.Errorf("get attribute failed: %w", err)
-	}
-
-	return nil, GetAttributeOutput{Value: value}, nil
+	return nil, GetAttributeOutput{Value: result.(string)}, nil
 }
 
 // IsVisible tool
@@ -260,27 +227,13 @@ func (s *Server) handleIsEnabled(
 	req *mcp.CallToolRequest,
 	input IsEnabledInput,
 ) (*mcp.CallToolResult, IsEnabledOutput, error) {
-	vibe, err := s.session.Vibe(ctx)
+	result, err := s.elementOp(ctx, input.Selector, input.TimeoutMS, func(elem *vibium.Element) (any, error) {
+		return elem.IsEnabled(ctx)
+	})
 	if err != nil {
-		return nil, IsEnabledOutput{}, fmt.Errorf("browser not available: %w", err)
+		return nil, IsEnabledOutput{}, err
 	}
-
-	if input.TimeoutMS == 0 {
-		input.TimeoutMS = 5000
-	}
-	timeout := time.Duration(input.TimeoutMS) * time.Millisecond
-
-	elem, err := vibe.Find(ctx, input.Selector, &vibium.FindOptions{Timeout: timeout})
-	if err != nil {
-		return nil, IsEnabledOutput{}, fmt.Errorf("element not found: %s", input.Selector)
-	}
-
-	enabled, err := elem.IsEnabled(ctx)
-	if err != nil {
-		return nil, IsEnabledOutput{}, fmt.Errorf("is enabled check failed: %w", err)
-	}
-
-	return nil, IsEnabledOutput{Enabled: enabled}, nil
+	return nil, IsEnabledOutput{Enabled: result.(bool)}, nil
 }
 
 // IsChecked tool
@@ -299,27 +252,13 @@ func (s *Server) handleIsChecked(
 	req *mcp.CallToolRequest,
 	input IsCheckedInput,
 ) (*mcp.CallToolResult, IsCheckedOutput, error) {
-	vibe, err := s.session.Vibe(ctx)
+	result, err := s.elementOp(ctx, input.Selector, input.TimeoutMS, func(elem *vibium.Element) (any, error) {
+		return elem.IsChecked(ctx)
+	})
 	if err != nil {
-		return nil, IsCheckedOutput{}, fmt.Errorf("browser not available: %w", err)
+		return nil, IsCheckedOutput{}, err
 	}
-
-	if input.TimeoutMS == 0 {
-		input.TimeoutMS = 5000
-	}
-	timeout := time.Duration(input.TimeoutMS) * time.Millisecond
-
-	elem, err := vibe.Find(ctx, input.Selector, &vibium.FindOptions{Timeout: timeout})
-	if err != nil {
-		return nil, IsCheckedOutput{}, fmt.Errorf("element not found: %s", input.Selector)
-	}
-
-	checked, err := elem.IsChecked(ctx)
-	if err != nil {
-		return nil, IsCheckedOutput{}, fmt.Errorf("is checked check failed: %w", err)
-	}
-
-	return nil, IsCheckedOutput{Checked: checked}, nil
+	return nil, IsCheckedOutput{Checked: result.(bool)}, nil
 }
 
 // IsEditable tool
@@ -338,27 +277,13 @@ func (s *Server) handleIsEditable(
 	req *mcp.CallToolRequest,
 	input IsEditableInput,
 ) (*mcp.CallToolResult, IsEditableOutput, error) {
-	vibe, err := s.session.Vibe(ctx)
+	result, err := s.elementOp(ctx, input.Selector, input.TimeoutMS, func(elem *vibium.Element) (any, error) {
+		return elem.IsEditable(ctx)
+	})
 	if err != nil {
-		return nil, IsEditableOutput{}, fmt.Errorf("browser not available: %w", err)
+		return nil, IsEditableOutput{}, err
 	}
-
-	if input.TimeoutMS == 0 {
-		input.TimeoutMS = 5000
-	}
-	timeout := time.Duration(input.TimeoutMS) * time.Millisecond
-
-	elem, err := vibe.Find(ctx, input.Selector, &vibium.FindOptions{Timeout: timeout})
-	if err != nil {
-		return nil, IsEditableOutput{}, fmt.Errorf("element not found: %s", input.Selector)
-	}
-
-	editable, err := elem.IsEditable(ctx)
-	if err != nil {
-		return nil, IsEditableOutput{}, fmt.Errorf("is editable check failed: %w", err)
-	}
-
-	return nil, IsEditableOutput{Editable: editable}, nil
+	return nil, IsEditableOutput{Editable: result.(bool)}, nil
 }
 
 // GetRole tool
@@ -377,27 +302,13 @@ func (s *Server) handleGetRole(
 	req *mcp.CallToolRequest,
 	input GetRoleInput,
 ) (*mcp.CallToolResult, GetRoleOutput, error) {
-	vibe, err := s.session.Vibe(ctx)
+	result, err := s.elementOp(ctx, input.Selector, input.TimeoutMS, func(elem *vibium.Element) (any, error) {
+		return elem.Role(ctx)
+	})
 	if err != nil {
-		return nil, GetRoleOutput{}, fmt.Errorf("browser not available: %w", err)
+		return nil, GetRoleOutput{}, err
 	}
-
-	if input.TimeoutMS == 0 {
-		input.TimeoutMS = 5000
-	}
-	timeout := time.Duration(input.TimeoutMS) * time.Millisecond
-
-	elem, err := vibe.Find(ctx, input.Selector, &vibium.FindOptions{Timeout: timeout})
-	if err != nil {
-		return nil, GetRoleOutput{}, fmt.Errorf("element not found: %s", input.Selector)
-	}
-
-	role, err := elem.Role(ctx)
-	if err != nil {
-		return nil, GetRoleOutput{}, fmt.Errorf("get role failed: %w", err)
-	}
-
-	return nil, GetRoleOutput{Role: role}, nil
+	return nil, GetRoleOutput{Role: result.(string)}, nil
 }
 
 // GetLabel tool
@@ -416,27 +327,13 @@ func (s *Server) handleGetLabel(
 	req *mcp.CallToolRequest,
 	input GetLabelInput,
 ) (*mcp.CallToolResult, GetLabelOutput, error) {
-	vibe, err := s.session.Vibe(ctx)
+	result, err := s.elementOp(ctx, input.Selector, input.TimeoutMS, func(elem *vibium.Element) (any, error) {
+		return elem.Label(ctx)
+	})
 	if err != nil {
-		return nil, GetLabelOutput{}, fmt.Errorf("browser not available: %w", err)
+		return nil, GetLabelOutput{}, err
 	}
-
-	if input.TimeoutMS == 0 {
-		input.TimeoutMS = 5000
-	}
-	timeout := time.Duration(input.TimeoutMS) * time.Millisecond
-
-	elem, err := vibe.Find(ctx, input.Selector, &vibium.FindOptions{Timeout: timeout})
-	if err != nil {
-		return nil, GetLabelOutput{}, fmt.Errorf("element not found: %s", input.Selector)
-	}
-
-	label, err := elem.Label(ctx)
-	if err != nil {
-		return nil, GetLabelOutput{}, fmt.Errorf("get label failed: %w", err)
-	}
-
-	return nil, GetLabelOutput{Label: label}, nil
+	return nil, GetLabelOutput{Label: result.(string)}, nil
 }
 
 // WaitUntil tool
@@ -503,26 +400,13 @@ func (s *Server) handleGetBoundingBox(
 	req *mcp.CallToolRequest,
 	input GetBoundingBoxInput,
 ) (*mcp.CallToolResult, GetBoundingBoxOutput, error) {
-	vibe, err := s.session.Vibe(ctx)
+	result, err := s.elementOp(ctx, input.Selector, input.TimeoutMS, func(elem *vibium.Element) (any, error) {
+		return elem.BoundingBox(ctx)
+	})
 	if err != nil {
-		return nil, GetBoundingBoxOutput{}, fmt.Errorf("browser not available: %w", err)
+		return nil, GetBoundingBoxOutput{}, err
 	}
-
-	if input.TimeoutMS == 0 {
-		input.TimeoutMS = 5000
-	}
-	timeout := time.Duration(input.TimeoutMS) * time.Millisecond
-
-	elem, err := vibe.Find(ctx, input.Selector, &vibium.FindOptions{Timeout: timeout})
-	if err != nil {
-		return nil, GetBoundingBoxOutput{}, fmt.Errorf("element not found: %s", input.Selector)
-	}
-
-	box, err := elem.BoundingBox(ctx)
-	if err != nil {
-		return nil, GetBoundingBoxOutput{}, fmt.Errorf("get bounding box failed: %w", err)
-	}
-
+	box := result.(vibium.BoundingBox)
 	return nil, GetBoundingBoxOutput{
 		X:      box.X,
 		Y:      box.Y,
