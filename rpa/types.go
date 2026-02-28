@@ -9,11 +9,11 @@ import (
 type ExecutionStatus string
 
 const (
-	StatusPending  ExecutionStatus = "pending"
-	StatusRunning  ExecutionStatus = "running"
-	StatusSuccess  ExecutionStatus = "success"
-	StatusFailure  ExecutionStatus = "failure"
-	StatusSkipped  ExecutionStatus = "skipped"
+	StatusPending ExecutionStatus = "pending"
+	StatusRunning ExecutionStatus = "running"
+	StatusSuccess ExecutionStatus = "success"
+	StatusFailure ExecutionStatus = "failure"
+	StatusSkipped ExecutionStatus = "skipped"
 )
 
 // String returns the string representation of the status.
