@@ -1,15 +1,17 @@
 name: E2E Tests
 
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+  # E2E tests require the clicker binary which is not yet publicly available.
+  # Only run on workflow_dispatch for now until clicker distribution is set up.
   workflow_dispatch:
     inputs:
       script:
         description: 'Specific script to run (optional)'
         required: false
+        type: string
+      clicker_url:
+        description: 'URL to download clicker binary (required)'
+        required: true
         type: string
 
 env:
@@ -31,13 +33,16 @@ jobs:
           go-version: '1.22'
           cache: true
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
+      - name: Download Clicker
+        run: |
+          curl -L -o clicker "${{ github.event.inputs.clicker_url }}"
+          chmod +x clicker
+          echo "VIBIUM_CLICKER_PATH=$PWD/clicker" >> $GITHUB_ENV
 
-      - name: Install Vibium Clicker
-        run: npm install -g vibium
+      - name: Verify Clicker
+        run: |
+          ./clicker --version || echo "Clicker version check (may not support --version)"
+          echo "Clicker binary ready at: $VIBIUM_CLICKER_PATH"
 
       - name: Build CLI
         run: go build -o vibium ./cmd/vibium
@@ -49,10 +54,14 @@ jobs:
       - name: Run all E2E tests
         if: ${{ github.event.inputs.script == '' }}
         run: |
-          for script in tests/e2e/*.json; do
-            if [ -f "$script" ]; then
-              echo "Running: $script"
-              ./vibium run "$script" --headless
+          for dir in tests/e2e/*/; do
+            if [ -d "$dir" ]; then
+              for script in "$dir"*.json; do
+                if [ -f "$script" ]; then
+                  echo "Running: $script"
+                  ./vibium run "$script" --headless
+                fi
+              done
             fi
           done
 
@@ -61,62 +70,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: screenshots
-          path: |
-            *.png
-            screenshots/
-          retention-days: 7
-
-  e2e-matrix:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    if: ${{ github.event.inputs.script == '' }}
-
-    strategy:
-      fail-fast: false
-      matrix:
-        test:
-          - smoke
-          - auth
-          - navigation
-          - a11y
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: '1.22'
-          cache: true
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Install Vibium Clicker
-        run: npm install -g vibium
-
-      - name: Build CLI
-        run: go build -o vibium ./cmd/vibium
-
-      - name: Run ${{ matrix.test }} tests
-        run: |
-          if [ -d "tests/e2e/${{ matrix.test }}" ]; then
-            for script in tests/e2e/${{ matrix.test }}/*.json; do
-              if [ -f "$script" ]; then
-                echo "Running: $script"
-                ./vibium run "$script" --headless
-              fi
-            done
-          fi
-
-      - name: Upload screenshots on failure
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: screenshots-${{ matrix.test }}
           path: |
             *.png
             screenshots/
