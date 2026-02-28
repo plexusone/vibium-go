@@ -1,0 +1,87 @@
+name: Data Extraction Pipeline
+description: Extract data from multiple pages and save as JSON
+version: "1.0"
+
+browser:
+  headless: true
+  timeout: 30s
+
+variables:
+  baseUrl: https://api.example.com
+  outputDir: ./output
+
+steps:
+  - name: Get initial data via API
+    activity: http.get
+    params:
+      url: ${baseUrl}/products
+      json: true
+    store: products
+
+  - name: Navigate to product listing
+    activity: browser.navigate
+    params:
+      url: ${baseUrl}/products
+
+  - name: Find all product links
+    activity: element.findAll
+    params:
+      selector: ".product-card a"
+    store: productLinks
+
+  - name: Process each product
+    activity: util.log
+    params:
+      message: "Processing products..."
+    forEach:
+      items: productLinks
+      as: link
+      steps:
+        - name: Navigate to product page
+          activity: browser.navigate
+          params:
+            url: ${link.href}
+
+        - name: Get product title
+          activity: element.getText
+          params:
+            selector: "h1.product-title"
+          store: productTitle
+
+        - name: Get product price
+          activity: element.getText
+          params:
+            selector: ".product-price"
+          store: productPrice
+
+        - name: Get product description
+          activity: element.getText
+          params:
+            selector: ".product-description"
+          store: productDescription
+
+        - name: Take screenshot
+          activity: browser.screenshot
+          params:
+            selector: ".product-container"
+          store: productScreenshot
+
+        - name: Log progress
+          activity: util.log
+          params:
+            message: "Processed: ${productTitle}"
+
+  - name: Save extracted data
+    activity: file.write
+    params:
+      path: ${outputDir}/products.json
+      content: ${products}
+      format: json
+
+  - name: Log completion
+    activity: util.log
+    params:
+      message: "Data extraction complete"
+
+onError:
+  screenshot: true

@@ -1,0 +1,78 @@
+name: Form Submission
+description: Fill and submit a web form
+version: "1.0"
+
+browser:
+  headless: false
+  timeout: 30s
+
+variables:
+  baseUrl: https://example.com
+  firstName: John
+  lastName: Doe
+  email: john.doe@example.com
+  company: Acme Inc
+
+steps:
+  - name: Navigate to contact form
+    activity: browser.navigate
+    params:
+      url: ${baseUrl}/contact
+
+  - name: Fill first name
+    activity: browser.fill
+    params:
+      selector: "#firstName"
+      value: ${firstName}
+
+  - name: Fill last name
+    activity: browser.fill
+    params:
+      selector: "#lastName"
+      value: ${lastName}
+
+  - name: Fill email
+    activity: browser.fill
+    params:
+      selector: "#email"
+      value: ${email}
+
+  - name: Fill company
+    activity: browser.fill
+    params:
+      selector: "#company"
+      value: ${company}
+
+  - name: Select country
+    activity: browser.select
+    params:
+      selector: "#country"
+      label: "United States"
+
+  - name: Check terms checkbox
+    activity: browser.check
+    params:
+      selector: "#acceptTerms"
+
+  - name: Submit form
+    activity: browser.click
+    params:
+      selector: "button[type='submit']"
+
+  - name: Wait for confirmation
+    activity: element.waitFor
+    params:
+      selector: ".confirmation-message"
+      state: visible
+      timeout: 10000
+
+  - name: Get confirmation message
+    activity: element.getText
+    params:
+      selector: ".confirmation-message"
+    store: confirmationMessage
+
+  - name: Log result
+    activity: util.log
+    params:
+      message: "Form submitted: ${confirmationMessage}"

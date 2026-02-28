@@ -1,0 +1,123 @@
+name: E2E Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      script:
+        description: 'Specific script to run (optional)'
+        required: false
+        type: string
+
+env:
+  VIBIUM_HEADLESS: "1"
+  VIBIUM_DEBUG: "0"
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+          cache: true
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Vibium Clicker
+        run: npm install -g vibium
+
+      - name: Build CLI
+        run: go build -o vibium ./cmd/vibium
+
+      - name: Run specific script
+        if: ${{ github.event.inputs.script != '' }}
+        run: ./vibium run ${{ github.event.inputs.script }} --headless
+
+      - name: Run all E2E tests
+        if: ${{ github.event.inputs.script == '' }}
+        run: |
+          for script in tests/e2e/*.json; do
+            if [ -f "$script" ]; then
+              echo "Running: $script"
+              ./vibium run "$script" --headless
+            fi
+          done
+
+      - name: Upload screenshots on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots
+          path: |
+            *.png
+            screenshots/
+          retention-days: 7
+
+  e2e-matrix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    if: ${{ github.event.inputs.script == '' }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        test:
+          - smoke
+          - auth
+          - navigation
+          - a11y
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+          cache: true
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Vibium Clicker
+        run: npm install -g vibium
+
+      - name: Build CLI
+        run: go build -o vibium ./cmd/vibium
+
+      - name: Run ${{ matrix.test }} tests
+        run: |
+          if [ -d "tests/e2e/${{ matrix.test }}" ]; then
+            for script in tests/e2e/${{ matrix.test }}/*.json; do
+              if [ -f "$script" ]; then
+                echo "Running: $script"
+                ./vibium run "$script" --headless
+              fi
+            done
+          fi
+
+      - name: Upload screenshots on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots-${{ matrix.test }}
+          path: |
+            *.png
+            screenshots/
+          retention-days: 7

@@ -1,0 +1,294 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/grokify/vibium-go/script/vibium-script.schema.json",
+  "$defs": {
+    "A11yOptions": {
+      "properties": {
+        "standard": {
+          "type": "string",
+          "enum": [
+            "wcag2a",
+            "wcag2aa",
+            "wcag2aaa",
+            "wcag21a",
+            "wcag21aa",
+            "wcag21aaa",
+            "wcag22aa"
+          ],
+          "description": "WCAG standard to check against",
+          "default": "wcag22aa"
+        },
+        "include": {
+          "type": "string",
+          "description": "CSS selector to limit checking scope"
+        },
+        "exclude": {
+          "type": "string",
+          "description": "CSS selector to exclude from checking"
+        },
+        "rules": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "description": "Specific axe-core rule IDs to run"
+        },
+        "disabledRules": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "description": "Rule IDs to skip"
+        },
+        "reportFile": {
+          "type": "string",
+          "description": "File path to save full accessibility report (JSON)"
+        },
+        "failOn": {
+          "type": "string",
+          "enum": [
+            "any",
+            "critical",
+            "serious",
+            "moderate",
+            "minor"
+          ],
+          "description": "Minimum impact level to fail on",
+          "default": "serious"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "Step": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Optional unique identifier for this step"
+        },
+        "name": {
+          "type": "string",
+          "description": "Human-readable description of the step"
+        },
+        "action": {
+          "type": "string",
+          "enum": [
+            "navigate",
+            "go",
+            "back",
+            "forward",
+            "reload",
+            "click",
+            "dblclick",
+            "type",
+            "fill",
+            "clear",
+            "press",
+            "check",
+            "uncheck",
+            "select",
+            "setFiles",
+            "hover",
+            "focus",
+            "scrollIntoView",
+            "dragTo",
+            "tap",
+            "screenshot",
+            "pdf",
+            "eval",
+            "wait",
+            "waitForSelector",
+            "waitForUrl",
+            "waitForLoad",
+            "setViewport",
+            "newPage",
+            "closePage",
+            "keyboardPress",
+            "keyboardType",
+            "mouseClick",
+            "mouseMove",
+            "assertText",
+            "assertElement",
+            "assertValue",
+            "assertVisible",
+            "assertHidden",
+            "assertUrl",
+            "assertTitle",
+            "assertAttribute",
+            "assertAccessibility",
+            "getText",
+            "getValue",
+            "getAttribute",
+            "getUrl",
+            "getTitle"
+          ],
+          "description": "Type of action to perform"
+        },
+        "selector": {
+          "type": "string",
+          "description": "CSS selector for element actions"
+        },
+        "url": {
+          "type": "string",
+          "description": "Target URL for navigation actions"
+        },
+        "value": {
+          "type": "string",
+          "description": "Input value for fill/type/select actions"
+        },
+        "text": {
+          "type": "string",
+          "description": "Alias for value (used in type actions)"
+        },
+        "key": {
+          "type": "string",
+          "description": "Key to press (e.g. Enter or Tab or ArrowDown)"
+        },
+        "script": {
+          "type": "string",
+          "description": "JavaScript code for eval actions"
+        },
+        "file": {
+          "type": "string",
+          "description": "Output file path for screenshot/pdf actions"
+        },
+        "files": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "description": "File paths for file input actions"
+        },
+        "timeout": {
+          "type": "string",
+          "description": "Timeout override for this step"
+        },
+        "duration": {
+          "type": "string",
+          "description": "Duration for wait actions (e.g. 1s or 500ms)"
+        },
+        "fullPage": {
+          "type": "boolean",
+          "description": "Capture full page for screenshots"
+        },
+        "target": {
+          "type": "string",
+          "description": "Destination selector for drag actions"
+        },
+        "x": {
+          "type": "number",
+          "description": "X coordinate for mouse actions"
+        },
+        "y": {
+          "type": "number",
+          "description": "Y coordinate for mouse actions"
+        },
+        "width": {
+          "type": "integer",
+          "description": "Viewport width for setViewport actions"
+        },
+        "height": {
+          "type": "integer",
+          "description": "Viewport height for setViewport actions"
+        },
+        "state": {
+          "type": "string",
+          "enum": [
+            "visible",
+            "hidden",
+            "attached",
+            "detached"
+          ],
+          "description": "Expected state for wait actions"
+        },
+        "pattern": {
+          "type": "string",
+          "description": "URL pattern for waitForUrl actions"
+        },
+        "loadState": {
+          "type": "string",
+          "enum": [
+            "load",
+            "domcontentloaded",
+            "networkidle"
+          ],
+          "description": "Load state for waitForLoad actions"
+        },
+        "expected": {
+          "type": "string",
+          "description": "Expected value for assertion actions"
+        },
+        "attribute": {
+          "type": "string",
+          "description": "Attribute name for getAttribute actions"
+        },
+        "store": {
+          "type": "string",
+          "description": "Variable name to store the result"
+        },
+        "continueOnError": {
+          "type": "boolean",
+          "description": "Continue script execution if this step fails"
+        },
+        "a11y": {
+          "$ref": "#/$defs/A11yOptions",
+          "description": "Accessibility check options for assertAccessibility action"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "action"
+      ]
+    }
+  },
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Human-readable name of the test script"
+    },
+    "description": {
+      "type": "string",
+      "description": "Additional context about what the script tests"
+    },
+    "version": {
+      "type": "integer",
+      "description": "Schema version (default: 1)",
+      "default": 1
+    },
+    "headless": {
+      "type": "boolean",
+      "description": "Run browser in headless mode"
+    },
+    "baseUrl": {
+      "type": "string",
+      "description": "Base URL prepended to relative URLs"
+    },
+    "timeout": {
+      "type": "string",
+      "description": "Default timeout for all steps (e.g. 30s or 1m)"
+    },
+    "variables": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "type": "object",
+      "description": "Reusable values referenced in steps as ${varName}"
+    },
+    "steps": {
+      "items": {
+        "$ref": "#/$defs/Step"
+      },
+      "type": "array",
+      "description": "Ordered list of automation steps"
+    }
+  },
+  "additionalProperties": false,
+  "type": "object",
+  "required": [
+    "name",
+    "steps"
+  ],
+  "title": "Vibium Test Script",
+  "description": "Schema for Vibium browser automation test scripts"
+}

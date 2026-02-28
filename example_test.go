@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/grokify/vibium-go"
+	"github.com/agentplexus/vibium-go"
 )
 
 func Example() {

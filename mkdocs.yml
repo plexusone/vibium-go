@@ -1,0 +1,71 @@
+site_name: Vibium Go
+site_description: Go client and tooling for Vibium browser automation
+site_url: https://grokify.github.io/vibium-go/
+repo_url: https://github.com/grokify/vibium-go
+repo_name: grokify/vibium-go
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - content.code.copy
+    - content.tabs.link
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - admonition
+  - pymdownx.details
+  - tables
+  - toc:
+      permalink: true
+
+nav:
+  - Home: index.md
+  - Getting Started:
+    - Installation: getting-started/installation.md
+    - Quick Start: getting-started/quickstart.md
+    - Prerequisites: getting-started/prerequisites.md
+  - User Guide:
+    - Go Client SDK: guide/sdk.md
+    - MCP Server: guide/mcp-server.md
+    - CLI Reference: guide/cli.md
+    - Script Runner: guide/scripts.md
+    - Session Recording: guide/recording.md
+    - CI/CD Integration: guide/cicd.md
+  - Reference:
+    - API Reference: reference/api.md
+    - MCP Tools: reference/mcp-tools.md
+    - Script Schema: reference/script-schema.md
+    - Error Types: reference/errors.md
+  - Architecture:
+    - Overview: architecture/overview.md
+    - Product Requirements: architecture/prd.md
+    - Technical Design: architecture/trd.md
+  - Development:
+    - Contributing: development/contributing.md
+    - Testing: development/testing.md
+    - Changelog: development/changelog.md
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/grokify/vibium-go

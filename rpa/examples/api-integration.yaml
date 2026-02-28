@@ -1,0 +1,72 @@
+name: API Integration Workflow
+description: Demonstrates HTTP activities for API integration
+version: "1.0"
+
+variables:
+  apiUrl: https://jsonplaceholder.typicode.com
+  outputDir: ./output
+
+steps:
+  - name: Fetch users from API
+    activity: http.get
+    params:
+      url: ${apiUrl}/users
+      json: true
+    store: users
+
+  - name: Log user count
+    activity: util.log
+    params:
+      message: "Found users"
+
+  - name: Create a new post
+    activity: http.post
+    params:
+      url: ${apiUrl}/posts
+      body:
+        title: "Test Post"
+        body: "This is a test post created by vibium-rpa"
+        userId: 1
+      json: true
+    store: newPost
+
+  - name: Verify post was created
+    activity: util.assert
+    params:
+      condition: ${newPost.body.id}
+      message: "Post creation failed"
+
+  - name: Log created post ID
+    activity: util.log
+    params:
+      message: "Created post with ID: ${newPost.body.id}"
+
+  - name: Download a file
+    activity: http.download
+    params:
+      url: https://via.placeholder.com/150
+      path: ${outputDir}/placeholder.png
+
+  - name: Verify file exists
+    activity: file.exists
+    params:
+      path: ${outputDir}/placeholder.png
+    store: fileInfo
+
+  - name: Assert file downloaded
+    activity: util.assert
+    params:
+      condition: ${fileInfo.exists}
+      message: "File download failed"
+
+  - name: Save users to file
+    activity: file.write
+    params:
+      path: ${outputDir}/users.json
+      content: ${users.body}
+      format: json
+
+  - name: Log completion
+    activity: util.log
+    params:
+      message: "API integration workflow complete"

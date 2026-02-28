@@ -1,0 +1,61 @@
+{
+  "name": "Logout Test",
+  "description": "Verify user can log out",
+  "version": 1,
+  "timeout": "60s",
+  "variables": {
+    "baseUrl": "https://the-internet.herokuapp.com",
+    "username": "tomsmith",
+    "password": "SuperSecretPassword!"
+  },
+  "steps": [
+    {
+      "action": "navigate",
+      "url": "${baseUrl}/login",
+      "name": "Navigate to login page"
+    },
+    {
+      "action": "fill",
+      "selector": "#username",
+      "value": "${username}",
+      "name": "Enter username"
+    },
+    {
+      "action": "fill",
+      "selector": "#password",
+      "value": "${password}",
+      "name": "Enter password"
+    },
+    {
+      "action": "click",
+      "selector": "button[type='submit']",
+      "name": "Click login"
+    },
+    {
+      "action": "waitForUrl",
+      "pattern": "/secure",
+      "name": "Wait for login"
+    },
+    {
+      "action": "click",
+      "selector": "a[href='/logout']",
+      "name": "Click logout"
+    },
+    {
+      "action": "waitForUrl",
+      "pattern": "/login",
+      "name": "Wait for redirect to login"
+    },
+    {
+      "action": "assertText",
+      "selector": ".flash.success",
+      "expected": "You logged out of the secure area!",
+      "name": "Verify logout message"
+    },
+    {
+      "action": "screenshot",
+      "file": "screenshots/logout-success.png",
+      "name": "Screenshot after logout"
+    }
+  ]
+}

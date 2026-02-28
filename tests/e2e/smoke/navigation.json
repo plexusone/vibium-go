@@ -1,0 +1,33 @@
+{
+  "name": "Navigation Test",
+  "description": "Verify link navigation works",
+  "version": 1,
+  "timeout": "30s",
+  "steps": [
+    {
+      "action": "navigate",
+      "url": "https://example.com",
+      "name": "Navigate to homepage"
+    },
+    {
+      "action": "assertElement",
+      "selector": "a",
+      "name": "Verify link exists"
+    },
+    {
+      "action": "click",
+      "selector": "a",
+      "name": "Click link"
+    },
+    {
+      "action": "waitForLoad",
+      "loadState": "domcontentloaded",
+      "name": "Wait for page load"
+    },
+    {
+      "action": "screenshot",
+      "file": "screenshots/navigation-result.png",
+      "name": "Capture result"
+    }
+  ]
+}

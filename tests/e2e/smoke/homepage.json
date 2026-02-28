@@ -1,0 +1,40 @@
+{
+  "name": "Homepage Smoke Test",
+  "description": "Verify homepage loads correctly",
+  "version": 1,
+  "timeout": "30s",
+  "steps": [
+    {
+      "action": "navigate",
+      "url": "https://example.com",
+      "name": "Navigate to homepage"
+    },
+    {
+      "action": "assertTitle",
+      "expected": "Example Domain",
+      "name": "Verify page title"
+    },
+    {
+      "action": "assertElement",
+      "selector": "h1",
+      "name": "Verify heading exists"
+    },
+    {
+      "action": "getText",
+      "selector": "h1",
+      "store": "heading",
+      "name": "Get heading text"
+    },
+    {
+      "action": "assertText",
+      "selector": "h1",
+      "expected": "Example Domain",
+      "name": "Verify heading content"
+    },
+    {
+      "action": "screenshot",
+      "file": "screenshots/homepage.png",
+      "name": "Capture screenshot"
+    }
+  ]
+}

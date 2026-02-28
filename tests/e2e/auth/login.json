@@ -1,0 +1,61 @@
+{
+  "name": "Login Test",
+  "description": "Verify user can log in with valid credentials",
+  "version": 1,
+  "timeout": "60s",
+  "variables": {
+    "baseUrl": "https://the-internet.herokuapp.com",
+    "username": "tomsmith",
+    "password": "SuperSecretPassword!"
+  },
+  "steps": [
+    {
+      "action": "navigate",
+      "url": "${baseUrl}/login",
+      "name": "Navigate to login page"
+    },
+    {
+      "action": "assertElement",
+      "selector": "#username",
+      "name": "Verify username field exists"
+    },
+    {
+      "action": "fill",
+      "selector": "#username",
+      "value": "${username}",
+      "name": "Enter username"
+    },
+    {
+      "action": "fill",
+      "selector": "#password",
+      "value": "${password}",
+      "name": "Enter password"
+    },
+    {
+      "action": "screenshot",
+      "file": "screenshots/login-filled.png",
+      "name": "Screenshot before submit"
+    },
+    {
+      "action": "click",
+      "selector": "button[type='submit']",
+      "name": "Click login button"
+    },
+    {
+      "action": "waitForUrl",
+      "pattern": "/secure",
+      "name": "Wait for redirect"
+    },
+    {
+      "action": "assertText",
+      "selector": ".flash.success",
+      "expected": "You logged into a secure area!",
+      "name": "Verify success message"
+    },
+    {
+      "action": "screenshot",
+      "file": "screenshots/login-success.png",
+      "name": "Screenshot after login"
+    }
+  ]
+}

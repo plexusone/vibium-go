@@ -10,7 +10,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/grokify/vibium-go"
+	"github.com/agentplexus/vibium-go"
 )
 
 // testTimeout is the default timeout for test operations.

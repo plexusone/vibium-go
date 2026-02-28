@@ -1,0 +1,73 @@
+name: Login and Scrape Data
+description: Log into a portal and extract report data
+version: "1.0"
+
+browser:
+  headless: true
+  timeout: 30s
+
+variables:
+  username: ${env.PORTAL_USER}
+  password: ${env.PORTAL_PASS}
+  outputFile: data/report.json
+
+steps:
+  - name: Navigate to login page
+    activity: browser.navigate
+    params:
+      url: https://portal.example.com/login
+
+  - name: Fill username
+    activity: browser.fill
+    params:
+      selector: "#username"
+      value: ${username}
+
+  - name: Fill password
+    activity: browser.fill
+    params:
+      selector: "#password"
+      value: ${password}
+
+  - name: Click login
+    activity: browser.click
+    params:
+      selector: "#login-btn"
+
+  - name: Wait for dashboard
+    activity: element.waitFor
+    params:
+      selector: ".dashboard"
+      state: visible
+      timeout: 10000
+
+  - name: Navigate to reports
+    activity: browser.click
+    params:
+      selector: "[data-nav='reports']"
+
+  - name: Extract table data
+    activity: data.scrapeTable
+    params:
+      selector: "table.report-data"
+    store: reportData
+
+  - name: Save to file
+    activity: file.write
+    params:
+      path: ${outputFile}
+      content: ${reportData}
+      format: json
+
+  - name: Log completion
+    activity: util.log
+    params:
+      message: "Extracted data successfully"
+
+onError:
+  screenshot: true
+  steps:
+    - activity: util.log
+      params:
+        level: error
+        message: "Workflow failed"

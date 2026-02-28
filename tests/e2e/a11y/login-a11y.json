@@ -1,0 +1,36 @@
+{
+  "name": "Login Page Accessibility Test",
+  "description": "Check login form for WCAG 2.2 AA compliance",
+  "version": 1,
+  "timeout": "120s",
+  "variables": {
+    "baseUrl": "https://the-internet.herokuapp.com"
+  },
+  "steps": [
+    {
+      "action": "navigate",
+      "url": "${baseUrl}/login",
+      "name": "Navigate to login page"
+    },
+    {
+      "action": "waitForSelector",
+      "selector": "#username",
+      "name": "Wait for login form to load"
+    },
+    {
+      "action": "assertAccessibility",
+      "name": "Check login form accessibility",
+      "a11y": {
+        "standard": "wcag22aa",
+        "include": "#login",
+        "failOn": "serious",
+        "reportFile": "screenshots/login-a11y-report.json"
+      }
+    },
+    {
+      "action": "screenshot",
+      "file": "screenshots/login-a11y.png",
+      "name": "Screenshot of login page"
+    }
+  ]
+}

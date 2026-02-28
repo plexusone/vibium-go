@@ -1,0 +1,35 @@
+{
+  "name": "WCAG 2.2 AA Accessibility Test",
+  "description": "Check page for WCAG 2.2 Level AA compliance",
+  "version": 1,
+  "timeout": "120s",
+  "variables": {
+    "baseUrl": "https://example.com"
+  },
+  "steps": [
+    {
+      "action": "navigate",
+      "url": "${baseUrl}",
+      "name": "Navigate to target page"
+    },
+    {
+      "action": "waitForLoad",
+      "loadState": "networkidle",
+      "name": "Wait for page to fully load"
+    },
+    {
+      "action": "assertAccessibility",
+      "name": "Check WCAG 2.2 AA compliance",
+      "a11y": {
+        "standard": "wcag22aa",
+        "failOn": "serious",
+        "reportFile": "a11y-report.json"
+      }
+    },
+    {
+      "action": "screenshot",
+      "file": "screenshots/a11y-test.png",
+      "name": "Screenshot after accessibility check"
+    }
+  ]
+}

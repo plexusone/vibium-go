@@ -1,38 +1,42 @@
-# Vibium Go Client SDK
+# Vibium Go
 
 [![Build Status][build-status-svg]][build-status-url]
-[![Lint Status][lint-status-svg]][lint-status-url]
 [![Go Report Card][goreport-svg]][goreport-url]
 [![Docs][docs-godoc-svg]][docs-godoc-url]
 [![License][license-svg]][license-url]
 
-A Go client for the [Vibium](https://github.com/VibiumDev/vibium) browser automation platform.
+Go client and tooling for the [Vibium](https://github.com/VibiumDev/vibium) browser automation platform.
 
-Vibium is a browser automation platform built for AI agents that uses the WebDriver BiDi protocol for bidirectional communication with the browser.
+Vibium uses WebDriver BiDi for real-time bidirectional communication with browsers, making it ideal for AI-assisted automation.
 
-## Feature Parity
+## Overview
 
-This Go client has full feature parity with the official JavaScript and Python clients.
+This project provides:
 
-| Feature | JS | Python | Go |
-|---------|:--:|:------:|:--:|
-| `browser.Launch()` | ✅ | ✅ | ✅ |
-| `vibe.Go(url)` | ✅ | ✅ | ✅ |
-| `vibe.Screenshot()` | ✅ | ✅ | ✅ |
-| `vibe.Find(selector)` | ✅ | ✅ | ✅ |
-| `vibe.FindAll(selector)` | ❌ | ❌ | ✅ |
-| `vibe.Evaluate(script)` | ✅ | ✅ | ✅ |
-| `vibe.Reload()` | ❌ | ❌ | ✅ |
-| `vibe.Back()` / `vibe.Forward()` | ❌ | ❌ | ✅ |
-| `vibe.Quit()` | ✅ | ✅ | ✅ |
-| `element.Click()` | ✅ | ✅ | ✅ |
-| `element.Type(text)` | ✅ | ✅ | ✅ |
-| `element.Text()` | ✅ | ✅ | ✅ |
-| `element.GetAttribute()` | ✅ | ✅ | ✅ |
-| `element.BoundingBox()` | ✅ | ✅ | ✅ |
-| Browsing context management | ✅ | ✅ | ✅ |
-| Actionability waits | ✅ | ✅ | ✅ |
-| Debug logging | ✅ | ❌ | ✅ |
+| Component | Description | Origin |
+|-----------|-------------|--------|
+| **Go Client SDK** | Programmatic browser control | Feature parity with JS/Python |
+| **MCP Server** | 75+ tools for AI assistants | Go-specific |
+| **CLI** | Command-line browser automation | Go-specific |
+| **Script Runner** | Deterministic test execution | Go-specific |
+| **Session Recording** | Capture actions as replayable scripts | Go-specific |
+
+## Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                         vibium-go                                │
+├─────────────┬─────────────┬─────────────┬──────────────────────┤
+│  Go Client  │ MCP Server  │    CLI      │   Script Runner      │
+│    SDK      │  (75 tools) │  (vibium)   │   (vibium run)       │
+├─────────────┴─────────────┴─────────────┴──────────────────────┤
+│                    WebDriver BiDi Protocol                       │
+├─────────────────────────────────────────────────────────────────┤
+│                   Vibium Clicker (upstream)                      │
+├─────────────────────────────────────────────────────────────────┤
+│                    Chrome / Chromium                             │
+└─────────────────────────────────────────────────────────────────┘
+```
 
 ## Installation
 
@@ -40,17 +44,19 @@ This Go client has full feature parity with the official JavaScript and Python c
 go get github.com/grokify/vibium-go
 ```
 
-## Prerequisites
+### Prerequisites
 
-This client requires the Vibium clicker binary. Install it via npm:
+Install the Vibium clicker binary:
 
 ```bash
 npm install -g vibium
 ```
 
-Or set the `VIBIUM_CLICKER_PATH` environment variable to point to the binary.
+Or set `VIBIUM_CLICKER_PATH` to point to the binary.
 
 ## Quick Start
+
+### Go Client SDK
 
 ```go
 package main
@@ -59,7 +65,7 @@ import (
     "context"
     "log"
 
-    "github.com/grokify/vibium-go"
+    vibium "github.com/grokify/vibium-go"
 )
 
 func main() {
@@ -70,249 +76,194 @@ func main() {
     if err != nil {
         log.Fatal(err)
     }
-    defer func() { _ = vibe.Quit(ctx) }()
+    defer vibe.Quit(ctx)
 
-    // Navigate to a page
-    if err := vibe.Go(ctx, "https://example.com"); err != nil {
-        log.Fatal(err)
-    }
+    // Navigate and interact
+    vibe.Go(ctx, "https://example.com")
 
-    // Find and click a link
-    link, err := vibe.Find(ctx, "a", nil)
-    if err != nil {
-        log.Fatal(err)
-    }
-
-    if err := link.Click(ctx, nil); err != nil {
-        log.Fatal(err)
-    }
+    link, _ := vibe.Find(ctx, "a", nil)
+    link.Click(ctx, nil)
 }
 ```
+
+### MCP Server
+
+Start the MCP server for AI assistant integration:
+
+```bash
+vibium mcp --headless
+```
+
+Configure in Claude Desktop (`claude_desktop_config.json`):
+
+```json
+{
+  "mcpServers": {
+    "vibium": {
+      "command": "vibium",
+      "args": ["mcp", "--headless"]
+    }
+  }
+}
+```
+
+### CLI Commands
+
+```bash
+# Launch browser and run commands
+vibium launch --headless
+vibium go https://example.com
+vibium fill "#email" "user@example.com"
+vibium click "#submit"
+vibium screenshot result.png
+vibium quit
+```
+
+### Script Runner
+
+Execute deterministic test scripts:
+
+```bash
+vibium run test.json
+```
+
+Script format (JSON or YAML):
+
+```json
+{
+  "name": "Login Test",
+  "steps": [
+    {"action": "navigate", "url": "https://example.com/login"},
+    {"action": "fill", "selector": "#email", "value": "user@example.com"},
+    {"action": "fill", "selector": "#password", "value": "secret"},
+    {"action": "click", "selector": "#submit"},
+    {"action": "assertUrl", "expected": "https://example.com/dashboard"}
+  ]
+}
+```
+
+## Feature Comparison
+
+### Client SDK (Parity with JS/Python)
+
+| Feature | JS | Python | Go |
+|---------|:--:|:------:|:--:|
+| Browser launch/quit | ✅ | ✅ | ✅ |
+| Navigation (go, back, forward, reload) | ✅ | ✅ | ✅ |
+| Element finding (CSS selectors) | ✅ | ✅ | ✅ |
+| Click, type, fill | ✅ | ✅ | ✅ |
+| Screenshots | ✅ | ✅ | ✅ |
+| JavaScript evaluation | ✅ | ✅ | ✅ |
+| Keyboard/mouse controllers | ✅ | ✅ | ✅ |
+| Browser context management | ✅ | ✅ | ✅ |
+| Network interception | ✅ | ✅ | ✅ |
+| Tracing | ✅ | ✅ | ✅ |
+| Clock control | ✅ | ✅ | ✅ |
+
+### Go-Specific Features
+
+| Feature | Description |
+|---------|-------------|
+| **MCP Server** | 75+ tools for AI-assisted automation |
+| **CLI** | `vibium` command with subcommands |
+| **Script Runner** | Execute JSON/YAML test scripts |
+| **Session Recording** | Capture MCP actions as replayable scripts |
+| **JSON Schema** | Validated script format |
+| **Test Reporting** | Structured test results with diagnostics |
+
+## MCP Server Tools
+
+The MCP server provides 75+ tools organized by category:
+
+| Category | Tools |
+|----------|-------|
+| Browser | `browser_launch`, `browser_quit` |
+| Navigation | `navigate`, `back`, `forward`, `reload` |
+| Interactions | `click`, `dblclick`, `type`, `fill`, `clear`, `press` |
+| Forms | `check`, `uncheck`, `select_option`, `set_files` |
+| Element State | `get_text`, `get_value`, `is_visible`, `is_enabled` |
+| Page State | `get_title`, `get_url`, `get_content`, `screenshot` |
+| Waiting | `wait_until`, `wait_for_url`, `wait_for_load` |
+| Input | `keyboard_*`, `mouse_*`, `touch_*` |
+| Recording | `start_recording`, `stop_recording`, `export_script` |
+| Assertions | `assert_text`, `assert_element`, `assert_url` |
+
+## Session Recording Workflow
+
+Convert natural language test plans into deterministic scripts:
+
+```
+┌──────────────────┐     ┌──────────────────┐     ┌──────────────────┐
+│  Markdown Test   │     │   LLM + MCP      │     │   JSON Script    │
+│  Plan (English)  │ ──▶ │   (exploration)  │ ──▶ │ (deterministic)  │
+└──────────────────┘     └──────────────────┘     └──────────────────┘
+```
+
+1. Write test plan in Markdown
+2. LLM executes via MCP with `start_recording`
+3. LLM explores, finds selectors, handles edge cases
+4. Export with `export_script` to get JSON
+5. Run deterministically with `vibium run`
 
 ## API Reference
 
-### Browser Control
+See [pkg.go.dev](https://pkg.go.dev/github.com/grokify/vibium-go) for full API documentation.
+
+### Key Types
 
 ```go
-// Launch with default options
+// Launch browser
 vibe, err := vibium.Launch(ctx)
-
-// Launch headless
 vibe, err := vibium.LaunchHeadless(ctx)
 
-// Launch with custom options
-vibe, err := vibium.Browser.Launch(ctx, &vibium.LaunchOptions{
-    Headless:       true,
-    Port:           9515,
-    ExecutablePath: "/path/to/clicker",
-})
-```
+// Navigation
+vibe.Go(ctx, url)
+vibe.Back(ctx)
+vibe.Forward(ctx)
+vibe.Reload(ctx)
 
-### Navigation
+// Finding elements
+elem, err := vibe.Find(ctx, selector, &vibium.FindOptions{})
+elems, err := vibe.FindAll(ctx, selector)
 
-```go
-// Navigate to URL
-err := vibe.Go(ctx, "https://example.com")
+// Element interactions
+elem.Click(ctx, nil)
+elem.Fill(ctx, value, nil)
+elem.Type(ctx, text, nil)
 
-// Get current URL
-url, err := vibe.URL(ctx)
+// Input controllers
+vibe.Keyboard().Press(ctx, "Enter")
+vibe.Mouse().Click(ctx, x, y)
 
-// Get page title
-title, err := vibe.Title(ctx)
-
-// Reload current page
-err := vibe.Reload(ctx)
-
-// Navigate back in history
-err := vibe.Back(ctx)
-
-// Navigate forward in history
-err := vibe.Forward(ctx)
-
-// Wait for navigation to complete
-err := vibe.WaitForNavigation(ctx, 30*time.Second)
-```
-
-### Finding Elements
-
-```go
-// Find element by CSS selector
-elem, err := vibe.Find(ctx, "button.submit", nil)
-
-// Find with custom timeout
-elem, err := vibe.Find(ctx, "button.submit", &vibium.FindOptions{
-    Timeout: 10 * time.Second,
-})
-
-// Find all matching elements
-elements, err := vibe.FindAll(ctx, "li.item")
-for _, elem := range elements {
-    text, _ := elem.Text(ctx)
-    fmt.Println(text)
-}
-
-// Must find (panics if not found)
-elem := vibe.MustFind(ctx, "button.submit")
-```
-
-### Element Interaction
-
-```go
-// Click element (waits for actionability)
-err := elem.Click(ctx, nil)
-
-// Type text into element (waits for editability)
-err := elem.Type(ctx, "Hello, World!", nil)
-
-// Get element text content
-text, err := elem.Text(ctx)
-
-// Get element attribute
-href, err := elem.GetAttribute(ctx, "href")
-
-// Get bounding box
-box, err := elem.BoundingBox(ctx)
-// box.X, box.Y, box.Width, box.Height
-
-// Get element info
-info := elem.Info()
-// info.Tag, info.Text, info.Box
-
-// Get element center point
-x, y := elem.Center()
-```
-
-### Screenshots
-
-```go
-// Capture screenshot as PNG data
+// Capture
 data, err := vibe.Screenshot(ctx)
-
-// Save to file
-os.WriteFile("screenshot.png", data, 0644)
-```
-
-### JavaScript Evaluation
-
-```go
-// Execute JavaScript
-result, err := vibe.Evaluate(ctx, "return document.title")
-```
-
-### Cleanup
-
-```go
-// Close browser and cleanup
-err := vibe.Quit(ctx)
-
-// Check if closed
-closed := vibe.IsClosed()
-```
-
-## Actionability
-
-The client automatically waits for elements to be actionable before performing actions:
-
-- **Click**: Waits for element to be visible, stable, receive events, and enabled
-- **Type**: Same as click, plus waits for element to be editable
-
-Default timeout is 30 seconds, configurable via `ActionOptions`:
-
-```go
-err := elem.Click(ctx, &vibium.ActionOptions{
-    Timeout: 10 * time.Second,
-})
-```
-
-## Error Types
-
-```go
-// Connection failure
-vibium.ErrConnectionFailed
-vibium.ConnectionError{URL, Cause}
-
-// Element not found
-vibium.ErrElementNotFound
-vibium.ElementNotFoundError{Selector}
-
-// Timeout
-vibium.ErrTimeout
-vibium.TimeoutError{Selector, Timeout, Reason}
-
-// Browser crashed
-vibium.ErrBrowserCrashed
-vibium.BrowserCrashedError{ExitCode, Output}
-
-// Clicker binary not found
-vibium.ErrClickerNotFound
-
-// Connection closed
-vibium.ErrConnectionClosed
-
-// BiDi protocol error
-vibium.BiDiError{ErrorType, Message}
-```
-
-## Debug Logging
-
-Enable debug logging by setting the `VIBIUM_DEBUG` environment variable:
-
-```bash
-VIBIUM_DEBUG=1 go run main.go
-```
-
-Debug output is written to stderr in JSON format using Go's `slog` package.
-
-You can also use the logger programmatically:
-
-```go
-// Check if debug mode is enabled
-if vibium.Debug() {
-    // ...
-}
-
-// Create a debug logger
-logger := vibium.NewDebugLogger()
-
-// Add logger to context
-ctx = vibium.ContextWithLogger(ctx, logger)
-
-// Retrieve logger from context
-logger = vibium.LoggerFromContext(ctx)
 ```
 
 ## Testing
 
-### Unit Tests
-
-Run unit tests (no browser required):
-
 ```bash
+# Unit tests
 go test -v ./...
-```
 
-### Integration Tests
-
-Integration tests run against live websites and require the clicker binary.
-
-```bash
-# Run all integration tests (visible browser)
+# Integration tests (requires clicker)
 go test -tags=integration -v ./integration/...
 
-# Run in headless mode (for CI)
+# Headless mode
 VIBIUM_HEADLESS=1 go test -tags=integration -v ./integration/...
-
-# Run specific site tests
-go test -tags=integration -v ./integration/... -run TestExampleCom
-go test -tags=integration -v ./integration/... -run TestTheInternet
 ```
 
-**Test sites:**
+## Debug Logging
 
-| Site | Description |
-|------|-------------|
-| `example.com` | Simple smoke tests |
-| `the-internet.herokuapp.com` | Interactive UI patterns |
+```bash
+VIBIUM_DEBUG=1 vibium mcp
+```
+
+## Related Projects
+
+- [Vibium](https://github.com/VibiumDev/vibium) - Upstream platform
+- [vibium-wcag](https://github.com/agentplexus/vibium-wcag) - WCAG 2.2 accessibility testing
+- [omnillm](https://github.com/agentplexus/omnillm) - Unified LLM client
+- [WebDriver BiDi](https://w3c.github.io/webdriver-bidi/) - Protocol specification
 
 ## License
 
@@ -320,13 +271,9 @@ MIT
 
  [build-status-svg]: https://github.com/grokify/vibium-go/actions/workflows/ci.yaml/badge.svg?branch=main
  [build-status-url]: https://github.com/grokify/vibium-go/actions/workflows/ci.yaml
- [lint-status-svg]: https://github.com/grokify/vibium-go/actions/workflows/lint.yaml/badge.svg?branch=main
- [lint-status-url]: https://github.com/grokify/vibium-go/actions/workflows/lint.yaml
  [goreport-svg]: https://goreportcard.com/badge/github.com/grokify/vibium-go
  [goreport-url]: https://goreportcard.com/report/github.com/grokify/vibium-go
  [docs-godoc-svg]: https://pkg.go.dev/badge/github.com/grokify/vibium-go
  [docs-godoc-url]: https://pkg.go.dev/github.com/grokify/vibium-go
  [license-svg]: https://img.shields.io/badge/license-MIT-blue.svg
  [license-url]: https://github.com/grokify/vibium-go/blob/master/LICENSE
- [used-by-svg]: https://sourcegraph.com/github.com/grokify/vibium-go/-/badge.svg
- [used-by-url]: https://sourcegraph.com/github.com/grokify/vibium-go?badge
