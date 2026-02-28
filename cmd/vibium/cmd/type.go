@@ -1,3 +1,4 @@
+//nolint:dupl // type and fill are separate commands with different semantics
 package cmd
 
 import (

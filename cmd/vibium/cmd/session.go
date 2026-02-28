@@ -40,6 +40,8 @@ func saveSession(info *SessionInfo) error {
 }
 
 // loadSession loads session info from disk
+//
+//nolint:unused // scaffolding for future session reconnection feature
 func loadSession() (*SessionInfo, error) {
 	path := getSessionPath()
 
@@ -72,7 +74,9 @@ func clearSession() error {
 var globalVibe *vibium.Vibe
 
 // getVibe returns a connected Vibe instance, launching if necessary
-func getVibe(ctx context.Context) (*vibium.Vibe, error) {
+//
+//nolint:unused // scaffolding for future session reconnection feature
+func getVibe(_ context.Context) (*vibium.Vibe, error) {
 	if globalVibe != nil && !globalVibe.IsClosed() {
 		return globalVibe, nil
 	}
@@ -129,7 +133,7 @@ func quitBrowser(ctx context.Context) error {
 }
 
 // mustGetVibe returns a Vibe or exits with an error
-func mustGetVibe(ctx context.Context) *vibium.Vibe {
+func mustGetVibe(_ context.Context) *vibium.Vibe {
 	if globalVibe != nil && !globalVibe.IsClosed() {
 		return globalVibe
 	}

@@ -1,3 +1,4 @@
+//nolint:gosec // G704: HTTP activities are designed to make requests to user-specified URLs in RPA workflows
 package activity
 
 import (

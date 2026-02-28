@@ -33,6 +33,7 @@ func findClickerBinary(customPath string) (string, error) {
 
 	// 2. Check VIBIUM_CLICKER_PATH environment variable
 	if envPath := os.Getenv("VIBIUM_CLICKER_PATH"); envPath != "" {
+		//nolint:gosec // G703: envPath is trusted user configuration from environment
 		if _, err := os.Stat(envPath); err == nil {
 			return envPath, nil
 		}

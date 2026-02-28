@@ -1,3 +1,4 @@
+//nolint:dupl // form handlers have similar patterns with different actions and reporting
 package mcp
 
 import (

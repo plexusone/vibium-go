@@ -88,6 +88,7 @@ func (a *FileWriteActivity) Execute(ctx context.Context, params map[string]any, 
 	}
 
 	// Write file
+	//nolint:gosec // G115: file modes are small controlled values from workflow definitions
 	mode := os.FileMode(GetIntDefault(params, "mode", 0644))
 	if GetBool(params, "append") {
 		f, err := os.OpenFile(path, os.O_APPEND|os.O_CREATE|os.O_WRONLY, mode)
