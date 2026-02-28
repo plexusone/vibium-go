@@ -1,20 +1,20 @@
 {
   "irVersion": "1.0",
   "project": "vibium-go",
-  "repository": "https://github.com/agentplexus/vibium-go",
+  "repository": "https://github.com/plexusone/vibium-go",
   "versioning": "semver",
   "commitConvention": "conventional",
-  "maintainers": ["agentplexus"],
+  "maintainers": ["plexusone"],
   "releases": [
     {
       "version": "v0.2.0",
       "date": "2026-02-28",
       "highlights": [
-        { "description": "Repository migration from `grokify/vibium-go` to `agentplexus/vibium-go`" },
+        { "description": "Repository migration from `grokify/vibium-go` to `plexusone/vibium-go`" },
         { "description": "Code quality improvements and lint fixes" }
       ],
       "breaking": [
-        { "description": "Module path changed from `github.com/grokify/vibium-go` to `github.com/agentplexus/vibium-go`", "commit": "99bb6f2" }
+        { "description": "Module path changed from `github.com/grokify/vibium-go` to `github.com/plexusone/vibium-go`", "commit": "99bb6f2" }
       ],
       "changed": [
         { "description": "Reduced duplication in MCP element handlers with `elementOp` helper function", "commit": "42d1066" }

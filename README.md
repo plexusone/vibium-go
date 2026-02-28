@@ -41,7 +41,7 @@ This project provides:
 ## Installation
 
 ```bash
-go get github.com/grokify/vibium-go
+go get github.com/plexusone/vibium-go
 ```
 
 ### Prerequisites
@@ -65,7 +65,7 @@ import (
     "context"
     "log"
 
-    vibium "github.com/grokify/vibium-go"
+    vibium "github.com/plexusone/vibium-go"
 )
 
 func main() {
@@ -207,7 +207,7 @@ Convert natural language test plans into deterministic scripts:
 
 ## API Reference
 
-See [pkg.go.dev](https://pkg.go.dev/github.com/grokify/vibium-go) for full API documentation.
+See [pkg.go.dev](https://pkg.go.dev/github.com/plexusone/vibium-go) for full API documentation.
 
 ### Key Types
 
@@ -269,11 +269,11 @@ VIBIUM_DEBUG=1 vibium mcp
 
 MIT
 
- [build-status-svg]: https://github.com/grokify/vibium-go/actions/workflows/ci.yaml/badge.svg?branch=main
- [build-status-url]: https://github.com/grokify/vibium-go/actions/workflows/ci.yaml
- [goreport-svg]: https://goreportcard.com/badge/github.com/grokify/vibium-go
- [goreport-url]: https://goreportcard.com/report/github.com/grokify/vibium-go
- [docs-godoc-svg]: https://pkg.go.dev/badge/github.com/grokify/vibium-go
- [docs-godoc-url]: https://pkg.go.dev/github.com/grokify/vibium-go
+ [build-status-svg]: https://github.com/plexusone/vibium-go/actions/workflows/ci.yaml/badge.svg?branch=main
+ [build-status-url]: https://github.com/plexusone/vibium-go/actions/workflows/ci.yaml
+ [goreport-svg]: https://goreportcard.com/badge/github.com/plexusone/vibium-go
+ [goreport-url]: https://goreportcard.com/report/github.com/plexusone/vibium-go
+ [docs-godoc-svg]: https://pkg.go.dev/badge/github.com/plexusone/vibium-go
+ [docs-godoc-url]: https://pkg.go.dev/github.com/plexusone/vibium-go
  [license-svg]: https://img.shields.io/badge/license-MIT-blue.svg
- [license-url]: https://github.com/grokify/vibium-go/blob/master/LICENSE
+ [license-url]: https://github.com/plexusone/vibium-go/blob/master/LICENSE

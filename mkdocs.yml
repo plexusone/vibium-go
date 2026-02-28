@@ -1,8 +1,8 @@
 site_name: Vibium Go
 site_description: Go client and tooling for Vibium browser automation
-site_url: https://agentplexus.github.io/vibium-go/
-repo_url: https://github.com/agentplexus/vibium-go
-repo_name: agentplexus/vibium-go
+site_url: https://plexusone.github.io/vibium-go/
+repo_url: https://github.com/plexusone/vibium-go
+repo_name: plexusone/vibium-go
 
 theme:
   name: material
@@ -71,4 +71,4 @@ nav:
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/agentplexus/vibium-go
+      link: https://github.com/plexusone/vibium-go
