@@ -25,8 +25,14 @@
       "version": "v0.2.0",
       "date": "2026-02-28",
       "highlights": [
+        { "description": "RPA workflow engine for YAML-based browser automation scripts" },
         { "description": "Repository migration from `grokify/vibium-go` to `plexusone/vibium-go`" },
         { "description": "Code quality improvements and lint fixes" }
+      ],
+      "added": [
+        { "description": "RPA workflow engine with YAML script execution, variable interpolation, and conditional logic", "commit": "99bb6f2" },
+        { "description": "Activity registry with browser, element, form, and data activities", "commit": "99bb6f2" },
+        { "description": "`vibium-rpa` CLI for running and validating RPA workflows", "commit": "99bb6f2" }
       ],
       "breaking": [
         { "description": "Module path changed from `github.com/grokify/vibium-go` to `github.com/plexusone/vibium-go`", "commit": "99bb6f2" }
