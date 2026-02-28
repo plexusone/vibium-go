@@ -1,11 +1,40 @@
 {
   "ir_version": "1.0",
   "project": "vibium-go",
-  "repository": "https://github.com/grokify/vibium-go",
+  "repository": "https://github.com/agentplexus/vibium-go",
   "versioning": "semver",
   "commit_convention": "conventional",
-  "maintainers": ["grokify"],
+  "maintainers": ["agentplexus"],
   "releases": [
+    {
+      "version": "v0.2.0",
+      "date": "2026-02-28",
+      "highlights": [
+        { "description": "Repository migration from `grokify/vibium-go` to `agentplexus/vibium-go`" },
+        { "description": "Code quality improvements and lint fixes" }
+      ],
+      "breaking": [
+        { "description": "Module path changed from `github.com/grokify/vibium-go` to `github.com/agentplexus/vibium-go`", "commit": "99bb6f2" }
+      ],
+      "changed": [
+        { "description": "Reduced duplication in MCP element handlers with `elementOp` helper function", "commit": "42d1066" }
+      ],
+      "fixed": [
+        { "description": "Handle unchecked errors in RPA executor for browser cleanup and error handler steps", "commit": "d173bec" },
+        { "description": "Tighten file permissions from 0644 to 0600 for security (gosec G306)", "commit": "01b295b" },
+        { "description": "Fix gofmt formatting in RPA types", "commit": "bc60e9d" }
+      ],
+      "documentation": [
+        { "description": "Add release notes for v0.2.0 and reorganize releases into `docs/releases/`", "commit": "be818e6" },
+        { "description": "Update documentation for clicker availability and repo migration", "commit": "0d4fdc5" },
+        { "description": "Update README diagram", "commit": "00b65f0" }
+      ],
+      "infrastructure": [
+        { "description": "Make E2E tests manual until clicker binary is distributed", "commit": "43aff3a" },
+        { "description": "Suppress false positive lint warnings with nolint directives", "commit": "1924385" },
+        { "description": "Fix various golangci-lint issues", "commit": "df9373f" }
+      ]
+    },
     {
       "version": "v0.1.0",
       "date": "2026-01-31",
