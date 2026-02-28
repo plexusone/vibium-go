@@ -113,7 +113,11 @@ func (e *Executor) RunWorkflow(ctx context.Context, wf *Workflow) (*WorkflowResu
 		result.Complete(StatusFailure, fmt.Errorf("failed to launch browser: %w", err))
 		return result, nil
 	}
-	defer vibe.Quit(ctx)
+	defer func() {
+		if err := vibe.Quit(ctx); err != nil {
+			e.logger.Warn("failed to quit browser", "error", err)
+		}
+	}()
 
 	// Create execution environment
 	env := activity.NewEnvironment(vibe, e.config.WorkDir, e.logger)
@@ -342,7 +346,9 @@ func (e *Executor) handleError(ctx context.Context, handler *ErrorHandler, env *
 
 	// Execute error handling steps
 	if len(handler.Steps) > 0 {
-		e.runSteps(ctx, handler.Steps, env, resolver, result)
+		if err := e.runSteps(ctx, handler.Steps, env, resolver, result); err != nil {
+			e.logger.Warn("error handler steps failed", "error", err)
+		}
 	}
 }
 
