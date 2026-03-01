@@ -45,6 +45,5 @@ func main() {
 
 	if err := server.Run(ctx); err != nil {
 		log.Fatal(err)
-		os.Exit(1)
 	}
 }
