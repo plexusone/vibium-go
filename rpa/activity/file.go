@@ -46,7 +46,7 @@ type FileWriteActivity struct{}
 
 func (a *FileWriteActivity) Name() string { return "file.write" }
 
-func (a *FileWriteActivity) Execute(ctx context.Context, params map[string]any, env *Environment) (any, error) {
+func (a *FileWriteActivity) Execute(ctx context.Context, params map[string]any, env *Environment) (_ any, err error) {
 	path := GetString(params, "path")
 	if path == "" {
 		return nil, fmt.Errorf("path parameter is required")
@@ -95,7 +95,11 @@ func (a *FileWriteActivity) Execute(ctx context.Context, params map[string]any, 
 		if err != nil {
 			return nil, fmt.Errorf("open failed: %w", err)
 		}
-		defer f.Close()
+		defer func() {
+			if cerr := f.Close(); err == nil && cerr != nil {
+				err = cerr
+			}
+		}()
 		if _, err := f.Write(data); err != nil {
 			return nil, fmt.Errorf("write failed: %w", err)
 		}
