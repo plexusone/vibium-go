@@ -7,6 +7,33 @@
   "maintainers": ["plexusone"],
   "releases": [
     {
+      "version": "v0.3.0",
+      "date": "2026-03-16",
+      "highlights": [
+        { "description": "Human-in-the-Loop (HITL) support for SSO login, CAPTCHA, and 2FA workflows" }
+      ],
+      "added": [
+        { "description": "`pause_for_human` MCP tool to pause automation with visual overlay for human intervention", "commit": "2b7c2fc" },
+        { "description": "`set_storage_state` MCP tool to restore saved session (cookies + localStorage)", "commit": "2b7c2fc" }
+      ],
+      "fixed": [
+        { "description": "Handle file close errors in RPA file activity", "commit": "50a496a" },
+        { "description": "Remove unreachable statement in vibium-mcp main", "commit": "0f9602a" }
+      ],
+      "documentation": [
+        { "description": "Add Human-in-the-Loop guide with workflow diagrams and examples", "commit": "2100cf9" },
+        { "description": "Update MCP server docs with HITL tools table", "commit": "2100cf9" },
+        { "description": "Update README shields", "commit": "dd1ed49" }
+      ],
+      "infrastructure": [
+        { "description": "Bump `github.com/modelcontextprotocol/go-sdk` from 1.4.0 to 1.4.1", "commit": "5a9afc4" },
+        { "description": "Bump `actions/checkout` from 4 to 6", "commit": "0b2047a" },
+        { "description": "Bump `actions/setup-go` from 5 to 6", "commit": "f0ddc69" },
+        { "description": "Bump `actions/upload-artifact` from 4 to 7", "commit": "1bde2c5" },
+        { "description": "Update Go module dependencies", "commit": "3f305d4" }
+      ]
+    },
+    {
       "version": "v0.2.1",
       "date": "2026-02-28",
       "highlights": [
