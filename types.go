@@ -196,5 +196,28 @@ type ActionOptions struct {
 	Timeout time.Duration
 }
 
+// A11yTreeOptions configures accessibility tree retrieval.
+type A11yTreeOptions struct {
+	// InterestingOnly filters the tree to only include interesting nodes.
+	// Interesting nodes are those with semantic meaning (roles, names, states).
+	// Default is true.
+	InterestingOnly *bool
+
+	// Root specifies a CSS selector for the root element.
+	// If specified, only the subtree under this element is returned.
+	Root string
+}
+
+// HighlightOptions configures element highlighting.
+type HighlightOptions struct {
+	// Color is the highlight border color (CSS color value).
+	// Default is "red".
+	Color string
+
+	// Duration is how long to show the highlight in milliseconds.
+	// Default is 2000 (2 seconds). Use 0 for persistent highlight.
+	Duration int
+}
+
 // DefaultTimeout is the default timeout for finding elements and waiting for actionability.
 const DefaultTimeout = 30 * time.Second

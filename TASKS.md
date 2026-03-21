@@ -13,11 +13,7 @@ Reference: [Feature Comparison](docs/reference/comparison.md)
 
 ## Open Tasks
 
-### SDK Methods - Low Priority
-
-- [ ] `Page.MainFrame()` - returns page itself (for API compatibility)
-- [ ] `Element.Highlight()` - visual debugging overlay (Java-only feature)
-- [ ] Accessibility tree options (interestingOnly, root)
+No open tasks remaining.
 
 ---
 
@@ -82,6 +78,14 @@ Screen recording for debugging:
 - [x] `stop_video` MCP tool () -> file path
 - [x] SDK `Vibe.StartVideo()` / `Vibe.StopVideo()` methods
 - [x] `Video.Path()` / `Video.Delete()` methods
+
+### SDK Methods
+
+API compatibility and debugging features:
+
+- [x] `Vibe.MainFrame()` - returns self for API compatibility
+- [x] `Element.Highlight()` - visual debugging overlay
+- [x] `A11yTreeOptions` - interestingOnly and root options for accessibility tree
 
 ---
 
@@ -216,5 +220,5 @@ Per-context initialization scripts that run before page scripts.
 
 ## Notes
 
-- Only low-priority SDK methods remain (MainFrame, Highlight, accessibility options)
-- These are primarily for API compatibility with other Vibium clients
+- All feature parity tasks are complete as of v0.5.0
+- Future work can focus on performance optimization, additional platform support, or new features

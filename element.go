@@ -956,6 +956,28 @@ func (e *Element) FindAll(ctx context.Context, selector string, opts *FindOption
 	return elements, nil
 }
 
+// Highlight draws a visual overlay on the element for debugging.
+// The highlight is displayed for the specified duration (default 2 seconds).
+// This is useful for visual debugging to see which element is being targeted.
+func (e *Element) Highlight(ctx context.Context, opts *HighlightOptions) error {
+	params := map[string]interface{}{
+		"context":  e.context,
+		"selector": e.selector,
+	}
+
+	if opts != nil {
+		if opts.Color != "" {
+			params["color"] = opts.Color
+		}
+		if opts.Duration > 0 {
+			params["duration"] = opts.Duration
+		}
+	}
+
+	_, err := e.client.Send(ctx, "vibium:el.highlight", params)
+	return err
+}
+
 // decodeBase64 decodes a base64 string to bytes.
 func decodeBase64(s string) ([]byte, error) {
 	return base64.StdEncoding.DecodeString(s)

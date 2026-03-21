@@ -915,7 +915,8 @@ func (v *Vibe) Frame(ctx context.Context, nameOrURL string) (*Vibe, error) {
 }
 
 // A11yTree returns the accessibility tree for the page.
-func (v *Vibe) A11yTree(ctx context.Context) (interface{}, error) {
+// Options can filter the tree to only interesting nodes or specify a root element.
+func (v *Vibe) A11yTree(ctx context.Context, opts *A11yTreeOptions) (interface{}, error) {
 	if v.closed {
 		return nil, ErrConnectionClosed
 	}
@@ -929,6 +930,15 @@ func (v *Vibe) A11yTree(ctx context.Context) (interface{}, error) {
 		"context": browsingCtx,
 	}
 
+	if opts != nil {
+		if opts.InterestingOnly != nil {
+			params["interestingOnly"] = *opts.InterestingOnly
+		}
+		if opts.Root != "" {
+			params["root"] = opts.Root
+		}
+	}
+
 	result, err := v.client.Send(ctx, "vibium:page.a11yTree", params)
 	if err != nil {
 		return nil, err
@@ -940,6 +950,13 @@ func (v *Vibe) A11yTree(ctx context.Context) (interface{}, error) {
 	}
 
 	return resp, nil
+}
+
+// MainFrame returns the main frame of the page.
+// Since Vibe represents both page and frame in this SDK, it returns itself.
+// This method exists for API compatibility with other Vibium clients.
+func (v *Vibe) MainFrame() *Vibe {
+	return v
 }
 
 // EmulateMedia sets the media emulation options.
