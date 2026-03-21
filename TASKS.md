@@ -17,18 +17,18 @@ Reference: [Feature Comparison](docs/reference/comparison.md)
 
 Missing tests for implemented features:
 
-- [ ] Media emulation tests
-- [ ] LocalStorage MCP tools tests
-- [ ] SessionStorage MCP tools tests
-- [ ] Network mocking MCP tools tests (`route`, `unroute`, `route_list`, `network_state_set`)
-- [ ] Tab management MCP tools tests (`list_tabs`, `select_tab`, `close_tab`)
-- [ ] Dialog handling MCP tools tests (`handle_dialog`, `get_dialog`)
-- [ ] Console messages MCP tools tests (`get_console_messages`, `clear_console_messages`)
-- [ ] Network requests MCP tools tests (`get_network_requests`, `clear_network_requests`)
-- [ ] Form tools tests (`fill_form`)
-- [ ] Mouse tools tests (`mouse_drag`)
+- [x] Media emulation tests - `integration/media_emulation_test.go`
+- [x] LocalStorage MCP tools tests - `integration/storage_tools_test.go`
+- [x] SessionStorage MCP tools tests - `integration/storage_tools_test.go`
+- [x] Network mocking MCP tools tests (`route`, `unroute`, `network_state_set`) - `integration/network_tools_test.go`
+- [x] Tab management MCP tools tests (`NewPage`, `Pages`, `Close`, `BringToFront`) - `integration/dialog_tab_test.go`
+- [x] Dialog handling MCP tools tests (`HandleDialog`) - `integration/dialog_tab_test.go`
+- [x] Console messages MCP tools tests (`ConsoleMessages`, `ClearConsoleMessages`) - `integration/page_methods_test.go`
+- [x] Network requests MCP tools tests (`NetworkRequests`, `ClearNetworkRequests`) - `integration/network_tools_test.go`
+- [x] Form tools tests (`Fill`) - `integration/page_methods_test.go`
+- [x] Mouse tools tests (`Mouse.Move`, `Mouse.Down`, `Mouse.Up`) - `integration/page_methods_test.go`
 - [ ] Testing tools tests (`verify_value`, `verify_list_visible`, `generate_locator`)
-- [ ] Page methods tests (`Scroll`, `SetExtraHTTPHeaders`)
+- [x] Page methods tests (`Scroll`, `SetExtraHTTPHeaders`) - `integration/page_methods_test.go`
 
 ### Event Listeners - High Priority
 
