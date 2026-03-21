@@ -5,7 +5,7 @@ The Go client SDK provides programmatic browser control with full feature parity
 ## Installation
 
 ```bash
-go get github.com/grokify/vibium-go
+go get github.com/plexusone/vibium-go
 ```
 
 ## Basic Usage
@@ -17,7 +17,7 @@ import (
     "context"
     "log"
 
-    vibium "github.com/grokify/vibium-go"
+    vibium "github.com/plexusone/vibium-go"
 )
 
 func main() {
@@ -470,6 +470,78 @@ type StorageStateOrigin struct {
     LocalStorage   map[string]string `json:"localStorage"`
     SessionStorage map[string]string `json:"sessionStorage,omitempty"`
 }
+```
+
+## Init Scripts
+
+Inject JavaScript that runs before any page scripts on every navigation:
+
+```go
+// Add script that runs before page loads
+err := vibe.AddInitScript(ctx, `window.testMode = true;`)
+
+// Mock APIs before page scripts run
+err := vibe.AddInitScript(ctx, `
+    const originalFetch = window.fetch;
+    window.fetch = async (url, opts) => {
+        if (url.includes('/api/user')) {
+            return {
+                ok: true,
+                json: () => Promise.resolve({ id: 1, name: 'Test User' })
+            };
+        }
+        return originalFetch(url, opts);
+    };
+`)
+
+// Disable analytics
+err := vibe.AddInitScript(ctx, `
+    window.gtag = () => {};
+    window.analytics = { track: () => {} };
+`)
+
+// Via BrowserContext for isolated contexts
+browserCtx, _ := vibe.NewContext(ctx)
+err := browserCtx.AddInitScript(ctx, `window.contextId = 'isolated';`)
+```
+
+## Tracing
+
+Record browser actions with screenshots and DOM snapshots:
+
+```go
+// Get tracing controller
+tracing := vibe.Tracing()
+
+// Start with options
+err := tracing.Start(ctx, &vibium.TracingStartOptions{
+    Name:        "login-test",
+    Screenshots: true,
+    Snapshots:   true,
+    Sources:     true,
+    Title:       "Login Flow Test",
+})
+
+// Perform actions to record
+vibe.Go(ctx, "https://example.com")
+elem, _ := vibe.Find(ctx, "button", nil)
+elem.Click(ctx, nil)
+
+// Stop and get trace data
+data, err := tracing.Stop(ctx, nil)
+os.WriteFile("trace.zip", data, 0600)
+
+// Use chunks for segmented recording
+err := tracing.StartChunk(ctx, &vibium.TracingChunkOptions{
+    Name: "step-1",
+})
+// ... actions ...
+chunkData, err := tracing.StopChunk(ctx, nil)
+
+// Use groups for logical organization
+err := tracing.StartGroup(ctx, "Login Flow", nil)
+// ... login actions ...
+err := tracing.StopGroup(ctx)
 ```
 
 ## Emulation

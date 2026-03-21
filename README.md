@@ -36,7 +36,7 @@ This project provides:
 | Component | Description | Origin |
 |-----------|-------------|--------|
 | **Go Client SDK** | Programmatic browser control | Feature parity with JS/Python |
-| **MCP Server** | 75+ tools for AI assistants | Go-specific |
+| **MCP Server** | 85+ tools for AI assistants | Go-specific |
 | **CLI** | Command-line browser automation | Go-specific |
 | **Script Runner** | Deterministic test execution | Go-specific |
 | **Session Recording** | Capture actions as replayable scripts | Go-specific |
@@ -48,7 +48,7 @@ This project provides:
 │                         vibium-go                              │
 ├─────────────┬─────────────┬─────────────┬──────────────────────┤
 │  Go Client  │ MCP Server  │    CLI      │   Script Runner      │
-│    SDK      │  (75 tools) │  (vibium)   │   (vibium run)       │
+│    SDK      │  (85 tools) │  (vibium)   │   (vibium run)       │
 ├─────────────┴─────────────┴─────────────┴──────────────────────┤
 │                    WebDriver BiDi Protocol                     │
 ├────────────────────────────────────────────────────────────────┤
@@ -193,19 +193,27 @@ Script format (JSON or YAML):
 
 ## MCP Server Tools
 
-The MCP server provides 75+ tools organized by category:
+The MCP server provides 85+ tools organized by category:
 
 | Category | Tools |
 |----------|-------|
 | Browser | `browser_launch`, `browser_quit` |
 | Navigation | `navigate`, `back`, `forward`, `reload` |
 | Interactions | `click`, `dblclick`, `type`, `fill`, `clear`, `press` |
-| Forms | `check`, `uncheck`, `select_option`, `set_files` |
+| Forms | `check`, `uncheck`, `select_option`, `set_files`, `fill_form` |
 | Element State | `get_text`, `get_value`, `is_visible`, `is_enabled` |
 | Page State | `get_title`, `get_url`, `get_content`, `screenshot` |
 | Waiting | `wait_until`, `wait_for_url`, `wait_for_load` |
-| HITL | `pause_for_human`, `set_storage_state`, `get_storage_state` |
+| Storage | `get_storage_state`, `set_storage_state`, `clear_storage` |
+| LocalStorage | `localstorage_get`, `localstorage_set`, `localstorage_list`, `localstorage_delete`, `localstorage_clear` |
+| SessionStorage | `sessionstorage_get`, `sessionstorage_set`, `sessionstorage_list`, `sessionstorage_delete`, `sessionstorage_clear` |
+| Network | `get_network_requests`, `clear_network_requests`, `route`, `unroute`, `route_list` |
+| Tabs | `list_tabs`, `select_tab`, `close_tab` |
+| Dialogs | `handle_dialog`, `get_dialog` |
+| HITL | `pause_for_human` |
 | Input | `keyboard_*`, `mouse_*`, `touch_*` |
+| Tracing | `start_trace`, `stop_trace`, `start_trace_chunk`, `stop_trace_chunk` |
+| Init Scripts | `add_init_script` |
 | Recording | `start_recording`, `stop_recording`, `export_script` |
 | Assertions | `assert_text`, `assert_element`, `assert_url` |
 
@@ -335,6 +343,114 @@ Semantic selectors work with `click`, `type`, `fill`, and `press` tools:
 | `title` | Element title attribute | `"Close dialog"` |
 | `xpath` | XPath expression | `"//button[@type='submit']"` |
 | `near` | CSS selector of nearby element | `"#username"` |
+
+## Init Scripts
+
+Inject JavaScript that runs before any page scripts on every navigation. Useful for mocking APIs, injecting test helpers, or setting up authentication.
+
+### SDK Usage
+
+```go
+// Add init script to inject before page scripts
+err := vibe.AddInitScript(ctx, `window.testMode = true;`)
+
+// Mock an API
+err := vibe.AddInitScript(ctx, `
+    window.fetch = async (url, opts) => {
+        if (url.includes('/api/user')) {
+            return { json: () => ({ id: 1, name: 'Test User' }) };
+        }
+        return originalFetch(url, opts);
+    };
+`)
+```
+
+### CLI Usage
+
+```bash
+# Inject scripts when launching
+vibium mcp --init-script=./mock-api.js --init-script=./test-helpers.js
+
+# Or with the standalone binary
+vibium-mcp -init-script=./mock-api.js
+```
+
+### MCP Tool Usage
+
+```json
+{"name": "add_init_script", "arguments": {"script": "window.testMode = true;"}}
+```
+
+## Storage State
+
+Save and restore complete browser state including cookies, localStorage, and sessionStorage. Essential for maintaining login sessions across browser restarts.
+
+### SDK Usage
+
+```go
+// Get complete storage state
+state, err := vibe.StorageState(ctx)
+
+// Save to file
+jsonBytes, _ := json.Marshal(state)
+os.WriteFile("auth-state.json", jsonBytes, 0600)
+
+// Restore from file
+var savedState vibium.StorageState
+json.Unmarshal(jsonBytes, &savedState)
+err := vibe.SetStorageState(ctx, &savedState)
+
+// Clear all storage
+err := vibe.ClearStorage(ctx)
+```
+
+### MCP Tool Usage
+
+```json
+// Save session
+{"name": "get_storage_state"}
+
+// Restore session
+{"name": "set_storage_state", "arguments": {"state": "<json from get_storage_state>"}}
+
+// Clear all storage
+{"name": "clear_storage"}
+```
+
+## Tracing
+
+Record browser actions with screenshots and DOM snapshots for debugging and test creation.
+
+### SDK Usage
+
+```go
+// Start tracing
+tracing := vibe.Tracing()
+err := tracing.Start(ctx, &vibium.TracingStartOptions{
+    Screenshots: true,
+    Snapshots:   true,
+    Title:       "Login Flow Test",
+})
+
+// Perform actions...
+vibe.Go(ctx, "https://example.com")
+elem, _ := vibe.Find(ctx, "button", nil)
+elem.Click(ctx, nil)
+
+// Stop and save trace
+data, err := tracing.Stop(ctx, nil)
+os.WriteFile("trace.zip", data, 0600)
+```
+
+### MCP Tool Usage
+
+```json
+// Start trace
+{"name": "start_trace", "arguments": {"screenshots": true, "title": "My Test"}}
+
+// Stop and get trace data
+{"name": "stop_trace", "arguments": {"path": "/tmp/trace.zip"}}
+```
 
 ## Testing
 
