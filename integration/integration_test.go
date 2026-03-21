@@ -24,10 +24,10 @@ func TestMain(m *testing.M) {
 
 // browserTest is a helper for running browser tests.
 type browserTest struct {
-	t       *testing.T
-	vibe    *vibium.Vibe
-	ctx     context.Context
-	cancel  context.CancelFunc
+	t        *testing.T
+	vibe     *vibium.Vibe
+	ctx      context.Context
+	cancel   context.CancelFunc
 	headless bool
 }
 
@@ -88,7 +88,7 @@ func (bt *browserTest) find(selector string) *vibium.Element {
 // findAll finds all elements matching the selector.
 func (bt *browserTest) findAll(selector string) []*vibium.Element {
 	bt.t.Helper()
-	elements, err := bt.vibe.FindAll(bt.ctx, selector)
+	elements, err := bt.vibe.FindAll(bt.ctx, selector, nil)
 	if err != nil {
 		bt.t.Fatalf("Failed to find elements %q: %v", selector, err)
 	}
