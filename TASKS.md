@@ -86,6 +86,13 @@ API compatibility and debugging features:
 - [x] `Vibe.MainFrame()` - returns self for API compatibility
 - [x] `Element.Highlight()` - visual debugging overlay
 - [x] `A11yTreeOptions` - interestingOnly and root options for accessibility tree
+- [x] `BrowserContext.DeleteCookie()` - delete single cookie by name
+
+### MCP Tools - Additional
+
+- [x] `delete_cookie` - delete a specific cookie by name
+- [x] `wait_for_text` - wait for text to appear on the page
+- [x] `accessibility_snapshot` - get accessibility tree snapshot
 
 ---
 

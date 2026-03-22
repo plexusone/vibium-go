@@ -499,6 +499,88 @@ func (s *Server) handleWaitForFunction(
 	return nil, WaitForFunctionOutput{Message: "Function returned truthy value"}, nil
 }
 
+// WaitForText tool - wait for text to appear on the page
+
+type WaitForTextInput struct {
+	Text      string `json:"text" jsonschema:"Text to wait for,required"`
+	Selector  string `json:"selector,omitempty" jsonschema:"Optional selector to scope the search"`
+	TimeoutMS int    `json:"timeout,omitempty" jsonschema:"Timeout in milliseconds (default 30000)"`
+}
+
+type WaitForTextOutput struct {
+	Message string `json:"message"`
+}
+
+func (s *Server) handleWaitForText(
+	ctx context.Context,
+	req *mcp.CallToolRequest,
+	input WaitForTextInput,
+) (*mcp.CallToolResult, WaitForTextOutput, error) {
+	vibe, err := s.session.Vibe(ctx)
+	if err != nil {
+		return nil, WaitForTextOutput{}, fmt.Errorf("browser not available: %w", err)
+	}
+
+	if input.TimeoutMS == 0 {
+		input.TimeoutMS = 30000
+	}
+	timeout := time.Duration(input.TimeoutMS) * time.Millisecond
+
+	// Build JavaScript function to check for text
+	var checkScript string
+	if input.Selector != "" {
+		// Search within a specific element
+		checkScript = fmt.Sprintf(`() => {
+			const el = document.querySelector(%q);
+			return el && el.textContent.includes(%q);
+		}`, input.Selector, input.Text)
+	} else {
+		// Search entire document body
+		checkScript = fmt.Sprintf(`() => document.body.textContent.includes(%q)`, input.Text)
+	}
+
+	err = vibe.WaitForFunction(ctx, checkScript, timeout)
+	if err != nil {
+		return nil, WaitForTextOutput{}, fmt.Errorf("wait for text failed: %w", err)
+	}
+
+	return nil, WaitForTextOutput{Message: fmt.Sprintf("Text found: %s", input.Text)}, nil
+}
+
+// AccessibilitySnapshot tool - get accessibility tree snapshot
+
+type AccessibilitySnapshotInput struct {
+	InterestingOnly *bool  `json:"interesting_only,omitempty" jsonschema:"Only include interesting nodes with semantic meaning (default true)"`
+	Root            string `json:"root,omitempty" jsonschema:"CSS selector for root element to snapshot"`
+}
+
+type AccessibilitySnapshotOutput struct {
+	Snapshot interface{} `json:"snapshot"`
+}
+
+func (s *Server) handleAccessibilitySnapshot(
+	ctx context.Context,
+	req *mcp.CallToolRequest,
+	input AccessibilitySnapshotInput,
+) (*mcp.CallToolResult, AccessibilitySnapshotOutput, error) {
+	vibe, err := s.session.Vibe(ctx)
+	if err != nil {
+		return nil, AccessibilitySnapshotOutput{}, fmt.Errorf("browser not available: %w", err)
+	}
+
+	opts := &vibium.A11yTreeOptions{
+		InterestingOnly: input.InterestingOnly,
+		Root:            input.Root,
+	}
+
+	tree, err := vibe.A11yTree(ctx, opts)
+	if err != nil {
+		return nil, AccessibilitySnapshotOutput{}, fmt.Errorf("accessibility snapshot failed: %w", err)
+	}
+
+	return nil, AccessibilitySnapshotOutput{Snapshot: tree}, nil
+}
+
 // Back tool
 
 type BackInput struct{}

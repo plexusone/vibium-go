@@ -212,6 +212,41 @@ func (s *Server) handleClearCookies(
 	return nil, ClearCookiesOutput{Message: "Cookies cleared"}, nil
 }
 
+// DeleteCookie tool - delete a specific cookie by name
+
+type DeleteCookieInput struct {
+	Name   string `json:"name" jsonschema:"Cookie name to delete,required"`
+	Domain string `json:"domain,omitempty" jsonschema:"Cookie domain (optional filter)"`
+	Path   string `json:"path,omitempty" jsonschema:"Cookie path (optional filter)"`
+}
+
+type DeleteCookieOutput struct {
+	Message string `json:"message"`
+}
+
+func (s *Server) handleDeleteCookie(
+	ctx context.Context,
+	req *mcp.CallToolRequest,
+	input DeleteCookieInput,
+) (*mcp.CallToolResult, DeleteCookieOutput, error) {
+	vibe, err := s.session.Vibe(ctx)
+	if err != nil {
+		return nil, DeleteCookieOutput{}, fmt.Errorf("browser not available: %w", err)
+	}
+
+	browserCtx, err := vibe.NewContext(ctx)
+	if err != nil {
+		return nil, DeleteCookieOutput{}, fmt.Errorf("context not available: %w", err)
+	}
+
+	err = browserCtx.DeleteCookie(ctx, input.Name, input.Domain, input.Path)
+	if err != nil {
+		return nil, DeleteCookieOutput{}, fmt.Errorf("delete cookie failed: %w", err)
+	}
+
+	return nil, DeleteCookieOutput{Message: fmt.Sprintf("Deleted cookie: %s", input.Name)}, nil
+}
+
 // GetStorageState tool
 
 type GetStorageStateInput struct{}

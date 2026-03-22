@@ -91,6 +91,28 @@ func (c *BrowserContext) ClearCookies(ctx context.Context) error {
 	return err
 }
 
+// DeleteCookie deletes a specific cookie by name.
+// Optional domain and path can be specified to target a specific cookie.
+func (c *BrowserContext) DeleteCookie(ctx context.Context, name string, domain string, path string) error {
+	filter := map[string]interface{}{
+		"name": name,
+	}
+
+	if domain != "" {
+		filter["domain"] = domain
+	}
+	if path != "" {
+		filter["path"] = path
+	}
+
+	params := map[string]interface{}{
+		"filter": filter,
+	}
+
+	_, err := c.client.Send(ctx, "storage.deleteCookies", params)
+	return err
+}
+
 // StorageState returns the storage state including cookies and localStorage.
 func (c *BrowserContext) StorageState(ctx context.Context) (*StorageState, error) {
 	params := map[string]interface{}{

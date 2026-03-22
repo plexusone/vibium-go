@@ -339,6 +339,16 @@ func (s *Server) registerTools() {
 		Description: "Wait for a JavaScript function to return truthy.",
 	}, s.handleWaitForFunction)
 
+	mcp.AddTool(s.mcpServer, &mcp.Tool{
+		Name:        "wait_for_text",
+		Description: "Wait for text to appear on the page. Optionally scope to a specific element.",
+	}, s.handleWaitForText)
+
+	mcp.AddTool(s.mcpServer, &mcp.Tool{
+		Name:        "accessibility_snapshot",
+		Description: "Get an accessibility tree snapshot of the page. Useful for understanding page structure and testing accessibility.",
+	}, s.handleAccessibilitySnapshot)
+
 	// === Input Controllers ===
 
 	mcp.AddTool(s.mcpServer, &mcp.Tool{
@@ -468,6 +478,11 @@ func (s *Server) registerTools() {
 		Name:        "clear_cookies",
 		Description: "Clear all cookies.",
 	}, s.handleClearCookies)
+
+	mcp.AddTool(s.mcpServer, &mcp.Tool{
+		Name:        "delete_cookie",
+		Description: "Delete a specific cookie by name. Optionally filter by domain and path.",
+	}, s.handleDeleteCookie)
 
 	mcp.AddTool(s.mcpServer, &mcp.Tool{
 		Name:        "get_storage_state",
