@@ -596,7 +596,7 @@ func (s *Server) handleVerifyEnabled(
 	return nil, VerifyEnabledOutput{Passed: passed, Message: msg}, nil
 }
 
-// verifyElementState is a helper that verifies an element's state (visible, enabled, etc.)
+// verifyElementState is a helper that verifies an element's state (visible, hidden, enabled, disabled)
 func (s *Server) verifyElementState(ctx context.Context, selector string, timeoutMS int, state string) (bool, string, error) {
 	vibe, err := s.session.Vibe(ctx)
 	if err != nil {
@@ -610,17 +610,28 @@ func (s *Server) verifyElementState(ctx context.Context, selector string, timeou
 
 	elem, err := vibe.Find(ctx, selector, &vibium.FindOptions{Timeout: timeout})
 	if err != nil {
+		// For hidden state, element not found could be valid
+		if state == "hidden" {
+			return true, fmt.Sprintf("Element is hidden (not found): %s", selector), nil
+		}
 		return false, fmt.Sprintf("Element not found: %s", selector), nil
 	}
 
 	var checkResult bool
 	var checkErr error
+	var expectTrue bool = true // Whether we expect the check to return true
 
 	switch state {
 	case "visible":
 		checkResult, checkErr = elem.IsVisible(ctx)
+	case "hidden":
+		checkResult, checkErr = elem.IsVisible(ctx)
+		expectTrue = false // For hidden, we expect IsVisible to return false
 	case "enabled":
 		checkResult, checkErr = elem.IsEnabled(ctx)
+	case "disabled":
+		checkResult, checkErr = elem.IsEnabled(ctx)
+		expectTrue = false // For disabled, we expect IsEnabled to return false
 	default:
 		return false, "", fmt.Errorf("unknown state: %s", state)
 	}
@@ -629,15 +640,68 @@ func (s *Server) verifyElementState(ctx context.Context, selector string, timeou
 		return false, "", fmt.Errorf("check %s failed: %w", state, checkErr)
 	}
 
-	if !checkResult {
-		negativeMsg := map[string]string{
-			"visible": "not visible",
-			"enabled": "disabled",
+	// Determine pass/fail based on expected state
+	passed := checkResult == expectTrue
+
+	if !passed {
+		oppositeState := map[string]string{
+			"visible":  "hidden",
+			"hidden":   "visible",
+			"enabled":  "disabled",
+			"disabled": "enabled",
 		}
-		return false, fmt.Sprintf("Element is %s: %s", negativeMsg[state], selector), nil
+		return false, fmt.Sprintf("Element is %s, expected %s: %s", oppositeState[state], state, selector), nil
 	}
 
 	return true, fmt.Sprintf("Element is %s: %s", state, selector), nil
+}
+
+// VerifyHidden tool - verifies element is hidden
+
+type VerifyHiddenInput struct {
+	Selector  string `json:"selector" jsonschema:"CSS selector for the element,required"`
+	TimeoutMS int    `json:"timeout_ms" jsonschema:"Timeout in milliseconds (default: 5000)"`
+}
+
+type VerifyHiddenOutput struct {
+	Passed  bool   `json:"passed"`
+	Message string `json:"message"`
+}
+
+func (s *Server) handleVerifyHidden(
+	ctx context.Context,
+	req *mcp.CallToolRequest,
+	input VerifyHiddenInput,
+) (*mcp.CallToolResult, VerifyHiddenOutput, error) {
+	passed, msg, err := s.verifyElementState(ctx, input.Selector, input.TimeoutMS, "hidden")
+	if err != nil {
+		return nil, VerifyHiddenOutput{}, err
+	}
+	return nil, VerifyHiddenOutput{Passed: passed, Message: msg}, nil
+}
+
+// VerifyDisabled tool - verifies element is disabled
+
+type VerifyDisabledInput struct {
+	Selector  string `json:"selector" jsonschema:"CSS selector for the element,required"`
+	TimeoutMS int    `json:"timeout_ms" jsonschema:"Timeout in milliseconds (default: 5000)"`
+}
+
+type VerifyDisabledOutput struct {
+	Passed  bool   `json:"passed"`
+	Message string `json:"message"`
+}
+
+func (s *Server) handleVerifyDisabled(
+	ctx context.Context,
+	req *mcp.CallToolRequest,
+	input VerifyDisabledInput,
+) (*mcp.CallToolResult, VerifyDisabledOutput, error) {
+	passed, msg, err := s.verifyElementState(ctx, input.Selector, input.TimeoutMS, "disabled")
+	if err != nil {
+		return nil, VerifyDisabledOutput{}, err
+	}
+	return nil, VerifyDisabledOutput{Passed: passed, Message: msg}, nil
 }
 
 // VerifyChecked tool - verifies checkbox/radio is checked

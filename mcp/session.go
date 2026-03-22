@@ -201,6 +201,15 @@ func (s *Session) ActiveContext() string {
 	return s.activeContext
 }
 
+// SetVibe sets the active Vibe instance (page or frame).
+// This is used for frame selection.
+func (s *Session) SetVibe(v *vibium.Vibe) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.vibe = v
+	s.activeContext = "" // Clear active context since we're using a specific vibe
+}
+
 // CaptureScreenshot captures a screenshot and returns a ScreenshotRef.
 func (s *Session) CaptureScreenshot(ctx context.Context) *report.ScreenshotRef {
 	s.mu.Lock()

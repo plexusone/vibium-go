@@ -247,6 +247,74 @@ func (s *Server) handleGetFrames(
 	return nil, GetFramesOutput{Frames: output}, nil
 }
 
+// SelectFrame tool - switch to a frame by name or URL
+
+type SelectFrameInput struct {
+	NameOrURL string `json:"name_or_url" jsonschema:"Frame name or URL pattern to match,required"`
+}
+
+type SelectFrameOutput struct {
+	Message string `json:"message"`
+	URL     string `json:"url"`
+	Name    string `json:"name"`
+}
+
+func (s *Server) handleSelectFrame(
+	ctx context.Context,
+	req *mcp.CallToolRequest,
+	input SelectFrameInput,
+) (*mcp.CallToolResult, SelectFrameOutput, error) {
+	vibe, err := s.session.Vibe(ctx)
+	if err != nil {
+		return nil, SelectFrameOutput{}, fmt.Errorf("browser not available: %w", err)
+	}
+
+	frame, err := vibe.Frame(ctx, input.NameOrURL)
+	if err != nil {
+		return nil, SelectFrameOutput{}, fmt.Errorf("frame not found: %w", err)
+	}
+
+	// Update the session to use this frame context
+	s.session.SetVibe(frame)
+
+	// Get frame info
+	url, _ := frame.URL(ctx)
+	title, _ := frame.Title(ctx)
+
+	return nil, SelectFrameOutput{
+		Message: fmt.Sprintf("Switched to frame: %s", input.NameOrURL),
+		URL:     url,
+		Name:    title,
+	}, nil
+}
+
+// SelectMainFrame tool - switch back to the main frame
+
+type SelectMainFrameInput struct{}
+
+type SelectMainFrameOutput struct {
+	Message string `json:"message"`
+}
+
+func (s *Server) handleSelectMainFrame(
+	ctx context.Context,
+	req *mcp.CallToolRequest,
+	input SelectMainFrameInput,
+) (*mcp.CallToolResult, SelectMainFrameOutput, error) {
+	vibe, err := s.session.Vibe(ctx)
+	if err != nil {
+		return nil, SelectMainFrameOutput{}, fmt.Errorf("browser not available: %w", err)
+	}
+
+	// MainFrame returns the main frame (self in our case)
+	mainFrame := vibe.MainFrame()
+	s.session.SetVibe(mainFrame)
+
+	return nil, SelectMainFrameOutput{
+		Message: "Switched to main frame",
+	}, nil
+}
+
 // EmulateMedia tool
 
 type EmulateMediaInput struct {

@@ -278,6 +278,16 @@ func (s *Server) registerTools() {
 		Description: "Get all frames on the page.",
 	}, s.handleGetFrames)
 
+	mcp.AddTool(s.mcpServer, &mcp.Tool{
+		Name:        "select_frame",
+		Description: "Switch to a frame by name or URL pattern. Subsequent commands will target this frame.",
+	}, s.handleSelectFrame)
+
+	mcp.AddTool(s.mcpServer, &mcp.Tool{
+		Name:        "select_main_frame",
+		Description: "Switch back to the main frame (top-level page).",
+	}, s.handleSelectMainFrame)
+
 	// === Screenshots & PDF ===
 
 	mcp.AddTool(s.mcpServer, &mcp.Tool{
@@ -671,6 +681,16 @@ func (s *Server) registerTools() {
 		Name:        "verify_checked",
 		Description: "Verify that a checkbox or radio button is checked or unchecked.",
 	}, s.handleVerifyChecked)
+
+	mcp.AddTool(s.mcpServer, &mcp.Tool{
+		Name:        "verify_hidden",
+		Description: "Verify that an element is hidden (not visible) on the page.",
+	}, s.handleVerifyHidden)
+
+	mcp.AddTool(s.mcpServer, &mcp.Tool{
+		Name:        "verify_disabled",
+		Description: "Verify that an element is disabled.",
+	}, s.handleVerifyDisabled)
 
 	// === Test Reporting ===
 

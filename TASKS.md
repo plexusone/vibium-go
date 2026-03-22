@@ -98,6 +98,13 @@ API compatibility and debugging features:
 - [x] `verify_visible` - verify element is visible
 - [x] `verify_enabled` - verify element is enabled
 - [x] `verify_checked` - verify checkbox/radio is checked
+- [x] `verify_hidden` - verify element is hidden
+- [x] `verify_disabled` - verify element is disabled
+
+### MCP Tools - Frame Selection
+
+- [x] `select_frame` - switch to a frame by name or URL pattern
+- [x] `select_main_frame` - switch back to the main frame
 
 ---
 
