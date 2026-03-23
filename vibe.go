@@ -6,12 +6,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"time"
+
+	"github.com/plexusone/vibium-go/launcher"
 )
 
 // Vibe is the main browser control interface.
 type Vibe struct {
 	client          *BiDiClient
-	clicker         *ClickerProcess
+	browser         *launcher.Browser
 	browsingContext string
 	closed          bool
 
@@ -39,24 +41,33 @@ func (b *browserLauncher) Launch(ctx context.Context, opts *LaunchOptions) (*Vib
 		debugLog(ctx, "launching browser", "headless", opts.Headless, "port", opts.Port)
 	}
 
-	// Start clicker process
-	clicker, err := StartClicker(ctx, *opts)
+	// Start browser process
+	launchOpts := &launcher.Options{
+		Headless:       opts.Headless,
+		Port:           opts.Port,
+		ExecutablePath: opts.ExecutablePath,
+		UserDataDir:    opts.UserDataDir,
+		Args:           opts.Args,
+		AutoInstall:    opts.AutoInstall,
+	}
+
+	browser, err := launcher.Launch(ctx, launchOpts)
 	if err != nil {
 		return nil, err
 	}
-	debugLog(ctx, "clicker started", "url", clicker.WebSocketURL())
+	debugLog(ctx, "browser started", "url", browser.WebSocketURL())
 
 	// Connect BiDi client
 	client := NewBiDiClient()
-	if err := client.Connect(ctx, clicker.WebSocketURL()); err != nil {
-		_ = clicker.Stop()
+	if err := client.Connect(ctx, browser.WebSocketURL()); err != nil {
+		_ = browser.Stop()
 		return nil, err
 	}
 	debugLog(ctx, "BiDi client connected")
 
 	return &Vibe{
 		client:  client,
-		clicker: clicker,
+		browser: browser,
 	}, nil
 }
 
@@ -501,9 +512,9 @@ func (v *Vibe) Quit(ctx context.Context) error {
 		clientErr = v.client.Close()
 	}
 
-	// Stop clicker process
-	if v.clicker != nil {
-		if err := v.clicker.Stop(); err != nil {
+	// Stop browser process
+	if v.browser != nil {
+		if err := v.browser.Stop(); err != nil {
 			return err
 		}
 	}
@@ -909,7 +920,7 @@ func (v *Vibe) Frame(ctx context.Context, nameOrURL string) (*Vibe, error) {
 
 	return &Vibe{
 		client:          v.client,
-		clicker:         v.clicker,
+		browser:         v.browser,
 		browsingContext: resp.Context,
 	}, nil
 }
@@ -1646,7 +1657,7 @@ func (v *Vibe) OnPage(ctx context.Context, handler PageHandler) error {
 		// Create a new Vibe instance for the new page
 		newPage := &Vibe{
 			client:          v.client,
-			clicker:         v.clicker,
+			browser:         v.browser,
 			browsingContext: params.Context,
 		}
 		handler(newPage)
@@ -1687,7 +1698,7 @@ func (v *Vibe) OnPopup(ctx context.Context, handler PopupHandler) error {
 		// Create a new Vibe instance for the popup
 		popup := &Vibe{
 			client:          v.client,
-			clicker:         v.clicker,
+			browser:         v.browser,
 			browsingContext: params.Context,
 		}
 		handler(popup)
@@ -1733,7 +1744,7 @@ func (v *Vibe) NewPage(ctx context.Context) (*Vibe, error) {
 
 	return &Vibe{
 		client:          v.client,
-		clicker:         v.clicker,
+		browser:         v.browser,
 		browsingContext: resp.Context,
 	}, nil
 }
@@ -1758,7 +1769,7 @@ func (v *Vibe) NewContext(ctx context.Context) (*BrowserContext, error) {
 
 	return &BrowserContext{
 		client:      v.client,
-		clicker:     v.clicker,
+		browser:     v.browser,
 		userContext: resp.UserContext,
 	}, nil
 }
@@ -1787,7 +1798,7 @@ func (v *Vibe) Pages(ctx context.Context) ([]*Vibe, error) {
 	for i, c := range tree.Contexts {
 		pages[i] = &Vibe{
 			client:          v.client,
-			clicker:         v.clicker,
+			browser:         v.browser,
 			browsingContext: c.Context,
 		}
 	}

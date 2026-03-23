@@ -1,5 +1,5 @@
-// Package vibium provides a Go client for browser automation via the Vibium platform.
-// It communicates with the Vibium clicker binary over WebSocket using the WebDriver BiDi protocol.
+// Package vibium provides a Go client for browser automation using the WebDriver BiDi protocol.
+// It launches Chrome with BiDi support and communicates over WebSocket.
 package vibium
 
 import "time"
@@ -24,11 +24,22 @@ type LaunchOptions struct {
 	// Headless runs the browser without a visible window.
 	Headless bool
 
-	// Port specifies the WebSocket port. If 0, an available port is auto-selected.
+	// Port specifies the debugging port. If 0, an available port is auto-selected.
 	Port int
 
-	// ExecutablePath specifies a custom path to the clicker binary.
+	// ExecutablePath specifies a custom Chrome executable path.
 	ExecutablePath string
+
+	// UserDataDir specifies a custom user data directory.
+	// If empty, a temporary directory is used.
+	UserDataDir string
+
+	// Args specifies additional command-line arguments for Chrome.
+	Args []string
+
+	// AutoInstall automatically downloads Chrome for Testing if not found.
+	// Defaults to true (nil means true).
+	AutoInstall *bool
 }
 
 // FindOptions configures element finding behavior.

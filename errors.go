@@ -7,7 +7,7 @@ import (
 
 var (
 	// ErrConnectionFailed is returned when WebSocket connection fails.
-	ErrConnectionFailed = errors.New("failed to connect to clicker server")
+	ErrConnectionFailed = errors.New("failed to connect to browser")
 
 	// ErrElementNotFound is returned when an element cannot be found.
 	ErrElementNotFound = errors.New("element not found")
@@ -15,8 +15,12 @@ var (
 	// ErrBrowserCrashed is returned when the browser process exits unexpectedly.
 	ErrBrowserCrashed = errors.New("browser crashed")
 
-	// ErrClickerNotFound is returned when the clicker binary cannot be found.
-	ErrClickerNotFound = errors.New("clicker binary not found")
+	// ErrBrowserNotFound is returned when Chrome cannot be found.
+	ErrBrowserNotFound = errors.New("Chrome not found")
+
+	// ErrClickerNotFound is deprecated: use ErrBrowserNotFound instead.
+	// Deprecated: This error is no longer used. Use ErrBrowserNotFound.
+	ErrClickerNotFound = ErrBrowserNotFound
 
 	// ErrTimeout is returned when an operation times out.
 	ErrTimeout = errors.New("operation timed out")

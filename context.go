@@ -3,13 +3,15 @@ package vibium
 import (
 	"context"
 	"encoding/json"
+
+	"github.com/plexusone/vibium-go/launcher"
 )
 
 // BrowserContext represents an isolated browser context (like an incognito window).
 // Each context has its own cookies, localStorage, and session storage.
 type BrowserContext struct {
 	client      *BiDiClient
-	clicker     *ClickerProcess
+	browser     *launcher.Browser
 	userContext string
 	tracing     *Tracing
 }
@@ -34,7 +36,7 @@ func (c *BrowserContext) NewPage(ctx context.Context) (*Vibe, error) {
 
 	return &Vibe{
 		client:          c.client,
-		clicker:         c.clicker,
+		browser:         c.browser,
 		browsingContext: resp.Context,
 	}, nil
 }
