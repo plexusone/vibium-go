@@ -510,32 +510,37 @@ Compare webpilot SDK with VibiumDev client libraries.
 │                     │ HTTP API                                     │
 │                     ▼                                              │
 │               ┌──────────┐                                         │
-│               │ clicker  │◄─── webpilot mcp                        │
+│               │ clicker  │                                         │
 │               │ (binary) │                                         │
 │               └────┬─────┘                                         │
 │                    │ BiDi                                          │
-└────────────────────┼───────────────────────────────────────────────┘
-                     │
-                     │  webpilot uses clicker
-                     │  ONLY for launching Chrome
-                     ▼
+│                    ▼                                               │
+│                 Chrome                                             │
+└────────────────────────────────────────────────────────────────────┘
+
 ┌────────────────────────────────────────────────────────────────────┐
 │                    plexusone/webpilot                              │
+│                    (independent project)                           │
 │                                                                    │
 │   ┌────────────────────────────────────────────────────────────┐   │
 │   │                    webpilot SDK                            │   │
-│   │              (own BiDi client implementation)              │   │
+│   │         Native Chrome launcher + BiDi client               │   │
 │   └────────────────────────┬───────────────────────────────────┘   │
 │                            │                                       │
 │         ┌──────────────────┼──────────────────┐                    │
 │         │                  │                  │                    │
 │         ▼                  ▼                  ▼                    │
 │    webpilot-mcp         webpilot run        Direct SDK             │
-│                                                                    │
+│         │                  │                  │                    │
+│         └──────────────────┼──────────────────┘                    │
+│                            │ BiDi                                  │
+│                            ▼                                       │
+│                         Chrome                                     │
+│                   (auto-downloaded)                                │
 └────────────────────────────────────────────────────────────────────┘
 ```
 
-**Key point**: webpilot is an independent implementation that uses VibiumDev's `clicker` binary only as a Chrome launcher. The BiDi communication, MCP server, and all SDK functionality are implemented independently in Go.
+**Key point**: webpilot is a completely independent implementation. It has its own native Chrome launcher that auto-downloads and manages the browser. The BiDi communication, MCP server, and all SDK functionality are implemented in Go with no external dependencies on VibiumDev.
 
 ---
 
