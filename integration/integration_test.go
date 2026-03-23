@@ -10,7 +10,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/plexusone/vibium-go"
+	"github.com/plexusone/webpilot"
 )
 
 // testTimeout is the default timeout for test operations.
@@ -25,7 +25,7 @@ func TestMain(m *testing.M) {
 // browserTest is a helper for running browser tests.
 type browserTest struct {
 	t        *testing.T
-	vibe     *vibium.Vibe
+	pilot    *webpilot.Pilot
 	ctx      context.Context
 	cancel   context.CancelFunc
 	headless bool
@@ -38,9 +38,9 @@ func newBrowserTest(t *testing.T) *browserTest {
 	ctx, cancel := context.WithTimeout(context.Background(), testTimeout)
 
 	// Use headless mode in CI, visible mode locally for debugging
-	headless := os.Getenv("CI") != "" || os.Getenv("VIBIUM_HEADLESS") == "1"
+	headless := os.Getenv("CI") != "" || os.Getenv("WEBPILOT_HEADLESS") == "1"
 
-	vibe, err := vibium.Browser.Launch(ctx, &vibium.LaunchOptions{
+	pilot, err := webpilot.Browser.Launch(ctx, &webpilot.LaunchOptions{
 		Headless: headless,
 	})
 	if err != nil {
@@ -50,7 +50,7 @@ func newBrowserTest(t *testing.T) *browserTest {
 
 	return &browserTest{
 		t:        t,
-		vibe:     vibe,
+		pilot:    pilot,
 		ctx:      ctx,
 		cancel:   cancel,
 		headless: headless,
@@ -59,8 +59,8 @@ func newBrowserTest(t *testing.T) *browserTest {
 
 // cleanup closes the browser and cancels the context.
 func (bt *browserTest) cleanup() {
-	if bt.vibe != nil {
-		if err := bt.vibe.Quit(bt.ctx); err != nil {
+	if bt.pilot != nil {
+		if err := bt.pilot.Quit(bt.ctx); err != nil {
 			bt.t.Logf("Warning: failed to quit browser: %v", err)
 		}
 	}
@@ -70,15 +70,15 @@ func (bt *browserTest) cleanup() {
 // go navigates to a URL.
 func (bt *browserTest) go_(url string) {
 	bt.t.Helper()
-	if err := bt.vibe.Go(bt.ctx, url); err != nil {
+	if err := bt.pilot.Go(bt.ctx, url); err != nil {
 		bt.t.Fatalf("Failed to navigate to %s: %v", url, err)
 	}
 }
 
 // find finds an element by selector.
-func (bt *browserTest) find(selector string) *vibium.Element {
+func (bt *browserTest) find(selector string) *webpilot.Element {
 	bt.t.Helper()
-	elem, err := bt.vibe.Find(bt.ctx, selector, nil)
+	elem, err := bt.pilot.Find(bt.ctx, selector, nil)
 	if err != nil {
 		bt.t.Fatalf("Failed to find element %q: %v", selector, err)
 	}
@@ -86,9 +86,9 @@ func (bt *browserTest) find(selector string) *vibium.Element {
 }
 
 // findAll finds all elements matching the selector.
-func (bt *browserTest) findAll(selector string) []*vibium.Element {
+func (bt *browserTest) findAll(selector string) []*webpilot.Element {
 	bt.t.Helper()
-	elements, err := bt.vibe.FindAll(bt.ctx, selector, nil)
+	elements, err := bt.pilot.FindAll(bt.ctx, selector, nil)
 	if err != nil {
 		bt.t.Fatalf("Failed to find elements %q: %v", selector, err)
 	}
@@ -98,7 +98,7 @@ func (bt *browserTest) findAll(selector string) []*vibium.Element {
 // screenshot takes a screenshot and verifies it's valid PNG.
 func (bt *browserTest) screenshot() []byte {
 	bt.t.Helper()
-	data, err := bt.vibe.Screenshot(bt.ctx)
+	data, err := bt.pilot.Screenshot(bt.ctx)
 	if err != nil {
 		bt.t.Fatalf("Failed to take screenshot: %v", err)
 	}
@@ -117,7 +117,7 @@ func (bt *browserTest) screenshot() []byte {
 // evaluate executes JavaScript and returns the result.
 func (bt *browserTest) evaluate(script string) interface{} {
 	bt.t.Helper()
-	result, err := bt.vibe.Evaluate(bt.ctx, script)
+	result, err := bt.pilot.Evaluate(bt.ctx, script)
 	if err != nil {
 		bt.t.Fatalf("Failed to evaluate script: %v", err)
 	}

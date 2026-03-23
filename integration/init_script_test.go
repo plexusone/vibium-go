@@ -14,7 +14,7 @@ func TestInitScriptBasic(t *testing.T) {
 
 	t.Run("AddInitScript", func(t *testing.T) {
 		// Add init script that sets a global variable
-		err := bt.vibe.AddInitScript(bt.ctx, `window.testInjected = true;`)
+		err := bt.pilot.AddInitScript(bt.ctx, `window.testInjected = true;`)
 		if err != nil {
 			t.Fatalf("Failed to add init script: %v", err)
 		}
@@ -24,7 +24,7 @@ func TestInitScriptBasic(t *testing.T) {
 		time.Sleep(300 * time.Millisecond)
 
 		// Check if the variable was set
-		result, err := bt.vibe.Evaluate(bt.ctx, "window.testInjected")
+		result, err := bt.pilot.Evaluate(bt.ctx, "window.testInjected")
 		if err != nil {
 			t.Fatalf("Failed to evaluate: %v", err)
 		}
@@ -36,7 +36,7 @@ func TestInitScriptBasic(t *testing.T) {
 
 	t.Run("InitScriptOnMultipleNavigations", func(t *testing.T) {
 		// Add init script
-		err := bt.vibe.AddInitScript(bt.ctx, `window.pageCount = (window.pageCount || 0) + 1;`)
+		err := bt.pilot.AddInitScript(bt.ctx, `window.pageCount = (window.pageCount || 0) + 1;`)
 		if err != nil {
 			t.Fatalf("Failed to add init script: %v", err)
 		}
@@ -45,7 +45,7 @@ func TestInitScriptBasic(t *testing.T) {
 		bt.go_("https://example.com")
 		time.Sleep(200 * time.Millisecond)
 
-		result, err := bt.vibe.Evaluate(bt.ctx, "window.pageCount")
+		result, err := bt.pilot.Evaluate(bt.ctx, "window.pageCount")
 		if err != nil {
 			t.Fatalf("Failed to evaluate: %v", err)
 		}
@@ -62,7 +62,7 @@ func TestInitScriptBasic(t *testing.T) {
 		bt.go_("https://www.iana.org")
 		time.Sleep(200 * time.Millisecond)
 
-		result, err = bt.vibe.Evaluate(bt.ctx, "window.pageCount")
+		result, err = bt.pilot.Evaluate(bt.ctx, "window.pageCount")
 		if err != nil {
 			t.Fatalf("Failed to evaluate: %v", err)
 		}
@@ -89,7 +89,7 @@ func TestInitScriptFunction(t *testing.T) {
 
 	t.Run("DefineFunction", func(t *testing.T) {
 		// Add init script that defines a helper function
-		err := bt.vibe.AddInitScript(bt.ctx, `
+		err := bt.pilot.AddInitScript(bt.ctx, `
 			window.myHelper = function(x, y) {
 				return x + y;
 			};
@@ -102,7 +102,7 @@ func TestInitScriptFunction(t *testing.T) {
 		time.Sleep(200 * time.Millisecond)
 
 		// Call the function
-		result, err := bt.vibe.Evaluate(bt.ctx, "window.myHelper(2, 3)")
+		result, err := bt.pilot.Evaluate(bt.ctx, "window.myHelper(2, 3)")
 		if err != nil {
 			t.Fatalf("Failed to evaluate: %v", err)
 		}
@@ -114,7 +114,7 @@ func TestInitScriptFunction(t *testing.T) {
 
 	t.Run("DefineClass", func(t *testing.T) {
 		// Add init script that defines a class
-		err := bt.vibe.AddInitScript(bt.ctx, `
+		err := bt.pilot.AddInitScript(bt.ctx, `
 			window.TestClass = class {
 				constructor(name) {
 					this.name = name;
@@ -132,7 +132,7 @@ func TestInitScriptFunction(t *testing.T) {
 		time.Sleep(200 * time.Millisecond)
 
 		// Use the class
-		result, err := bt.vibe.Evaluate(bt.ctx, "new window.TestClass('World').greet()")
+		result, err := bt.pilot.Evaluate(bt.ctx, "new window.TestClass('World').greet()")
 		if err != nil {
 			t.Fatalf("Failed to evaluate: %v", err)
 		}
@@ -150,7 +150,7 @@ func TestInitScriptMocking(t *testing.T) {
 
 	t.Run("MockDate", func(t *testing.T) {
 		// Mock Date.now() to return a fixed timestamp
-		err := bt.vibe.AddInitScript(bt.ctx, `
+		err := bt.pilot.AddInitScript(bt.ctx, `
 			const fixedTime = 1609459200000; // 2021-01-01T00:00:00.000Z
 			Date.now = function() {
 				return fixedTime;
@@ -165,7 +165,7 @@ func TestInitScriptMocking(t *testing.T) {
 		time.Sleep(200 * time.Millisecond)
 
 		// Check mocked Date.now()
-		result, err := bt.vibe.Evaluate(bt.ctx, "Date.now()")
+		result, err := bt.pilot.Evaluate(bt.ctx, "Date.now()")
 		if err != nil {
 			t.Fatalf("Failed to evaluate: %v", err)
 		}
@@ -178,7 +178,7 @@ func TestInitScriptMocking(t *testing.T) {
 
 	t.Run("MockLocalStorage", func(t *testing.T) {
 		// Add init script that pre-populates localStorage-like behavior
-		err := bt.vibe.AddInitScript(bt.ctx, `
+		err := bt.pilot.AddInitScript(bt.ctx, `
 			window.mockStorage = {
 				'user': 'test_user',
 				'token': 'mock_token_123'
@@ -192,7 +192,7 @@ func TestInitScriptMocking(t *testing.T) {
 		time.Sleep(200 * time.Millisecond)
 
 		// Check mock storage
-		result, err := bt.vibe.Evaluate(bt.ctx, "window.mockStorage.user")
+		result, err := bt.pilot.Evaluate(bt.ctx, "window.mockStorage.user")
 		if err != nil {
 			t.Fatalf("Failed to evaluate: %v", err)
 		}
@@ -210,19 +210,19 @@ func TestInitScriptMultiple(t *testing.T) {
 
 	t.Run("MultipleScripts", func(t *testing.T) {
 		// Add first init script
-		err := bt.vibe.AddInitScript(bt.ctx, `window.script1 = 'first';`)
+		err := bt.pilot.AddInitScript(bt.ctx, `window.script1 = 'first';`)
 		if err != nil {
 			t.Fatalf("Failed to add first init script: %v", err)
 		}
 
 		// Add second init script
-		err = bt.vibe.AddInitScript(bt.ctx, `window.script2 = 'second';`)
+		err = bt.pilot.AddInitScript(bt.ctx, `window.script2 = 'second';`)
 		if err != nil {
 			t.Fatalf("Failed to add second init script: %v", err)
 		}
 
 		// Add third init script that depends on the first two
-		err = bt.vibe.AddInitScript(bt.ctx, `
+		err = bt.pilot.AddInitScript(bt.ctx, `
 			window.combined = window.script1 + ' and ' + window.script2;
 		`)
 		if err != nil {
@@ -233,7 +233,7 @@ func TestInitScriptMultiple(t *testing.T) {
 		time.Sleep(200 * time.Millisecond)
 
 		// Check all scripts ran
-		result, err := bt.vibe.Evaluate(bt.ctx, "window.script1")
+		result, err := bt.pilot.Evaluate(bt.ctx, "window.script1")
 		if err != nil {
 			t.Fatalf("Failed to evaluate script1: %v", err)
 		}
@@ -241,7 +241,7 @@ func TestInitScriptMultiple(t *testing.T) {
 			t.Errorf("Expected 'first', got %v", result)
 		}
 
-		result, err = bt.vibe.Evaluate(bt.ctx, "window.script2")
+		result, err = bt.pilot.Evaluate(bt.ctx, "window.script2")
 		if err != nil {
 			t.Fatalf("Failed to evaluate script2: %v", err)
 		}
@@ -249,7 +249,7 @@ func TestInitScriptMultiple(t *testing.T) {
 			t.Errorf("Expected 'second', got %v", result)
 		}
 
-		result, err = bt.vibe.Evaluate(bt.ctx, "window.combined")
+		result, err = bt.pilot.Evaluate(bt.ctx, "window.combined")
 		if err != nil {
 			t.Fatalf("Failed to evaluate combined: %v", err)
 		}
@@ -266,7 +266,7 @@ func TestInitScriptBeforePageScripts(t *testing.T) {
 
 	t.Run("RunsBeforePageScripts", func(t *testing.T) {
 		// Add init script that sets a flag
-		err := bt.vibe.AddInitScript(bt.ctx, `
+		err := bt.pilot.AddInitScript(bt.ctx, `
 			window.initScriptRan = true;
 			window.initScriptTime = performance.now();
 		`)
@@ -279,7 +279,7 @@ func TestInitScriptBeforePageScripts(t *testing.T) {
 		time.Sleep(200 * time.Millisecond)
 
 		// Verify init script ran
-		result, err := bt.vibe.Evaluate(bt.ctx, "window.initScriptRan")
+		result, err := bt.pilot.Evaluate(bt.ctx, "window.initScriptRan")
 		if err != nil {
 			t.Fatalf("Failed to evaluate: %v", err)
 		}
@@ -289,7 +289,7 @@ func TestInitScriptBeforePageScripts(t *testing.T) {
 		}
 
 		// Check that initScriptTime is a reasonable value (should be very early)
-		result, err = bt.vibe.Evaluate(bt.ctx, "window.initScriptTime")
+		result, err = bt.pilot.Evaluate(bt.ctx, "window.initScriptTime")
 		if err != nil {
 			t.Fatalf("Failed to evaluate: %v", err)
 		}
@@ -310,7 +310,7 @@ func TestInitScriptFromContext(t *testing.T) {
 
 	t.Run("ContextInitScript", func(t *testing.T) {
 		// Create a browser context
-		browserCtx, err := bt.vibe.NewContext(bt.ctx)
+		browserCtx, err := bt.pilot.NewContext(bt.ctx)
 		if err != nil {
 			t.Fatalf("Failed to create context: %v", err)
 		}

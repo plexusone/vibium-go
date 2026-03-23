@@ -8,8 +8,8 @@ import (
 	"os"
 	"time"
 
-	vibium "github.com/plexusone/vibium-go"
-	"github.com/plexusone/vibium-go/rpa/activity"
+	"github.com/plexusone/webpilot"
+	"github.com/plexusone/webpilot/rpa/activity"
 )
 
 // ExecutorConfig configures the workflow executor.
@@ -107,8 +107,8 @@ func (e *Executor) RunWorkflow(ctx context.Context, wf *Workflow) (*WorkflowResu
 
 	// Launch browser
 	e.logger.Info("launching browser", "headless", headless)
-	launchOpts := &vibium.LaunchOptions{Headless: headless}
-	vibe, err := vibium.Browser.Launch(ctx, launchOpts)
+	launchOpts := &webpilot.LaunchOptions{Headless: headless}
+	vibe, err := webpilot.Browser.Launch(ctx, launchOpts)
 	if err != nil {
 		result.Complete(StatusFailure, fmt.Errorf("failed to launch browser: %w", err))
 		return result, nil
@@ -333,8 +333,8 @@ func (e *Executor) executeStep(ctx context.Context, step *Step, env *activity.En
 // handleError handles workflow error.
 func (e *Executor) handleError(ctx context.Context, handler *ErrorHandler, env *activity.Environment, resolver *Resolver, result *WorkflowResult, originalErr error) {
 	// Take screenshot if configured
-	if handler.Screenshot && env.Vibe != nil {
-		data, err := env.Vibe.Screenshot(ctx)
+	if handler.Screenshot && env.Pilot != nil {
+		data, err := env.Pilot.Screenshot(ctx)
 		if err == nil {
 			result.AddScreenshot(Screenshot{
 				Timestamp: time.Now(),

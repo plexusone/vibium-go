@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/plexusone/vibium-go"
+	"github.com/plexusone/webpilot"
 )
 
 // testPageSemanticSelectors is an HTML page for testing semantic selectors.
@@ -106,7 +106,7 @@ func TestSemanticSelectorsByRole(t *testing.T) {
 	time.Sleep(200 * time.Millisecond) // Allow page to fully render
 
 	t.Run("FindButtonByRole", func(t *testing.T) {
-		elem, err := bt.vibe.Find(bt.ctx, "", &vibium.FindOptions{
+		elem, err := bt.pilot.Find(bt.ctx, "", &webpilot.FindOptions{
 			Role: "button",
 			Text: "Submit Form",
 		})
@@ -122,7 +122,7 @@ func TestSemanticSelectorsByRole(t *testing.T) {
 	})
 
 	t.Run("FindAlertByRole", func(t *testing.T) {
-		elem, err := bt.vibe.Find(bt.ctx, "", &vibium.FindOptions{
+		elem, err := bt.pilot.Find(bt.ctx, "", &webpilot.FindOptions{
 			Role: "alert",
 		})
 		if err != nil {
@@ -134,7 +134,7 @@ func TestSemanticSelectorsByRole(t *testing.T) {
 	})
 
 	t.Run("FindDialogByRole", func(t *testing.T) {
-		elem, err := bt.vibe.Find(bt.ctx, "", &vibium.FindOptions{
+		elem, err := bt.pilot.Find(bt.ctx, "", &webpilot.FindOptions{
 			Role: "dialog",
 		})
 		if err != nil {
@@ -146,7 +146,7 @@ func TestSemanticSelectorsByRole(t *testing.T) {
 	})
 
 	t.Run("FindAllButtonsByRole", func(t *testing.T) {
-		elems, err := bt.vibe.FindAll(bt.ctx, "", &vibium.FindOptions{
+		elems, err := bt.pilot.FindAll(bt.ctx, "", &webpilot.FindOptions{
 			Role: "button",
 		})
 		if err != nil {
@@ -169,7 +169,7 @@ func TestSemanticSelectorsByText(t *testing.T) {
 	time.Sleep(200 * time.Millisecond)
 
 	t.Run("FindByExactText", func(t *testing.T) {
-		elem, err := bt.vibe.Find(bt.ctx, "", &vibium.FindOptions{
+		elem, err := bt.pilot.Find(bt.ctx, "", &webpilot.FindOptions{
 			Text: "Cancel",
 		})
 		if err != nil {
@@ -183,7 +183,7 @@ func TestSemanticSelectorsByText(t *testing.T) {
 	})
 
 	t.Run("FindByPartialText", func(t *testing.T) {
-		elem, err := bt.vibe.Find(bt.ctx, "", &vibium.FindOptions{
+		elem, err := bt.pilot.Find(bt.ctx, "", &webpilot.FindOptions{
 			Text: "Section A",
 		})
 		if err != nil {
@@ -195,7 +195,7 @@ func TestSemanticSelectorsByText(t *testing.T) {
 	})
 
 	t.Run("FindLinkByText", func(t *testing.T) {
-		elem, err := bt.vibe.Find(bt.ctx, "", &vibium.FindOptions{
+		elem, err := bt.pilot.Find(bt.ctx, "", &webpilot.FindOptions{
 			Role: "link",
 			Text: "Home",
 		})
@@ -219,7 +219,7 @@ func TestSemanticSelectorsByLabel(t *testing.T) {
 	time.Sleep(200 * time.Millisecond)
 
 	t.Run("FindInputByLabel", func(t *testing.T) {
-		elem, err := bt.vibe.Find(bt.ctx, "", &vibium.FindOptions{
+		elem, err := bt.pilot.Find(bt.ctx, "", &webpilot.FindOptions{
 			Label: "Email Address",
 		})
 		if err != nil {
@@ -233,7 +233,7 @@ func TestSemanticSelectorsByLabel(t *testing.T) {
 	})
 
 	t.Run("FindPasswordByLabel", func(t *testing.T) {
-		elem, err := bt.vibe.Find(bt.ctx, "", &vibium.FindOptions{
+		elem, err := bt.pilot.Find(bt.ctx, "", &webpilot.FindOptions{
 			Label: "Password",
 		})
 		if err != nil {
@@ -265,7 +265,7 @@ func TestSemanticSelectorsByPlaceholder(t *testing.T) {
 	time.Sleep(200 * time.Millisecond)
 
 	t.Run("FindByPlaceholder", func(t *testing.T) {
-		elem, err := bt.vibe.Find(bt.ctx, "", &vibium.FindOptions{
+		elem, err := bt.pilot.Find(bt.ctx, "", &webpilot.FindOptions{
 			Placeholder: "Enter your email",
 		})
 		if err != nil {
@@ -279,7 +279,7 @@ func TestSemanticSelectorsByPlaceholder(t *testing.T) {
 	})
 
 	t.Run("FindByPartialPlaceholder", func(t *testing.T) {
-		elem, err := bt.vibe.Find(bt.ctx, "", &vibium.FindOptions{
+		elem, err := bt.pilot.Find(bt.ctx, "", &webpilot.FindOptions{
 			Placeholder: "password",
 		})
 		if err != nil {
@@ -311,7 +311,7 @@ func TestSemanticSelectorsByTestID(t *testing.T) {
 	time.Sleep(200 * time.Millisecond)
 
 	t.Run("FindByTestID", func(t *testing.T) {
-		elem, err := bt.vibe.Find(bt.ctx, "", &vibium.FindOptions{
+		elem, err := bt.pilot.Find(bt.ctx, "", &webpilot.FindOptions{
 			TestID: "submit-button",
 		})
 		if err != nil {
@@ -323,7 +323,7 @@ func TestSemanticSelectorsByTestID(t *testing.T) {
 	})
 
 	t.Run("FindInputByTestID", func(t *testing.T) {
-		elem, err := bt.vibe.Find(bt.ctx, "", &vibium.FindOptions{
+		elem, err := bt.pilot.Find(bt.ctx, "", &webpilot.FindOptions{
 			TestID: "email-field",
 		})
 		if err != nil {
@@ -337,7 +337,7 @@ func TestSemanticSelectorsByTestID(t *testing.T) {
 	})
 
 	t.Run("FindAllByTestID", func(t *testing.T) {
-		elems, err := bt.vibe.FindAll(bt.ctx, "", &vibium.FindOptions{
+		elems, err := bt.pilot.FindAll(bt.ctx, "", &webpilot.FindOptions{
 			TestID: "list-item",
 		})
 		if err != nil {
@@ -359,7 +359,7 @@ func TestSemanticSelectorsByAlt(t *testing.T) {
 	time.Sleep(200 * time.Millisecond)
 
 	t.Run("FindImageByAlt", func(t *testing.T) {
-		elem, err := bt.vibe.Find(bt.ctx, "", &vibium.FindOptions{
+		elem, err := bt.pilot.Find(bt.ctx, "", &webpilot.FindOptions{
 			Alt: "Company Logo",
 		})
 		if err != nil {
@@ -373,7 +373,7 @@ func TestSemanticSelectorsByAlt(t *testing.T) {
 	})
 
 	t.Run("FindImageByPartialAlt", func(t *testing.T) {
-		elem, err := bt.vibe.Find(bt.ctx, "", &vibium.FindOptions{
+		elem, err := bt.pilot.Find(bt.ctx, "", &webpilot.FindOptions{
 			Alt: "Avatar",
 		})
 		if err != nil {
@@ -396,7 +396,7 @@ func TestSemanticSelectorsByTitle(t *testing.T) {
 	time.Sleep(200 * time.Millisecond)
 
 	t.Run("FindByTitle", func(t *testing.T) {
-		elem, err := bt.vibe.Find(bt.ctx, "", &vibium.FindOptions{
+		elem, err := bt.pilot.Find(bt.ctx, "", &webpilot.FindOptions{
 			Title: "Cancel the operation",
 		})
 		if err != nil {
@@ -408,7 +408,7 @@ func TestSemanticSelectorsByTitle(t *testing.T) {
 	})
 
 	t.Run("FindLinkByTitle", func(t *testing.T) {
-		elem, err := bt.vibe.Find(bt.ctx, "", &vibium.FindOptions{
+		elem, err := bt.pilot.Find(bt.ctx, "", &webpilot.FindOptions{
 			Title: "Learn about us",
 		})
 		if err != nil {
@@ -431,7 +431,7 @@ func TestSemanticSelectorsByXPath(t *testing.T) {
 	time.Sleep(200 * time.Millisecond)
 
 	t.Run("FindByXPath", func(t *testing.T) {
-		elem, err := bt.vibe.Find(bt.ctx, "", &vibium.FindOptions{
+		elem, err := bt.pilot.Find(bt.ctx, "", &webpilot.FindOptions{
 			XPath: "//button[@id='submit-btn']",
 		})
 		if err != nil {
@@ -443,7 +443,7 @@ func TestSemanticSelectorsByXPath(t *testing.T) {
 	})
 
 	t.Run("FindInputByXPath", func(t *testing.T) {
-		elem, err := bt.vibe.Find(bt.ctx, "", &vibium.FindOptions{
+		elem, err := bt.pilot.Find(bt.ctx, "", &webpilot.FindOptions{
 			XPath: "//input[@type='email']",
 		})
 		if err != nil {
@@ -457,7 +457,7 @@ func TestSemanticSelectorsByXPath(t *testing.T) {
 	})
 
 	t.Run("FindAllByXPath", func(t *testing.T) {
-		elems, err := bt.vibe.FindAll(bt.ctx, "", &vibium.FindOptions{
+		elems, err := bt.pilot.FindAll(bt.ctx, "", &webpilot.FindOptions{
 			XPath: "//li[@data-testid='list-item']",
 		})
 		if err != nil {
@@ -480,7 +480,7 @@ func TestSemanticSelectorsCombined(t *testing.T) {
 
 	t.Run("CSSWithRole", func(t *testing.T) {
 		// Find a button within the form
-		elem, err := bt.vibe.Find(bt.ctx, "form", &vibium.FindOptions{
+		elem, err := bt.pilot.Find(bt.ctx, "form", &webpilot.FindOptions{
 			Role: "checkbox",
 		})
 		if err != nil {
@@ -495,7 +495,7 @@ func TestSemanticSelectorsCombined(t *testing.T) {
 
 	t.Run("CSSWithLabel", func(t *testing.T) {
 		// Find input with label within the form
-		elem, err := bt.vibe.Find(bt.ctx, "#test-form", &vibium.FindOptions{
+		elem, err := bt.pilot.Find(bt.ctx, "#test-form", &webpilot.FindOptions{
 			Label: "Full Name",
 		})
 		if err != nil {
@@ -519,7 +519,7 @@ func TestSemanticSelectorsCombined(t *testing.T) {
 
 	t.Run("CSSWithRoleAndText", func(t *testing.T) {
 		// Find specific button within dialog
-		elem, err := bt.vibe.Find(bt.ctx, "[role='dialog']", &vibium.FindOptions{
+		elem, err := bt.pilot.Find(bt.ctx, "[role='dialog']", &webpilot.FindOptions{
 			Role: "button",
 			Text: "Yes",
 		})
@@ -542,7 +542,7 @@ func TestSemanticSelectorsScoped(t *testing.T) {
 
 	t.Run("ScopedFindByTestID", func(t *testing.T) {
 		// First find section A
-		sectionA, err := bt.vibe.Find(bt.ctx, "", &vibium.FindOptions{
+		sectionA, err := bt.pilot.Find(bt.ctx, "", &webpilot.FindOptions{
 			TestID: "section-a",
 		})
 		if err != nil {
@@ -550,7 +550,7 @@ func TestSemanticSelectorsScoped(t *testing.T) {
 		}
 
 		// Find button within section A
-		btn, err := sectionA.Find(bt.ctx, "", &vibium.FindOptions{
+		btn, err := sectionA.Find(bt.ctx, "", &webpilot.FindOptions{
 			TestID: "section-btn",
 		})
 		if err != nil {
@@ -563,13 +563,13 @@ func TestSemanticSelectorsScoped(t *testing.T) {
 
 	t.Run("ScopedFindByPlaceholder", func(t *testing.T) {
 		// Find section B
-		sectionB, err := bt.vibe.Find(bt.ctx, "#section-b", nil)
+		sectionB, err := bt.pilot.Find(bt.ctx, "#section-b", nil)
 		if err != nil {
 			t.Fatalf("Failed to find section B: %v", err)
 		}
 
 		// Find input within section B by placeholder
-		input, err := sectionB.Find(bt.ctx, "", &vibium.FindOptions{
+		input, err := sectionB.Find(bt.ctx, "", &webpilot.FindOptions{
 			Placeholder: "Section B Input",
 		})
 		if err != nil {
@@ -593,13 +593,13 @@ func TestSemanticSelectorsScoped(t *testing.T) {
 
 	t.Run("ScopedFindAll", func(t *testing.T) {
 		// Find the item list
-		list, err := bt.vibe.Find(bt.ctx, "#item-list", nil)
+		list, err := bt.pilot.Find(bt.ctx, "#item-list", nil)
 		if err != nil {
 			t.Fatalf("Failed to find item list: %v", err)
 		}
 
 		// Find all items within the list
-		items, err := list.FindAll(bt.ctx, "", &vibium.FindOptions{
+		items, err := list.FindAll(bt.ctx, "", &webpilot.FindOptions{
 			TestID: "list-item",
 		})
 		if err != nil {
@@ -621,7 +621,7 @@ func TestSemanticSelectorsNear(t *testing.T) {
 	time.Sleep(200 * time.Millisecond)
 
 	t.Run("FindButtonNearInput", func(t *testing.T) {
-		elem, err := bt.vibe.Find(bt.ctx, "", &vibium.FindOptions{
+		elem, err := bt.pilot.Find(bt.ctx, "", &webpilot.FindOptions{
 			Role: "button",
 			Near: "#username-input",
 		})
@@ -634,7 +634,7 @@ func TestSemanticSelectorsNear(t *testing.T) {
 	})
 
 	t.Run("FindInputNearLabel", func(t *testing.T) {
-		elem, err := bt.vibe.Find(bt.ctx, "", &vibium.FindOptions{
+		elem, err := bt.pilot.Find(bt.ctx, "", &webpilot.FindOptions{
 			Role: "textbox",
 			Near: "#username-label",
 		})
@@ -669,7 +669,7 @@ func TestSemanticSelectorsTimeout(t *testing.T) {
 	t.Run("TimeoutOnNotFound", func(t *testing.T) {
 		start := time.Now()
 
-		_, err := bt.vibe.Find(bt.ctx, "", &vibium.FindOptions{
+		_, err := bt.pilot.Find(bt.ctx, "", &webpilot.FindOptions{
 			TestID:  "non-existent-element",
 			Timeout: 1 * time.Second,
 		})
@@ -691,7 +691,7 @@ func TestSemanticSelectorsTimeout(t *testing.T) {
 
 	t.Run("CustomTimeout", func(t *testing.T) {
 		// Should find quickly with longer timeout
-		elem, err := bt.vibe.Find(bt.ctx, "", &vibium.FindOptions{
+		elem, err := bt.pilot.Find(bt.ctx, "", &webpilot.FindOptions{
 			TestID:  "submit-button",
 			Timeout: 10 * time.Second,
 		})
@@ -713,7 +713,7 @@ func TestSemanticSelectorsInteraction(t *testing.T) {
 	time.Sleep(200 * time.Millisecond)
 
 	t.Run("ClickButtonByRole", func(t *testing.T) {
-		elem, err := bt.vibe.Find(bt.ctx, "", &vibium.FindOptions{
+		elem, err := bt.pilot.Find(bt.ctx, "", &webpilot.FindOptions{
 			Role: "button",
 			Text: "Submit Form",
 		})
@@ -729,7 +729,7 @@ func TestSemanticSelectorsInteraction(t *testing.T) {
 	})
 
 	t.Run("FillInputByLabel", func(t *testing.T) {
-		elem, err := bt.vibe.Find(bt.ctx, "", &vibium.FindOptions{
+		elem, err := bt.pilot.Find(bt.ctx, "", &webpilot.FindOptions{
 			Label: "Email Address",
 		})
 		if err != nil {
@@ -751,7 +751,7 @@ func TestSemanticSelectorsInteraction(t *testing.T) {
 	})
 
 	t.Run("CheckCheckboxByTestID", func(t *testing.T) {
-		elem, err := bt.vibe.Find(bt.ctx, "", &vibium.FindOptions{
+		elem, err := bt.pilot.Find(bt.ctx, "", &webpilot.FindOptions{
 			TestID: "agree-checkbox",
 		})
 		if err != nil {

@@ -22,7 +22,7 @@ func TestDialogAlert(t *testing.T) {
 	go func() {
 		// Give time for alert to appear
 		time.Sleep(200 * time.Millisecond)
-		err := bt.vibe.HandleDialog(bt.ctx, true, "")
+		err := bt.pilot.HandleDialog(bt.ctx, true, "")
 		if err != nil {
 			t.Logf("HandleDialog error (may be expected): %v", err)
 		}
@@ -52,7 +52,7 @@ func TestDialogConfirm(t *testing.T) {
 	// Accept the confirm dialog
 	go func() {
 		time.Sleep(200 * time.Millisecond)
-		_ = bt.vibe.HandleDialog(bt.ctx, true, "")
+		_ = bt.pilot.HandleDialog(bt.ctx, true, "")
 	}()
 
 	elem := bt.find("#confirmBtn")
@@ -64,7 +64,7 @@ func TestDialogConfirm(t *testing.T) {
 	time.Sleep(300 * time.Millisecond)
 
 	// Check result
-	content, err := bt.vibe.Content(bt.ctx)
+	content, err := bt.pilot.Content(bt.ctx)
 	if err != nil {
 		t.Fatalf("Failed to get content: %v", err)
 	}
@@ -85,7 +85,7 @@ func TestDialogPrompt(t *testing.T) {
 	// Accept with text
 	go func() {
 		time.Sleep(200 * time.Millisecond)
-		_ = bt.vibe.HandleDialog(bt.ctx, true, "TestUser")
+		_ = bt.pilot.HandleDialog(bt.ctx, true, "TestUser")
 	}()
 
 	elem := bt.find("#promptBtn")
@@ -96,7 +96,7 @@ func TestDialogPrompt(t *testing.T) {
 
 	time.Sleep(300 * time.Millisecond)
 
-	content, err := bt.vibe.Content(bt.ctx)
+	content, err := bt.pilot.Content(bt.ctx)
 	if err != nil {
 		t.Fatalf("Failed to get content: %v", err)
 	}
@@ -112,7 +112,7 @@ func TestNewPage(t *testing.T) {
 	bt.go_("https://example.com")
 
 	// Create new page
-	newPage, err := bt.vibe.NewPage(bt.ctx)
+	newPage, err := bt.pilot.NewPage(bt.ctx)
 	if err != nil {
 		t.Fatalf("Failed to create new page: %v", err)
 	}
@@ -146,7 +146,7 @@ func TestPages(t *testing.T) {
 	bt.go_("https://example.com")
 
 	// Get pages
-	pages, err := bt.vibe.Pages(bt.ctx)
+	pages, err := bt.pilot.Pages(bt.ctx)
 	if err != nil {
 		t.Fatalf("Failed to get pages: %v", err)
 	}
@@ -158,14 +158,14 @@ func TestPages(t *testing.T) {
 	t.Logf("Found %d page(s)", len(pages))
 
 	// Create another page
-	newPage, err := bt.vibe.NewPage(bt.ctx)
+	newPage, err := bt.pilot.NewPage(bt.ctx)
 	if err != nil {
 		t.Fatalf("Failed to create new page: %v", err)
 	}
 	defer newPage.Close(bt.ctx)
 
 	// Get pages again
-	pages, err = bt.vibe.Pages(bt.ctx)
+	pages, err = bt.pilot.Pages(bt.ctx)
 	if err != nil {
 		t.Fatalf("Failed to get pages after creating new: %v", err)
 	}
@@ -184,7 +184,7 @@ func TestBringToFront(t *testing.T) {
 	bt.go_("https://example.com")
 
 	// Create and navigate new page
-	newPage, err := bt.vibe.NewPage(bt.ctx)
+	newPage, err := bt.pilot.NewPage(bt.ctx)
 	if err != nil {
 		t.Fatalf("Failed to create new page: %v", err)
 	}
@@ -196,7 +196,7 @@ func TestBringToFront(t *testing.T) {
 	}
 
 	// Bring original page to front
-	err = bt.vibe.BringToFront(bt.ctx)
+	err = bt.pilot.BringToFront(bt.ctx)
 	if err != nil {
 		t.Fatalf("Failed to bring to front: %v", err)
 	}
@@ -211,13 +211,13 @@ func TestClosePage(t *testing.T) {
 	bt.go_("https://example.com")
 
 	// Create a new page
-	newPage, err := bt.vibe.NewPage(bt.ctx)
+	newPage, err := bt.pilot.NewPage(bt.ctx)
 	if err != nil {
 		t.Fatalf("Failed to create new page: %v", err)
 	}
 
 	// Get page count before close
-	pagesBefore, err := bt.vibe.Pages(bt.ctx)
+	pagesBefore, err := bt.pilot.Pages(bt.ctx)
 	if err != nil {
 		t.Fatalf("Failed to get pages: %v", err)
 	}
@@ -232,7 +232,7 @@ func TestClosePage(t *testing.T) {
 	time.Sleep(100 * time.Millisecond)
 
 	// Get page count after close
-	pagesAfter, err := bt.vibe.Pages(bt.ctx)
+	pagesAfter, err := bt.pilot.Pages(bt.ctx)
 	if err != nil {
 		t.Fatalf("Failed to get pages after close: %v", err)
 	}

@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"time"
 
-	vibium "github.com/plexusone/vibium-go"
+	"github.com/plexusone/webpilot"
 )
 
 // ScrapeTableActivity extracts data from an HTML table.
@@ -21,10 +21,10 @@ func (a *ScrapeTableActivity) Execute(ctx context.Context, params map[string]any
 	}
 
 	timeout := time.Duration(GetIntDefault(params, "timeout", 30000)) * time.Millisecond
-	opts := &vibium.FindOptions{Timeout: timeout}
+	opts := &webpilot.FindOptions{Timeout: timeout}
 
 	// Find the table element
-	el, err := env.Vibe.Find(ctx, selector, opts)
+	el, err := env.Pilot.Find(ctx, selector, opts)
 	if err != nil {
 		return nil, fmt.Errorf("table not found: %w", err)
 	}
@@ -68,7 +68,7 @@ func (a *ScrapeTableActivity) Execute(ctx context.Context, params map[string]any
 		}
 	`
 
-	result, err := env.Vibe.Evaluate(ctx, fmt.Sprintf("return (%s)('%s')", script, selector))
+	result, err := env.Pilot.Evaluate(ctx, fmt.Sprintf("return (%s)('%s')", script, selector))
 	if err != nil {
 		return nil, fmt.Errorf("table extraction failed: %w", err)
 	}

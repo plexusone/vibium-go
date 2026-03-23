@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"time"
 
-	vibium "github.com/plexusone/vibium-go"
+	"github.com/plexusone/webpilot"
 )
 
 // NavigateActivity navigates to a URL.
@@ -20,14 +20,14 @@ func (a *NavigateActivity) Execute(ctx context.Context, params map[string]any, e
 		return nil, fmt.Errorf("url parameter is required")
 	}
 
-	if err := env.Vibe.Go(ctx, url); err != nil {
+	if err := env.Pilot.Go(ctx, url); err != nil {
 		return nil, fmt.Errorf("navigation failed: %w", err)
 	}
 
 	// Wait for load if specified
 	if wait := GetString(params, "wait"); wait != "" {
 		timeout := time.Duration(GetIntDefault(params, "timeout", 30000)) * time.Millisecond
-		if err := env.Vibe.WaitForLoad(ctx, wait, timeout); err != nil {
+		if err := env.Pilot.WaitForLoad(ctx, wait, timeout); err != nil {
 			return nil, fmt.Errorf("wait for load failed: %w", err)
 		}
 	}
@@ -47,14 +47,14 @@ func (a *ClickActivity) Execute(ctx context.Context, params map[string]any, env 
 	}
 
 	timeout := time.Duration(GetIntDefault(params, "timeout", 30000)) * time.Millisecond
-	opts := &vibium.FindOptions{Timeout: timeout}
+	opts := &webpilot.FindOptions{Timeout: timeout}
 
-	el, err := env.Vibe.Find(ctx, selector, opts)
+	el, err := env.Pilot.Find(ctx, selector, opts)
 	if err != nil {
 		return nil, fmt.Errorf("element not found: %w", err)
 	}
 
-	actionOpts := &vibium.ActionOptions{Timeout: timeout}
+	actionOpts := &webpilot.ActionOptions{Timeout: timeout}
 	if err := el.Click(ctx, actionOpts); err != nil {
 		return nil, fmt.Errorf("click failed: %w", err)
 	}
@@ -76,14 +76,14 @@ func (a *FillActivity) Execute(ctx context.Context, params map[string]any, env *
 	value := GetString(params, "value")
 
 	timeout := time.Duration(GetIntDefault(params, "timeout", 30000)) * time.Millisecond
-	opts := &vibium.FindOptions{Timeout: timeout}
+	opts := &webpilot.FindOptions{Timeout: timeout}
 
-	el, err := env.Vibe.Find(ctx, selector, opts)
+	el, err := env.Pilot.Find(ctx, selector, opts)
 	if err != nil {
 		return nil, fmt.Errorf("element not found: %w", err)
 	}
 
-	actionOpts := &vibium.ActionOptions{Timeout: timeout}
+	actionOpts := &webpilot.ActionOptions{Timeout: timeout}
 	if err := el.Fill(ctx, value, actionOpts); err != nil {
 		return nil, fmt.Errorf("fill failed: %w", err)
 	}
@@ -108,14 +108,14 @@ func (a *TypeActivity) Execute(ctx context.Context, params map[string]any, env *
 	}
 
 	timeout := time.Duration(GetIntDefault(params, "timeout", 30000)) * time.Millisecond
-	opts := &vibium.FindOptions{Timeout: timeout}
+	opts := &webpilot.FindOptions{Timeout: timeout}
 
-	el, err := env.Vibe.Find(ctx, selector, opts)
+	el, err := env.Pilot.Find(ctx, selector, opts)
 	if err != nil {
 		return nil, fmt.Errorf("element not found: %w", err)
 	}
 
-	actionOpts := &vibium.ActionOptions{Timeout: timeout}
+	actionOpts := &webpilot.ActionOptions{Timeout: timeout}
 	if err := el.Type(ctx, text, actionOpts); err != nil {
 		return nil, fmt.Errorf("type failed: %w", err)
 	}
@@ -135,14 +135,14 @@ func (a *SelectOptionActivity) Execute(ctx context.Context, params map[string]an
 	}
 
 	timeout := time.Duration(GetIntDefault(params, "timeout", 30000)) * time.Millisecond
-	opts := &vibium.FindOptions{Timeout: timeout}
+	opts := &webpilot.FindOptions{Timeout: timeout}
 
-	el, err := env.Vibe.Find(ctx, selector, opts)
+	el, err := env.Pilot.Find(ctx, selector, opts)
 	if err != nil {
 		return nil, fmt.Errorf("element not found: %w", err)
 	}
 
-	selectOpts := vibium.SelectOptionValues{}
+	selectOpts := webpilot.SelectOptionValues{}
 	if value := GetString(params, "value"); value != "" {
 		selectOpts.Values = []string{value}
 	}
@@ -153,7 +153,7 @@ func (a *SelectOptionActivity) Execute(ctx context.Context, params map[string]an
 		selectOpts.Indexes = []int{index}
 	}
 
-	actionOpts := &vibium.ActionOptions{Timeout: timeout}
+	actionOpts := &webpilot.ActionOptions{Timeout: timeout}
 	if err := el.SelectOption(ctx, selectOpts, actionOpts); err != nil {
 		return nil, fmt.Errorf("select failed: %w", err)
 	}
@@ -173,14 +173,14 @@ func (a *CheckActivity) Execute(ctx context.Context, params map[string]any, env 
 	}
 
 	timeout := time.Duration(GetIntDefault(params, "timeout", 30000)) * time.Millisecond
-	opts := &vibium.FindOptions{Timeout: timeout}
+	opts := &webpilot.FindOptions{Timeout: timeout}
 
-	el, err := env.Vibe.Find(ctx, selector, opts)
+	el, err := env.Pilot.Find(ctx, selector, opts)
 	if err != nil {
 		return nil, fmt.Errorf("element not found: %w", err)
 	}
 
-	actionOpts := &vibium.ActionOptions{Timeout: timeout}
+	actionOpts := &webpilot.ActionOptions{Timeout: timeout}
 	if err := el.Check(ctx, actionOpts); err != nil {
 		return nil, fmt.Errorf("check failed: %w", err)
 	}
@@ -200,14 +200,14 @@ func (a *UncheckActivity) Execute(ctx context.Context, params map[string]any, en
 	}
 
 	timeout := time.Duration(GetIntDefault(params, "timeout", 30000)) * time.Millisecond
-	opts := &vibium.FindOptions{Timeout: timeout}
+	opts := &webpilot.FindOptions{Timeout: timeout}
 
-	el, err := env.Vibe.Find(ctx, selector, opts)
+	el, err := env.Pilot.Find(ctx, selector, opts)
 	if err != nil {
 		return nil, fmt.Errorf("element not found: %w", err)
 	}
 
-	actionOpts := &vibium.ActionOptions{Timeout: timeout}
+	actionOpts := &webpilot.ActionOptions{Timeout: timeout}
 	if err := el.Uncheck(ctx, actionOpts); err != nil {
 		return nil, fmt.Errorf("uncheck failed: %w", err)
 	}
@@ -226,13 +226,13 @@ func (a *ScrollActivity) Execute(ctx context.Context, params map[string]any, env
 	timeout := time.Duration(GetIntDefault(params, "timeout", 30000)) * time.Millisecond
 
 	if selector != "" {
-		opts := &vibium.FindOptions{Timeout: timeout}
-		el, err := env.Vibe.Find(ctx, selector, opts)
+		opts := &webpilot.FindOptions{Timeout: timeout}
+		el, err := env.Pilot.Find(ctx, selector, opts)
 		if err != nil {
 			return nil, fmt.Errorf("element not found: %w", err)
 		}
 
-		actionOpts := &vibium.ActionOptions{Timeout: timeout}
+		actionOpts := &webpilot.ActionOptions{Timeout: timeout}
 		if err := el.ScrollIntoView(ctx, actionOpts); err != nil {
 			return nil, fmt.Errorf("scroll failed: %w", err)
 		}
@@ -241,7 +241,7 @@ func (a *ScrollActivity) Execute(ctx context.Context, params map[string]any, env
 		deltaX := GetInt(params, "deltaX")
 		deltaY := GetInt(params, "deltaY")
 		script := fmt.Sprintf("window.scrollBy(%d, %d)", deltaX, deltaY)
-		if _, err := env.Vibe.Evaluate(ctx, script); err != nil {
+		if _, err := env.Pilot.Evaluate(ctx, script); err != nil {
 			return nil, fmt.Errorf("scroll failed: %w", err)
 		}
 	}
@@ -262,14 +262,14 @@ func (a *ScreenshotActivity) Execute(ctx context.Context, params map[string]any,
 
 	if selector != "" {
 		timeout := time.Duration(GetIntDefault(params, "timeout", 30000)) * time.Millisecond
-		opts := &vibium.FindOptions{Timeout: timeout}
-		el, findErr := env.Vibe.Find(ctx, selector, opts)
+		opts := &webpilot.FindOptions{Timeout: timeout}
+		el, findErr := env.Pilot.Find(ctx, selector, opts)
 		if findErr != nil {
 			return nil, fmt.Errorf("element not found: %w", findErr)
 		}
 		data, err = el.Screenshot(ctx)
 	} else {
-		data, err = env.Vibe.Screenshot(ctx)
+		data, err = env.Pilot.Screenshot(ctx)
 	}
 
 	if err != nil {
@@ -286,7 +286,7 @@ type PDFActivity struct{}
 func (a *PDFActivity) Name() string { return "browser.pdf" }
 
 func (a *PDFActivity) Execute(ctx context.Context, params map[string]any, env *Environment) (any, error) {
-	opts := &vibium.PDFOptions{
+	opts := &webpilot.PDFOptions{
 		PrintBackground: GetBool(params, "printBackground"),
 		Landscape:       GetBool(params, "landscape"),
 		DisplayHeader:   GetBool(params, "displayHeader"),
@@ -300,7 +300,7 @@ func (a *PDFActivity) Execute(ctx context.Context, params map[string]any, env *E
 		opts.Format = format
 	}
 
-	data, err := env.Vibe.PDF(ctx, opts)
+	data, err := env.Pilot.PDF(ctx, opts)
 	if err != nil {
 		return nil, fmt.Errorf("PDF generation failed: %w", err)
 	}

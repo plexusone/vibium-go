@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/plexusone/vibium-go"
+	"github.com/plexusone/webpilot"
 )
 
 // testPageStorage is an HTML page for testing storage operations.
@@ -37,7 +37,7 @@ func TestStorageStateGet(t *testing.T) {
 		time.Sleep(300 * time.Millisecond)
 
 		// Get storage state
-		state, err := bt.vibe.StorageState(bt.ctx)
+		state, err := bt.pilot.StorageState(bt.ctx)
 		if err != nil {
 			t.Fatalf("Failed to get storage state: %v", err)
 		}
@@ -72,7 +72,7 @@ func TestStorageStateGet(t *testing.T) {
 		time.Sleep(500 * time.Millisecond)
 
 		// Set some localStorage via JavaScript
-		_, err := bt.vibe.Evaluate(bt.ctx, `
+		_, err := bt.pilot.Evaluate(bt.ctx, `
 			localStorage.setItem('test_key', 'test_value');
 			sessionStorage.setItem('session_test', 'session_value');
 		`)
@@ -81,7 +81,7 @@ func TestStorageStateGet(t *testing.T) {
 		}
 
 		// Get storage state
-		state, err := bt.vibe.StorageState(bt.ctx)
+		state, err := bt.pilot.StorageState(bt.ctx)
 		if err != nil {
 			t.Fatalf("Failed to get storage state: %v", err)
 		}
@@ -123,8 +123,8 @@ func TestStorageStateRestore(t *testing.T) {
 
 	t.Run("SetStorageState", func(t *testing.T) {
 		// Create a storage state to restore
-		state := &vibium.StorageState{
-			Cookies: []vibium.Cookie{
+		state := &webpilot.StorageState{
+			Cookies: []webpilot.Cookie{
 				{
 					Name:   "test_cookie",
 					Value:  "cookie_value",
@@ -132,7 +132,7 @@ func TestStorageStateRestore(t *testing.T) {
 					Path:   "/",
 				},
 			},
-			Origins: []vibium.StorageStateOrigin{
+			Origins: []webpilot.StorageStateOrigin{
 				{
 					Origin: "https://example.com",
 					LocalStorage: map[string]string{
@@ -151,13 +151,13 @@ func TestStorageStateRestore(t *testing.T) {
 		time.Sleep(300 * time.Millisecond)
 
 		// Restore storage state
-		err := bt.vibe.SetStorageState(bt.ctx, state)
+		err := bt.pilot.SetStorageState(bt.ctx, state)
 		if err != nil {
 			t.Fatalf("Failed to set storage state: %v", err)
 		}
 
 		// Verify localStorage was set
-		result, err := bt.vibe.Evaluate(bt.ctx, "localStorage.getItem('restored_key')")
+		result, err := bt.pilot.Evaluate(bt.ctx, "localStorage.getItem('restored_key')")
 		if err != nil {
 			t.Fatalf("Failed to check localStorage: %v", err)
 		}
@@ -166,7 +166,7 @@ func TestStorageStateRestore(t *testing.T) {
 		}
 
 		// Verify user_id
-		result, err = bt.vibe.Evaluate(bt.ctx, "localStorage.getItem('user_id')")
+		result, err = bt.pilot.Evaluate(bt.ctx, "localStorage.getItem('user_id')")
 		if err != nil {
 			t.Fatalf("Failed to check localStorage: %v", err)
 		}
@@ -175,7 +175,7 @@ func TestStorageStateRestore(t *testing.T) {
 		}
 
 		// Verify sessionStorage was set
-		result, err = bt.vibe.Evaluate(bt.ctx, "sessionStorage.getItem('session_token')")
+		result, err = bt.pilot.Evaluate(bt.ctx, "sessionStorage.getItem('session_token')")
 		if err != nil {
 			t.Fatalf("Failed to check sessionStorage: %v", err)
 		}
@@ -190,7 +190,7 @@ func TestStorageStateRestore(t *testing.T) {
 		time.Sleep(300 * time.Millisecond)
 
 		// Set storage via JavaScript
-		_, err := bt.vibe.Evaluate(bt.ctx, `
+		_, err := bt.pilot.Evaluate(bt.ctx, `
 			localStorage.setItem('roundtrip_key', 'roundtrip_value');
 			sessionStorage.setItem('roundtrip_session', 'session_data');
 		`)
@@ -199,7 +199,7 @@ func TestStorageStateRestore(t *testing.T) {
 		}
 
 		// Get storage state
-		state, err := bt.vibe.StorageState(bt.ctx)
+		state, err := bt.pilot.StorageState(bt.ctx)
 		if err != nil {
 			t.Fatalf("Failed to get storage state: %v", err)
 		}
@@ -212,13 +212,13 @@ func TestStorageStateRestore(t *testing.T) {
 		t.Logf("Storage state JSON size: %d bytes", len(jsonData))
 
 		// Clear storage
-		err = bt.vibe.ClearStorage(bt.ctx)
+		err = bt.pilot.ClearStorage(bt.ctx)
 		if err != nil {
 			t.Fatalf("Failed to clear storage: %v", err)
 		}
 
 		// Verify cleared
-		result, err := bt.vibe.Evaluate(bt.ctx, "localStorage.getItem('roundtrip_key')")
+		result, err := bt.pilot.Evaluate(bt.ctx, "localStorage.getItem('roundtrip_key')")
 		if err != nil {
 			t.Fatalf("Failed to check localStorage: %v", err)
 		}
@@ -227,18 +227,18 @@ func TestStorageStateRestore(t *testing.T) {
 		}
 
 		// Deserialize and restore
-		var restoredState vibium.StorageState
+		var restoredState webpilot.StorageState
 		if err := json.Unmarshal(jsonData, &restoredState); err != nil {
 			t.Fatalf("Failed to unmarshal state: %v", err)
 		}
 
-		err = bt.vibe.SetStorageState(bt.ctx, &restoredState)
+		err = bt.pilot.SetStorageState(bt.ctx, &restoredState)
 		if err != nil {
 			t.Fatalf("Failed to restore storage state: %v", err)
 		}
 
 		// Verify restored
-		result, err = bt.vibe.Evaluate(bt.ctx, "localStorage.getItem('roundtrip_key')")
+		result, err = bt.pilot.Evaluate(bt.ctx, "localStorage.getItem('roundtrip_key')")
 		if err != nil {
 			t.Fatalf("Failed to check localStorage: %v", err)
 		}
@@ -258,7 +258,7 @@ func TestStorageStateClear(t *testing.T) {
 		time.Sleep(300 * time.Millisecond)
 
 		// Set some storage
-		_, err := bt.vibe.Evaluate(bt.ctx, `
+		_, err := bt.pilot.Evaluate(bt.ctx, `
 			localStorage.setItem('to_clear', 'value1');
 			sessionStorage.setItem('to_clear_session', 'value2');
 		`)
@@ -267,19 +267,19 @@ func TestStorageStateClear(t *testing.T) {
 		}
 
 		// Verify set
-		result, _ := bt.vibe.Evaluate(bt.ctx, "localStorage.getItem('to_clear')")
+		result, _ := bt.pilot.Evaluate(bt.ctx, "localStorage.getItem('to_clear')")
 		if result != "value1" {
 			t.Fatalf("Storage not set properly, got %v", result)
 		}
 
 		// Clear storage
-		err = bt.vibe.ClearStorage(bt.ctx)
+		err = bt.pilot.ClearStorage(bt.ctx)
 		if err != nil {
 			t.Fatalf("Failed to clear storage: %v", err)
 		}
 
 		// Verify localStorage cleared
-		result, err = bt.vibe.Evaluate(bt.ctx, "localStorage.getItem('to_clear')")
+		result, err = bt.pilot.Evaluate(bt.ctx, "localStorage.getItem('to_clear')")
 		if err != nil {
 			t.Fatalf("Failed to check localStorage: %v", err)
 		}
@@ -288,7 +288,7 @@ func TestStorageStateClear(t *testing.T) {
 		}
 
 		// Verify sessionStorage cleared
-		result, err = bt.vibe.Evaluate(bt.ctx, "sessionStorage.getItem('to_clear_session')")
+		result, err = bt.pilot.Evaluate(bt.ctx, "sessionStorage.getItem('to_clear_session')")
 		if err != nil {
 			t.Fatalf("Failed to check sessionStorage: %v", err)
 		}
@@ -299,7 +299,7 @@ func TestStorageStateClear(t *testing.T) {
 
 	t.Run("ClearStorageOnBlankPage", func(t *testing.T) {
 		// ClearStorage should not error on blank page
-		err := bt.vibe.ClearStorage(bt.ctx)
+		err := bt.pilot.ClearStorage(bt.ctx)
 		if err != nil {
 			t.Errorf("ClearStorage should not error on blank page: %v", err)
 		}
@@ -316,13 +316,13 @@ func TestStorageStateWithCookies(t *testing.T) {
 		time.Sleep(300 * time.Millisecond)
 
 		// Get browser context to set cookies
-		browserCtx, err := bt.vibe.NewContext(bt.ctx)
+		browserCtx, err := bt.pilot.NewContext(bt.ctx)
 		if err != nil {
 			t.Fatalf("Failed to get context: %v", err)
 		}
 
 		// Set a cookie
-		err = browserCtx.SetCookies(bt.ctx, []vibium.SetCookieParam{
+		err = browserCtx.SetCookies(bt.ctx, []webpilot.SetCookieParam{
 			{
 				Name:   "test_cookie",
 				Value:  "cookie_value",
@@ -335,7 +335,7 @@ func TestStorageStateWithCookies(t *testing.T) {
 		}
 
 		// Get storage state
-		state, err := bt.vibe.StorageState(bt.ctx)
+		state, err := bt.pilot.StorageState(bt.ctx)
 		if err != nil {
 			t.Fatalf("Failed to get storage state: %v", err)
 		}
@@ -355,8 +355,8 @@ func TestStorageStateWithCookies(t *testing.T) {
 	})
 
 	t.Run("RestoreCookies", func(t *testing.T) {
-		state := &vibium.StorageState{
-			Cookies: []vibium.Cookie{
+		state := &webpilot.StorageState{
+			Cookies: []webpilot.Cookie{
 				{
 					Name:   "restored_cookie",
 					Value:  "restored_value",
@@ -364,19 +364,19 @@ func TestStorageStateWithCookies(t *testing.T) {
 					Path:   "/",
 				},
 			},
-			Origins: []vibium.StorageStateOrigin{},
+			Origins: []webpilot.StorageStateOrigin{},
 		}
 
 		bt.go_("https://example.com")
 		time.Sleep(300 * time.Millisecond)
 
-		err := bt.vibe.SetStorageState(bt.ctx, state)
+		err := bt.pilot.SetStorageState(bt.ctx, state)
 		if err != nil {
 			t.Fatalf("Failed to set storage state: %v", err)
 		}
 
 		// Get cookies to verify
-		browserCtx, err := bt.vibe.NewContext(bt.ctx)
+		browserCtx, err := bt.pilot.NewContext(bt.ctx)
 		if err != nil {
 			t.Fatalf("Failed to get context: %v", err)
 		}
@@ -407,8 +407,8 @@ func TestStorageStateMultipleOrigins(t *testing.T) {
 
 	t.Run("MultipleOriginsInState", func(t *testing.T) {
 		// Create state with multiple origins
-		state := &vibium.StorageState{
-			Origins: []vibium.StorageStateOrigin{
+		state := &webpilot.StorageState{
+			Origins: []webpilot.StorageStateOrigin{
 				{
 					Origin: "https://example.com",
 					LocalStorage: map[string]string{
@@ -428,13 +428,13 @@ func TestStorageStateMultipleOrigins(t *testing.T) {
 		bt.go_("https://example.com")
 		time.Sleep(300 * time.Millisecond)
 
-		err := bt.vibe.SetStorageState(bt.ctx, state)
+		err := bt.pilot.SetStorageState(bt.ctx, state)
 		if err != nil {
 			t.Fatalf("Failed to set storage state: %v", err)
 		}
 
 		// Verify first origin's storage
-		result, err := bt.vibe.Evaluate(bt.ctx, "localStorage.getItem('key1')")
+		result, err := bt.pilot.Evaluate(bt.ctx, "localStorage.getItem('key1')")
 		if err != nil {
 			t.Fatalf("Failed to check localStorage: %v", err)
 		}

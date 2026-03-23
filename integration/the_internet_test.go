@@ -16,7 +16,7 @@ func TestTheInternet(t *testing.T) {
 	bt.go_("https://the-internet.herokuapp.com/")
 
 	t.Run("PageTitle", func(t *testing.T) {
-		title, err := bt.vibe.Title(bt.ctx)
+		title, err := bt.pilot.Title(bt.ctx)
 		if err != nil {
 			t.Fatalf("Failed to get title: %v", err)
 		}
@@ -186,42 +186,42 @@ func TestTheInternetNavigation(t *testing.T) {
 	// Navigate to inputs page
 	bt.go_("https://the-internet.herokuapp.com/inputs")
 
-	url1, _ := bt.vibe.URL(bt.ctx)
+	url1, _ := bt.pilot.URL(bt.ctx)
 	assertContains(t, url1, "inputs")
 
 	t.Run("Back", func(t *testing.T) {
-		if err := bt.vibe.Back(bt.ctx); err != nil {
+		if err := bt.pilot.Back(bt.ctx); err != nil {
 			t.Fatalf("Failed to go back: %v", err)
 		}
 
 		// Wait for navigation
 		time.Sleep(500 * time.Millisecond)
 
-		url, _ := bt.vibe.URL(bt.ctx)
+		url, _ := bt.pilot.URL(bt.ctx)
 		if url == url1 {
 			t.Error("URL should have changed after going back")
 		}
 	})
 
 	t.Run("Forward", func(t *testing.T) {
-		if err := bt.vibe.Forward(bt.ctx); err != nil {
+		if err := bt.pilot.Forward(bt.ctx); err != nil {
 			t.Fatalf("Failed to go forward: %v", err)
 		}
 
 		// Wait for navigation
 		time.Sleep(500 * time.Millisecond)
 
-		url, _ := bt.vibe.URL(bt.ctx)
+		url, _ := bt.pilot.URL(bt.ctx)
 		assertContains(t, url, "inputs")
 	})
 
 	t.Run("Reload", func(t *testing.T) {
-		if err := bt.vibe.Reload(bt.ctx); err != nil {
+		if err := bt.pilot.Reload(bt.ctx); err != nil {
 			t.Fatalf("Failed to reload: %v", err)
 		}
 
 		// Page should still be inputs after reload
-		url, _ := bt.vibe.URL(bt.ctx)
+		url, _ := bt.pilot.URL(bt.ctx)
 		assertContains(t, url, "inputs")
 	})
 }

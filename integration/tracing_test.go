@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/plexusone/vibium-go"
+	"github.com/plexusone/webpilot"
 )
 
 // TestTracingBasic tests basic tracing functionality.
@@ -16,13 +16,13 @@ func TestTracingBasic(t *testing.T) {
 
 	t.Run("StartAndStop", func(t *testing.T) {
 		// Get tracing controller
-		tracing := bt.vibe.Tracing()
+		tracing := bt.pilot.Tracing()
 		if tracing == nil {
 			t.Fatal("Tracing() returned nil")
 		}
 
 		// Start tracing
-		err := tracing.Start(bt.ctx, &vibium.TracingStartOptions{
+		err := tracing.Start(bt.ctx, &webpilot.TracingStartOptions{
 			Screenshots: true,
 			Snapshots:   true,
 			Title:       "Test Trace",
@@ -53,9 +53,9 @@ func TestTracingBasic(t *testing.T) {
 	})
 
 	t.Run("StartWithOptions", func(t *testing.T) {
-		tracing := bt.vibe.Tracing()
+		tracing := bt.pilot.Tracing()
 
-		err := tracing.Start(bt.ctx, &vibium.TracingStartOptions{
+		err := tracing.Start(bt.ctx, &webpilot.TracingStartOptions{
 			Name:        "custom-trace",
 			Screenshots: true,
 			Snapshots:   true,
@@ -80,7 +80,7 @@ func TestTracingBasic(t *testing.T) {
 	})
 
 	t.Run("StartWithNilOptions", func(t *testing.T) {
-		tracing := bt.vibe.Tracing()
+		tracing := bt.pilot.Tracing()
 
 		// Start with nil options should work
 		err := tracing.Start(bt.ctx, nil)
@@ -107,10 +107,10 @@ func TestTracingChunks(t *testing.T) {
 	defer bt.cleanup()
 
 	t.Run("ChunkRecording", func(t *testing.T) {
-		tracing := bt.vibe.Tracing()
+		tracing := bt.pilot.Tracing()
 
 		// Start main trace
-		err := tracing.Start(bt.ctx, &vibium.TracingStartOptions{
+		err := tracing.Start(bt.ctx, &webpilot.TracingStartOptions{
 			Screenshots: true,
 			Title:       "Chunked Trace",
 		})
@@ -123,7 +123,7 @@ func TestTracingChunks(t *testing.T) {
 		time.Sleep(300 * time.Millisecond)
 
 		// Start chunk
-		err = tracing.StartChunk(bt.ctx, &vibium.TracingChunkOptions{
+		err = tracing.StartChunk(bt.ctx, &webpilot.TracingChunkOptions{
 			Name:  "chunk1",
 			Title: "First Chunk",
 		})
@@ -156,9 +156,9 @@ func TestTracingChunks(t *testing.T) {
 	})
 
 	t.Run("MultipleChunks", func(t *testing.T) {
-		tracing := bt.vibe.Tracing()
+		tracing := bt.pilot.Tracing()
 
-		err := tracing.Start(bt.ctx, &vibium.TracingStartOptions{
+		err := tracing.Start(bt.ctx, &webpilot.TracingStartOptions{
 			Screenshots: true,
 		})
 		if err != nil {
@@ -168,7 +168,7 @@ func TestTracingChunks(t *testing.T) {
 		bt.go_("https://example.com")
 
 		// First chunk
-		err = tracing.StartChunk(bt.ctx, &vibium.TracingChunkOptions{Name: "chunk1"})
+		err = tracing.StartChunk(bt.ctx, &webpilot.TracingChunkOptions{Name: "chunk1"})
 		if err != nil {
 			t.Fatalf("Failed to start chunk 1: %v", err)
 		}
@@ -179,7 +179,7 @@ func TestTracingChunks(t *testing.T) {
 		}
 
 		// Second chunk
-		err = tracing.StartChunk(bt.ctx, &vibium.TracingChunkOptions{Name: "chunk2"})
+		err = tracing.StartChunk(bt.ctx, &webpilot.TracingChunkOptions{Name: "chunk2"})
 		if err != nil {
 			t.Fatalf("Failed to start chunk 2: %v", err)
 		}
@@ -207,9 +207,9 @@ func TestTracingGroups(t *testing.T) {
 	defer bt.cleanup()
 
 	t.Run("GroupRecording", func(t *testing.T) {
-		tracing := bt.vibe.Tracing()
+		tracing := bt.pilot.Tracing()
 
-		err := tracing.Start(bt.ctx, &vibium.TracingStartOptions{
+		err := tracing.Start(bt.ctx, &webpilot.TracingStartOptions{
 			Screenshots: true,
 			Title:       "Grouped Trace",
 		})
@@ -220,7 +220,7 @@ func TestTracingGroups(t *testing.T) {
 		bt.go_("https://example.com")
 
 		// Start a group
-		err = tracing.StartGroup(bt.ctx, "Login Flow", &vibium.TracingGroupOptions{
+		err = tracing.StartGroup(bt.ctx, "Login Flow", &webpilot.TracingGroupOptions{
 			Location: "test_file.go:123",
 		})
 		if err != nil {
@@ -248,7 +248,7 @@ func TestTracingGroups(t *testing.T) {
 	})
 
 	t.Run("NestedGroups", func(t *testing.T) {
-		tracing := bt.vibe.Tracing()
+		tracing := bt.pilot.Tracing()
 
 		err := tracing.Start(bt.ctx, nil)
 		if err != nil {
@@ -299,7 +299,7 @@ func TestTracingFromContext(t *testing.T) {
 
 	t.Run("ContextTracing", func(t *testing.T) {
 		// Create a browser context
-		browserCtx, err := bt.vibe.NewContext(bt.ctx)
+		browserCtx, err := bt.pilot.NewContext(bt.ctx)
 		if err != nil {
 			t.Fatalf("Failed to create context: %v", err)
 		}
@@ -310,7 +310,7 @@ func TestTracingFromContext(t *testing.T) {
 			t.Fatal("BrowserContext.Tracing() returned nil")
 		}
 
-		err = tracing.Start(bt.ctx, &vibium.TracingStartOptions{
+		err = tracing.Start(bt.ctx, &webpilot.TracingStartOptions{
 			Title: "Context Trace",
 		})
 		if err != nil {

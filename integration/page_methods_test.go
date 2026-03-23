@@ -5,7 +5,7 @@ package integration
 import (
 	"testing"
 
-	"github.com/plexusone/vibium-go"
+	"github.com/plexusone/webpilot"
 )
 
 // TestScrollDown tests scrolling down the page.
@@ -21,20 +21,20 @@ func TestScrollDown(t *testing.T) {
 </body></html>`)
 
 	// Get initial scroll position
-	initialY, err := bt.vibe.Evaluate(bt.ctx, `window.scrollY`)
+	initialY, err := bt.pilot.Evaluate(bt.ctx, `window.scrollY`)
 	if err != nil {
 		t.Fatalf("Failed to get initial scroll: %v", err)
 	}
 	t.Logf("Initial scrollY: %v", initialY)
 
 	// Scroll down
-	err = bt.vibe.Scroll(bt.ctx, "down", 500, nil)
+	err = bt.pilot.Scroll(bt.ctx, "down", 500, nil)
 	if err != nil {
 		t.Fatalf("Failed to scroll down: %v", err)
 	}
 
 	// Check scroll position changed
-	finalY, err := bt.vibe.Evaluate(bt.ctx, `window.scrollY`)
+	finalY, err := bt.pilot.Evaluate(bt.ctx, `window.scrollY`)
 	if err != nil {
 		t.Fatalf("Failed to get final scroll: %v", err)
 	}
@@ -57,24 +57,24 @@ func TestScrollUp(t *testing.T) {
 </body></html>`)
 
 	// Scroll down first
-	err := bt.vibe.Scroll(bt.ctx, "down", 1000, nil)
+	err := bt.pilot.Scroll(bt.ctx, "down", 1000, nil)
 	if err != nil {
 		t.Fatalf("Failed to scroll down: %v", err)
 	}
 
-	midY, err := bt.vibe.Evaluate(bt.ctx, `window.scrollY`)
+	midY, err := bt.pilot.Evaluate(bt.ctx, `window.scrollY`)
 	if err != nil {
 		t.Fatalf("Failed to get mid scroll: %v", err)
 	}
 	t.Logf("After scroll down, scrollY: %v", midY)
 
 	// Scroll up
-	err = bt.vibe.Scroll(bt.ctx, "up", 500, nil)
+	err = bt.pilot.Scroll(bt.ctx, "up", 500, nil)
 	if err != nil {
 		t.Fatalf("Failed to scroll up: %v", err)
 	}
 
-	finalY, err := bt.vibe.Evaluate(bt.ctx, `window.scrollY`)
+	finalY, err := bt.pilot.Evaluate(bt.ctx, `window.scrollY`)
 	if err != nil {
 		t.Fatalf("Failed to get final scroll: %v", err)
 	}
@@ -97,7 +97,7 @@ func TestScrollInElement(t *testing.T) {
 </body></html>`)
 
 	// Scroll within the container
-	err := bt.vibe.Scroll(bt.ctx, "down", 300, &vibium.ScrollOptions{
+	err := bt.pilot.Scroll(bt.ctx, "down", 300, &webpilot.ScrollOptions{
 		Selector: "#container",
 	})
 	if err != nil {
@@ -105,7 +105,7 @@ func TestScrollInElement(t *testing.T) {
 	}
 
 	// Check container scroll position
-	scrollTop, err := bt.vibe.Evaluate(bt.ctx, `document.getElementById('container').scrollTop`)
+	scrollTop, err := bt.pilot.Evaluate(bt.ctx, `document.getElementById('container').scrollTop`)
 	if err != nil {
 		t.Fatalf("Failed to get scrollTop: %v", err)
 	}
@@ -123,7 +123,7 @@ func TestSetExtraHTTPHeaders(t *testing.T) {
 		"X-Another":       "another-value",
 	}
 
-	err := bt.vibe.SetExtraHTTPHeaders(bt.ctx, headers)
+	err := bt.pilot.SetExtraHTTPHeaders(bt.ctx, headers)
 	if err != nil {
 		t.Fatalf("Failed to set extra headers: %v", err)
 	}
@@ -132,7 +132,7 @@ func TestSetExtraHTTPHeaders(t *testing.T) {
 	bt.go_("https://httpbin.org/headers")
 
 	// Get page content
-	content, err := bt.vibe.Content(bt.ctx)
+	content, err := bt.pilot.Content(bt.ctx)
 	if err != nil {
 		t.Fatalf("Failed to get content: %v", err)
 	}
@@ -157,7 +157,7 @@ console.error('Test error');
 </body></html>`)
 
 	// Get console messages (empty string = all levels)
-	messages, err := bt.vibe.ConsoleMessages(bt.ctx, "")
+	messages, err := bt.pilot.ConsoleMessages(bt.ctx, "")
 	if err != nil {
 		t.Fatalf("Failed to get console messages: %v", err)
 	}
@@ -182,13 +182,13 @@ console.log('Message 2');
 </body></html>`)
 
 	// Clear console messages
-	err := bt.vibe.ClearConsoleMessages(bt.ctx)
+	err := bt.pilot.ClearConsoleMessages(bt.ctx)
 	if err != nil {
 		t.Fatalf("Failed to clear console messages: %v", err)
 	}
 
 	// Get messages - should be empty
-	messages, err := bt.vibe.ConsoleMessages(bt.ctx, "")
+	messages, err := bt.pilot.ConsoleMessages(bt.ctx, "")
 	if err != nil {
 		t.Fatalf("Failed to get console messages after clear: %v", err)
 	}
@@ -286,14 +286,14 @@ document.addEventListener('mouseup', () => { dragging = false; });
 </body></html>`)
 
 	// Get initial position
-	initialLeft, err := bt.vibe.Evaluate(bt.ctx, `document.getElementById('draggable').offsetLeft`)
+	initialLeft, err := bt.pilot.Evaluate(bt.ctx, `document.getElementById('draggable').offsetLeft`)
 	if err != nil {
 		t.Fatalf("Failed to get initial left: %v", err)
 	}
 	t.Logf("Initial left: %v", initialLeft)
 
 	// Perform drag using mouse controller
-	mouse, err := bt.vibe.Mouse(bt.ctx)
+	mouse, err := bt.pilot.Mouse(bt.ctx)
 	if err != nil {
 		t.Fatalf("Failed to get mouse: %v", err)
 	}
@@ -305,7 +305,7 @@ document.addEventListener('mouseup', () => { dragging = false; });
 	}
 
 	// Mouse down, move, mouse up
-	err = mouse.Down(bt.ctx, vibium.MouseButtonLeft)
+	err = mouse.Down(bt.ctx, webpilot.MouseButtonLeft)
 	if err != nil {
 		t.Fatalf("Failed mouse down: %v", err)
 	}
@@ -315,13 +315,13 @@ document.addEventListener('mouseup', () => { dragging = false; });
 		t.Fatalf("Failed to drag: %v", err)
 	}
 
-	err = mouse.Up(bt.ctx, vibium.MouseButtonLeft)
+	err = mouse.Up(bt.ctx, webpilot.MouseButtonLeft)
 	if err != nil {
 		t.Fatalf("Failed mouse up: %v", err)
 	}
 
 	// Check position changed
-	finalLeft, err := bt.vibe.Evaluate(bt.ctx, `document.getElementById('draggable').offsetLeft`)
+	finalLeft, err := bt.pilot.Evaluate(bt.ctx, `document.getElementById('draggable').offsetLeft`)
 	if err != nil {
 		t.Fatalf("Failed to get final left: %v", err)
 	}

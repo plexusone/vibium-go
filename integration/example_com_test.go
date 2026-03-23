@@ -15,7 +15,7 @@ func TestExampleCom(t *testing.T) {
 	bt.go_("https://example.com")
 
 	t.Run("PageTitle", func(t *testing.T) {
-		title, err := bt.vibe.Title(bt.ctx)
+		title, err := bt.pilot.Title(bt.ctx)
 		if err != nil {
 			t.Fatalf("Failed to get title: %v", err)
 		}
@@ -127,7 +127,7 @@ func TestExampleComClickLink(t *testing.T) {
 	}
 
 	// After click, should navigate to IANA
-	url, err := bt.vibe.URL(bt.ctx)
+	url, err := bt.pilot.URL(bt.ctx)
 	if err != nil {
 		t.Fatalf("Failed to get URL: %v", err)
 	}

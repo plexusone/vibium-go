@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	vibium "github.com/plexusone/vibium-go"
+	"github.com/plexusone/webpilot"
 )
 
 // FindActivity finds an element by selector.
@@ -20,7 +20,7 @@ func (a *FindActivity) Execute(ctx context.Context, params map[string]any, env *
 	}
 
 	timeout := time.Duration(GetIntDefault(params, "timeout", 30000)) * time.Millisecond
-	opts := &vibium.FindOptions{Timeout: timeout}
+	opts := &webpilot.FindOptions{Timeout: timeout}
 
 	// Add semantic selector options
 	if role := GetString(params, "role"); role != "" {
@@ -36,7 +36,7 @@ func (a *FindActivity) Execute(ctx context.Context, params map[string]any, env *
 		opts.TestID = testID
 	}
 
-	el, err := env.Vibe.Find(ctx, selector, opts)
+	el, err := env.Pilot.Find(ctx, selector, opts)
 	if err != nil {
 		return nil, fmt.Errorf("element not found: %w", err)
 	}
@@ -61,7 +61,7 @@ func (a *FindAllActivity) Execute(ctx context.Context, params map[string]any, en
 		return nil, fmt.Errorf("selector parameter is required")
 	}
 
-	elements, err := env.Vibe.FindAll(ctx, selector, nil)
+	elements, err := env.Pilot.FindAll(ctx, selector, nil)
 	if err != nil {
 		return nil, fmt.Errorf("find failed: %w", err)
 	}
@@ -91,9 +91,9 @@ func (a *GetTextActivity) Execute(ctx context.Context, params map[string]any, en
 	}
 
 	timeout := time.Duration(GetIntDefault(params, "timeout", 30000)) * time.Millisecond
-	opts := &vibium.FindOptions{Timeout: timeout}
+	opts := &webpilot.FindOptions{Timeout: timeout}
 
-	el, err := env.Vibe.Find(ctx, selector, opts)
+	el, err := env.Pilot.Find(ctx, selector, opts)
 	if err != nil {
 		return nil, fmt.Errorf("element not found: %w", err)
 	}
@@ -118,9 +118,9 @@ func (a *GetValueActivity) Execute(ctx context.Context, params map[string]any, e
 	}
 
 	timeout := time.Duration(GetIntDefault(params, "timeout", 30000)) * time.Millisecond
-	opts := &vibium.FindOptions{Timeout: timeout}
+	opts := &webpilot.FindOptions{Timeout: timeout}
 
-	el, err := env.Vibe.Find(ctx, selector, opts)
+	el, err := env.Pilot.Find(ctx, selector, opts)
 	if err != nil {
 		return nil, fmt.Errorf("element not found: %w", err)
 	}
@@ -150,9 +150,9 @@ func (a *GetAttributeActivity) Execute(ctx context.Context, params map[string]an
 	}
 
 	timeout := time.Duration(GetIntDefault(params, "timeout", 30000)) * time.Millisecond
-	opts := &vibium.FindOptions{Timeout: timeout}
+	opts := &webpilot.FindOptions{Timeout: timeout}
 
-	el, err := env.Vibe.Find(ctx, selector, opts)
+	el, err := env.Pilot.Find(ctx, selector, opts)
 	if err != nil {
 		return nil, fmt.Errorf("element not found: %w", err)
 	}
@@ -178,9 +178,9 @@ func (a *WaitForActivity) Execute(ctx context.Context, params map[string]any, en
 
 	state := GetStringDefault(params, "state", "visible")
 	timeout := time.Duration(GetIntDefault(params, "timeout", 30000)) * time.Millisecond
-	opts := &vibium.FindOptions{Timeout: timeout}
+	opts := &webpilot.FindOptions{Timeout: timeout}
 
-	el, err := env.Vibe.Find(ctx, selector, opts)
+	el, err := env.Pilot.Find(ctx, selector, opts)
 	if err != nil {
 		return nil, fmt.Errorf("element not found: %w", err)
 	}
@@ -204,9 +204,9 @@ func (a *IsVisibleActivity) Execute(ctx context.Context, params map[string]any, 
 	}
 
 	timeout := time.Duration(GetIntDefault(params, "timeout", 30000)) * time.Millisecond
-	opts := &vibium.FindOptions{Timeout: timeout}
+	opts := &webpilot.FindOptions{Timeout: timeout}
 
-	el, err := env.Vibe.Find(ctx, selector, opts)
+	el, err := env.Pilot.Find(ctx, selector, opts)
 	if err != nil {
 		// Element not found means not visible
 		return false, nil

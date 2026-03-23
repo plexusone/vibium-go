@@ -5,7 +5,7 @@ import (
 	"context"
 	"log/slog"
 
-	vibium "github.com/plexusone/vibium-go"
+	"github.com/plexusone/webpilot"
 )
 
 // Activity represents an executable RPA action.
@@ -19,8 +19,8 @@ type Activity interface {
 
 // Environment provides execution context to activities.
 type Environment struct {
-	// Vibe is the browser automation interface.
-	Vibe *vibium.Vibe
+	// Pilot is the browser automation interface.
+	Pilot *webpilot.Pilot
 
 	// Variables contains workflow and step variables.
 	Variables map[string]any
@@ -36,9 +36,9 @@ type Environment struct {
 }
 
 // NewEnvironment creates a new Environment with initialized fields.
-func NewEnvironment(vibe *vibium.Vibe, workDir string, logger *slog.Logger) *Environment {
+func NewEnvironment(pilot *webpilot.Pilot, workDir string, logger *slog.Logger) *Environment {
 	return &Environment{
-		Vibe:      vibe,
+		Pilot:     pilot,
 		Variables: make(map[string]any),
 		WorkDir:   workDir,
 		Logger:    logger,

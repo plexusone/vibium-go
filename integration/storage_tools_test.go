@@ -14,13 +14,13 @@ func TestLocalStorageGetSet(t *testing.T) {
 	bt.go_(`data:text/html,<!DOCTYPE html><html><body><p>Storage test</p></body></html>`)
 
 	// Set a value via JavaScript
-	_, err := bt.vibe.Evaluate(bt.ctx, `localStorage.setItem('testKey', 'testValue')`)
+	_, err := bt.pilot.Evaluate(bt.ctx, `localStorage.setItem('testKey', 'testValue')`)
 	if err != nil {
 		t.Fatalf("Failed to set localStorage: %v", err)
 	}
 
 	// Get value via JavaScript
-	result, err := bt.vibe.Evaluate(bt.ctx, `localStorage.getItem('testKey')`)
+	result, err := bt.pilot.Evaluate(bt.ctx, `localStorage.getItem('testKey')`)
 	if err != nil {
 		t.Fatalf("Failed to get localStorage: %v", err)
 	}
@@ -37,7 +37,7 @@ func TestLocalStorageList(t *testing.T) {
 	bt.go_(`data:text/html,<!DOCTYPE html><html><body><p>Storage test</p></body></html>`)
 
 	// Clear and set multiple values
-	_, err := bt.vibe.Evaluate(bt.ctx, `
+	_, err := bt.pilot.Evaluate(bt.ctx, `
 		localStorage.clear();
 		localStorage.setItem('key1', 'value1');
 		localStorage.setItem('key2', 'value2');
@@ -48,7 +48,7 @@ func TestLocalStorageList(t *testing.T) {
 	}
 
 	// Get length
-	result, err := bt.vibe.Evaluate(bt.ctx, `localStorage.length`)
+	result, err := bt.pilot.Evaluate(bt.ctx, `localStorage.length`)
 	if err != nil {
 		t.Fatalf("Failed to get localStorage length: %v", err)
 	}
@@ -66,7 +66,7 @@ func TestLocalStorageDelete(t *testing.T) {
 	bt.go_(`data:text/html,<!DOCTYPE html><html><body><p>Storage test</p></body></html>`)
 
 	// Set and delete
-	_, err := bt.vibe.Evaluate(bt.ctx, `
+	_, err := bt.pilot.Evaluate(bt.ctx, `
 		localStorage.setItem('toDelete', 'value');
 		localStorage.removeItem('toDelete');
 	`)
@@ -75,7 +75,7 @@ func TestLocalStorageDelete(t *testing.T) {
 	}
 
 	// Verify deleted
-	result, err := bt.vibe.Evaluate(bt.ctx, `localStorage.getItem('toDelete')`)
+	result, err := bt.pilot.Evaluate(bt.ctx, `localStorage.getItem('toDelete')`)
 	if err != nil {
 		t.Fatalf("Failed to get deleted item: %v", err)
 	}
@@ -92,7 +92,7 @@ func TestLocalStorageClear(t *testing.T) {
 	bt.go_(`data:text/html,<!DOCTYPE html><html><body><p>Storage test</p></body></html>`)
 
 	// Set values then clear
-	_, err := bt.vibe.Evaluate(bt.ctx, `
+	_, err := bt.pilot.Evaluate(bt.ctx, `
 		localStorage.setItem('key1', 'value1');
 		localStorage.setItem('key2', 'value2');
 		localStorage.clear();
@@ -102,7 +102,7 @@ func TestLocalStorageClear(t *testing.T) {
 	}
 
 	// Verify cleared
-	result, err := bt.vibe.Evaluate(bt.ctx, `localStorage.length`)
+	result, err := bt.pilot.Evaluate(bt.ctx, `localStorage.length`)
 	if err != nil {
 		t.Fatalf("Failed to get localStorage length: %v", err)
 	}
@@ -120,13 +120,13 @@ func TestSessionStorageGetSet(t *testing.T) {
 	bt.go_(`data:text/html,<!DOCTYPE html><html><body><p>Storage test</p></body></html>`)
 
 	// Set a value via JavaScript
-	_, err := bt.vibe.Evaluate(bt.ctx, `sessionStorage.setItem('sessionKey', 'sessionValue')`)
+	_, err := bt.pilot.Evaluate(bt.ctx, `sessionStorage.setItem('sessionKey', 'sessionValue')`)
 	if err != nil {
 		t.Fatalf("Failed to set sessionStorage: %v", err)
 	}
 
 	// Get value
-	result, err := bt.vibe.Evaluate(bt.ctx, `sessionStorage.getItem('sessionKey')`)
+	result, err := bt.pilot.Evaluate(bt.ctx, `sessionStorage.getItem('sessionKey')`)
 	if err != nil {
 		t.Fatalf("Failed to get sessionStorage: %v", err)
 	}
@@ -143,7 +143,7 @@ func TestSessionStorageList(t *testing.T) {
 	bt.go_(`data:text/html,<!DOCTYPE html><html><body><p>Storage test</p></body></html>`)
 
 	// Clear and set multiple values
-	_, err := bt.vibe.Evaluate(bt.ctx, `
+	_, err := bt.pilot.Evaluate(bt.ctx, `
 		sessionStorage.clear();
 		sessionStorage.setItem('skey1', 'sval1');
 		sessionStorage.setItem('skey2', 'sval2');
@@ -153,7 +153,7 @@ func TestSessionStorageList(t *testing.T) {
 	}
 
 	// Get length
-	result, err := bt.vibe.Evaluate(bt.ctx, `sessionStorage.length`)
+	result, err := bt.pilot.Evaluate(bt.ctx, `sessionStorage.length`)
 	if err != nil {
 		t.Fatalf("Failed to get sessionStorage length: %v", err)
 	}
@@ -171,7 +171,7 @@ func TestSessionStorageDelete(t *testing.T) {
 	bt.go_(`data:text/html,<!DOCTYPE html><html><body><p>Storage test</p></body></html>`)
 
 	// Set and delete
-	_, err := bt.vibe.Evaluate(bt.ctx, `
+	_, err := bt.pilot.Evaluate(bt.ctx, `
 		sessionStorage.setItem('toDelete', 'value');
 		sessionStorage.removeItem('toDelete');
 	`)
@@ -180,7 +180,7 @@ func TestSessionStorageDelete(t *testing.T) {
 	}
 
 	// Verify deleted
-	result, err := bt.vibe.Evaluate(bt.ctx, `sessionStorage.getItem('toDelete')`)
+	result, err := bt.pilot.Evaluate(bt.ctx, `sessionStorage.getItem('toDelete')`)
 	if err != nil {
 		t.Fatalf("Failed to get deleted item: %v", err)
 	}
@@ -197,7 +197,7 @@ func TestSessionStorageClear(t *testing.T) {
 	bt.go_(`data:text/html,<!DOCTYPE html><html><body><p>Storage test</p></body></html>`)
 
 	// Set values then clear
-	_, err := bt.vibe.Evaluate(bt.ctx, `
+	_, err := bt.pilot.Evaluate(bt.ctx, `
 		sessionStorage.setItem('key1', 'value1');
 		sessionStorage.setItem('key2', 'value2');
 		sessionStorage.clear();
@@ -207,7 +207,7 @@ func TestSessionStorageClear(t *testing.T) {
 	}
 
 	// Verify cleared
-	result, err := bt.vibe.Evaluate(bt.ctx, `sessionStorage.length`)
+	result, err := bt.pilot.Evaluate(bt.ctx, `sessionStorage.length`)
 	if err != nil {
 		t.Fatalf("Failed to get sessionStorage length: %v", err)
 	}
@@ -224,7 +224,7 @@ func TestStoragePersistenceAcrossNavigation(t *testing.T) {
 
 	// Set up initial page and storage
 	bt.go_(`data:text/html,<!DOCTYPE html><html><body><p>Page 1</p></body></html>`)
-	_, err := bt.vibe.Evaluate(bt.ctx, `
+	_, err := bt.pilot.Evaluate(bt.ctx, `
 		localStorage.setItem('persistent', 'localStorage survives');
 		sessionStorage.setItem('session', 'sessionStorage survives');
 	`)
@@ -236,7 +236,7 @@ func TestStoragePersistenceAcrossNavigation(t *testing.T) {
 	bt.go_(`data:text/html,<!DOCTYPE html><html><body><p>Page 2</p></body></html>`)
 
 	// Check localStorage persists
-	result, err := bt.vibe.Evaluate(bt.ctx, `localStorage.getItem('persistent')`)
+	result, err := bt.pilot.Evaluate(bt.ctx, `localStorage.getItem('persistent')`)
 	if err != nil {
 		t.Fatalf("Failed to get localStorage: %v", err)
 	}
@@ -245,7 +245,7 @@ func TestStoragePersistenceAcrossNavigation(t *testing.T) {
 	}
 
 	// Check sessionStorage persists within same tab
-	result, err = bt.vibe.Evaluate(bt.ctx, `sessionStorage.getItem('session')`)
+	result, err = bt.pilot.Evaluate(bt.ctx, `sessionStorage.getItem('session')`)
 	if err != nil {
 		t.Fatalf("Failed to get sessionStorage: %v", err)
 	}

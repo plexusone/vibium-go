@@ -74,7 +74,7 @@ func TestVerifyListVisible(t *testing.T) {
 
 	for _, item := range items {
 		// Check if item is in body text
-		result, err := bt.vibe.Evaluate(bt.ctx, `document.body.textContent.includes("`+item+`")`)
+		result, err := bt.pilot.Evaluate(bt.ctx, `document.body.textContent.includes("`+item+`")`)
 		if err != nil {
 			missing = append(missing, item)
 			continue
@@ -95,7 +95,7 @@ func TestVerifyListVisible(t *testing.T) {
 	t.Logf("Found items: %v", found)
 
 	// Test scoped search within selector
-	result, err := bt.vibe.Evaluate(bt.ctx, `
+	result, err := bt.pilot.Evaluate(bt.ctx, `
 		(function() {
 			const el = document.querySelector('#features');
 			return el && el.textContent.includes('Feature A');
@@ -142,7 +142,7 @@ func TestGenerateLocator(t *testing.T) {
 	}
 
 	// Test role selector via evaluate
-	result, err := bt.vibe.Evaluate(bt.ctx, `document.querySelector('[role="button"]').textContent`)
+	result, err := bt.pilot.Evaluate(bt.ctx, `document.querySelector('[role="button"]').textContent`)
 	if err != nil {
 		t.Fatalf("Failed role query: %v", err)
 	}
@@ -151,7 +151,7 @@ func TestGenerateLocator(t *testing.T) {
 	}
 
 	// Test xpath via evaluate
-	result, err = bt.vibe.Evaluate(bt.ctx, `
+	result, err = bt.pilot.Evaluate(bt.ctx, `
 		document.evaluate("//button[@id='submit-btn']", document, null,
 			XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.textContent
 	`)
@@ -163,7 +163,7 @@ func TestGenerateLocator(t *testing.T) {
 	}
 
 	// Test text content search
-	result, err = bt.vibe.Evaluate(bt.ctx, `
+	result, err = bt.pilot.Evaluate(bt.ctx, `
 		Array.from(document.querySelectorAll('a')).find(a => a.textContent === 'About Us')?.href
 	`)
 	if err != nil {

@@ -5,7 +5,7 @@ package integration
 import (
 	"testing"
 
-	"github.com/plexusone/vibium-go"
+	"github.com/plexusone/webpilot"
 )
 
 // TestEmulateMediaColorScheme tests color scheme emulation.
@@ -29,7 +29,7 @@ body { background: var(--bg); color: var(--fg); }
 </html>`)
 
 	// Test dark mode
-	err := bt.vibe.EmulateMedia(bt.ctx, vibium.EmulateMediaOptions{
+	err := bt.pilot.EmulateMedia(bt.ctx, webpilot.EmulateMediaOptions{
 		ColorScheme: "dark",
 	})
 	if err != nil {
@@ -37,7 +37,7 @@ body { background: var(--bg); color: var(--fg); }
 	}
 
 	// Verify dark mode is active via CSS custom property
-	result, err := bt.vibe.Evaluate(bt.ctx, `getComputedStyle(document.documentElement).getPropertyValue('--bg').trim()`)
+	result, err := bt.pilot.Evaluate(bt.ctx, `getComputedStyle(document.documentElement).getPropertyValue('--bg').trim()`)
 	if err != nil {
 		t.Fatalf("Failed to get computed style: %v", err)
 	}
@@ -46,14 +46,14 @@ body { background: var(--bg); color: var(--fg); }
 	}
 
 	// Test light mode
-	err = bt.vibe.EmulateMedia(bt.ctx, vibium.EmulateMediaOptions{
+	err = bt.pilot.EmulateMedia(bt.ctx, webpilot.EmulateMediaOptions{
 		ColorScheme: "light",
 	})
 	if err != nil {
 		t.Fatalf("EmulateMedia light failed: %v", err)
 	}
 
-	result, err = bt.vibe.Evaluate(bt.ctx, `getComputedStyle(document.documentElement).getPropertyValue('--bg').trim()`)
+	result, err = bt.pilot.Evaluate(bt.ctx, `getComputedStyle(document.documentElement).getPropertyValue('--bg').trim()`)
 	if err != nil {
 		t.Fatalf("Failed to get computed style: %v", err)
 	}
@@ -81,14 +81,14 @@ func TestEmulateMediaReducedMotion(t *testing.T) {
 </html>`)
 
 	// Enable reduced motion
-	err := bt.vibe.EmulateMedia(bt.ctx, vibium.EmulateMediaOptions{
+	err := bt.pilot.EmulateMedia(bt.ctx, webpilot.EmulateMediaOptions{
 		ReducedMotion: "reduce",
 	})
 	if err != nil {
 		t.Fatalf("EmulateMedia reduce motion failed: %v", err)
 	}
 
-	result, err := bt.vibe.Evaluate(bt.ctx, `getComputedStyle(document.documentElement).getPropertyValue('--motion').trim()`)
+	result, err := bt.pilot.Evaluate(bt.ctx, `getComputedStyle(document.documentElement).getPropertyValue('--motion').trim()`)
 	if err != nil {
 		t.Fatalf("Failed to get computed style: %v", err)
 	}
@@ -97,14 +97,14 @@ func TestEmulateMediaReducedMotion(t *testing.T) {
 	}
 
 	// Disable reduced motion
-	err = bt.vibe.EmulateMedia(bt.ctx, vibium.EmulateMediaOptions{
+	err = bt.pilot.EmulateMedia(bt.ctx, webpilot.EmulateMediaOptions{
 		ReducedMotion: "no-preference",
 	})
 	if err != nil {
 		t.Fatalf("EmulateMedia no-preference motion failed: %v", err)
 	}
 
-	result, err = bt.vibe.Evaluate(bt.ctx, `getComputedStyle(document.documentElement).getPropertyValue('--motion').trim()`)
+	result, err = bt.pilot.Evaluate(bt.ctx, `getComputedStyle(document.documentElement).getPropertyValue('--motion').trim()`)
 	if err != nil {
 		t.Fatalf("Failed to get computed style: %v", err)
 	}
@@ -132,14 +132,14 @@ func TestEmulateMediaPrint(t *testing.T) {
 </html>`)
 
 	// Enable print media
-	err := bt.vibe.EmulateMedia(bt.ctx, vibium.EmulateMediaOptions{
+	err := bt.pilot.EmulateMedia(bt.ctx, webpilot.EmulateMediaOptions{
 		Media: "print",
 	})
 	if err != nil {
 		t.Fatalf("EmulateMedia print failed: %v", err)
 	}
 
-	result, err := bt.vibe.Evaluate(bt.ctx, `getComputedStyle(document.documentElement).getPropertyValue('--media').trim()`)
+	result, err := bt.pilot.Evaluate(bt.ctx, `getComputedStyle(document.documentElement).getPropertyValue('--media').trim()`)
 	if err != nil {
 		t.Fatalf("Failed to get computed style: %v", err)
 	}
@@ -148,14 +148,14 @@ func TestEmulateMediaPrint(t *testing.T) {
 	}
 
 	// Switch back to screen
-	err = bt.vibe.EmulateMedia(bt.ctx, vibium.EmulateMediaOptions{
+	err = bt.pilot.EmulateMedia(bt.ctx, webpilot.EmulateMediaOptions{
 		Media: "screen",
 	})
 	if err != nil {
 		t.Fatalf("EmulateMedia screen failed: %v", err)
 	}
 
-	result, err = bt.vibe.Evaluate(bt.ctx, `getComputedStyle(document.documentElement).getPropertyValue('--media').trim()`)
+	result, err = bt.pilot.Evaluate(bt.ctx, `getComputedStyle(document.documentElement).getPropertyValue('--media').trim()`)
 	if err != nil {
 		t.Fatalf("Failed to get computed style: %v", err)
 	}
@@ -183,14 +183,14 @@ func TestEmulateMediaForcedColors(t *testing.T) {
 </html>`)
 
 	// Enable forced colors
-	err := bt.vibe.EmulateMedia(bt.ctx, vibium.EmulateMediaOptions{
+	err := bt.pilot.EmulateMedia(bt.ctx, webpilot.EmulateMediaOptions{
 		ForcedColors: "active",
 	})
 	if err != nil {
 		t.Fatalf("EmulateMedia forced colors failed: %v", err)
 	}
 
-	result, err := bt.vibe.Evaluate(bt.ctx, `getComputedStyle(document.documentElement).getPropertyValue('--forced').trim()`)
+	result, err := bt.pilot.Evaluate(bt.ctx, `getComputedStyle(document.documentElement).getPropertyValue('--forced').trim()`)
 	if err != nil {
 		t.Fatalf("Failed to get computed style: %v", err)
 	}
@@ -221,14 +221,14 @@ func TestEmulateMediaContrast(t *testing.T) {
 </html>`)
 
 	// Enable high contrast
-	err := bt.vibe.EmulateMedia(bt.ctx, vibium.EmulateMediaOptions{
+	err := bt.pilot.EmulateMedia(bt.ctx, webpilot.EmulateMediaOptions{
 		Contrast: "more",
 	})
 	if err != nil {
 		t.Fatalf("EmulateMedia contrast more failed: %v", err)
 	}
 
-	result, err := bt.vibe.Evaluate(bt.ctx, `getComputedStyle(document.documentElement).getPropertyValue('--contrast').trim()`)
+	result, err := bt.pilot.Evaluate(bt.ctx, `getComputedStyle(document.documentElement).getPropertyValue('--contrast').trim()`)
 	if err != nil {
 		t.Fatalf("Failed to get computed style: %v", err)
 	}
@@ -255,7 +255,7 @@ func TestEmulateMediaCombined(t *testing.T) {
 </html>`)
 
 	// Set multiple options
-	err := bt.vibe.EmulateMedia(bt.ctx, vibium.EmulateMediaOptions{
+	err := bt.pilot.EmulateMedia(bt.ctx, webpilot.EmulateMediaOptions{
 		ColorScheme:   "dark",
 		ReducedMotion: "reduce",
 	})
@@ -264,7 +264,7 @@ func TestEmulateMediaCombined(t *testing.T) {
 	}
 
 	// Check both applied
-	scheme, err := bt.vibe.Evaluate(bt.ctx, `getComputedStyle(document.documentElement).getPropertyValue('--scheme').trim()`)
+	scheme, err := bt.pilot.Evaluate(bt.ctx, `getComputedStyle(document.documentElement).getPropertyValue('--scheme').trim()`)
 	if err != nil {
 		t.Fatalf("Failed to get scheme: %v", err)
 	}
@@ -272,7 +272,7 @@ func TestEmulateMediaCombined(t *testing.T) {
 		t.Errorf("Expected scheme=dark, got %q", scheme)
 	}
 
-	motion, err := bt.vibe.Evaluate(bt.ctx, `getComputedStyle(document.documentElement).getPropertyValue('--motion').trim()`)
+	motion, err := bt.pilot.Evaluate(bt.ctx, `getComputedStyle(document.documentElement).getPropertyValue('--motion').trim()`)
 	if err != nil {
 		t.Fatalf("Failed to get motion: %v", err)
 	}
