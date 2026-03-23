@@ -247,11 +247,19 @@ func extractZip(zipPath, destDir string) error {
 
 		//nolint:gosec // G110: Trusted source (Chrome for Testing), known file sizes
 		_, err = io.Copy(outFile, rc)
-		outFile.Close()
-		rc.Close()
-
 		if err != nil {
+			outFile.Close()
+			rc.Close()
 			return err
+		}
+
+		if cerr := outFile.Close(); cerr != nil {
+			rc.Close()
+			return cerr
+		}
+
+		if cerr := rc.Close(); cerr != nil {
+			return cerr
 		}
 	}
 
