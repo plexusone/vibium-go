@@ -1,4 +1,4 @@
-# Technical Requirements Document: Vibium MCP Server
+# Technical Requirements Document: WebPilot MCP Server
 
 ## Architecture Overview
 
@@ -12,13 +12,13 @@
                                │ JSON-RPC 2.0
                                ▼
 ┌────────────────────────────────────────────────────────────────────┐
-│  cmd/vibium-mcp/main.go                                           │
+│  cmd/webpilot-mcp/main.go                                           │
 │  └─► mcp.NewServer(config).Run()                                  │
 └────────────────────────────────────────────────────────────────────┘
                                │
                                ▼
 ┌────────────────────────────────────────────────────────────────────┐
-│  mcp/  (github.com/grokify/vibium-go/mcp)                         │
+│  mcp/  (github.com/grokify/webpilot/mcp)                         │
 │                                                                    │
 │  ├── server.go      MCP protocol handling, tool dispatch          │
 │  ├── tools.go       Tool definitions and handlers                 │
@@ -33,10 +33,10 @@
                                │ imports
                                ▼
 ┌────────────────────────────────────────────────────────────────────┐
-│  vibium (github.com/grokify/vibium-go)  [PUBLIC API]              │
+│  vibium (github.com/grokify/webpilot)  [PUBLIC API]              │
 │                                                                    │
-│  vibium.go     Launch(ctx) / LaunchHeadless(ctx)                  │
-│  vibe.go       Vibe.Go() / Find() / Screenshot() / Evaluate()     │
+│  webpilot.go     Launch(ctx) / LaunchHeadless(ctx)                  │
+│  pilot.go       Vibe.Go() / Find() / Screenshot() / Evaluate()     │
 │  element.go    Element.Click() / Type() / Text()                  │
 │  options.go    LaunchOptions / FindOptions / ActionOptions        │
 │  errors.go     ErrElementNotFound / ErrTimeout / ...              │
@@ -63,13 +63,13 @@
 ## Directory Structure
 
 ```
-vibium-go/
+webpilot/
 ├── go.mod
 ├── go.sum
 ├── doc.go
 │
-├── vibium.go                   # Public entry: Launch, LaunchHeadless
-├── vibe.go                     # Vibe browser controller
+├── webpilot.go                   # Public entry: Launch, LaunchHeadless
+├── pilot.go                     # Vibe browser controller
 ├── element.go                  # Element interaction
 ├── options.go                  # LaunchOptions, FindOptions, ActionOptions
 ├── errors.go                   # Error types
@@ -97,7 +97,7 @@ vibium-go/
 │       └── render.go           # Format selection & rendering
 │
 ├── cmd/
-│   └── vibium-mcp/             # MCP server executable
+│   └── webpilot-mcp/             # MCP server executable
 │       └── main.go
 │
 ├── testplans/                  # Example test plans
@@ -117,7 +117,7 @@ vibium-go/
 ### go.mod
 
 ```go
-module github.com/grokify/vibium-go
+module github.com/grokify/webpilot
 
 go 1.22
 
@@ -484,7 +484,7 @@ func groupStepsIntoTeams(steps []StepResult) []masreport.TeamSection {
 
 type Session struct {
     mu       sync.Mutex
-    vibe     *vibium.Vibe
+    vibe     *webpilot.Vibe
     config   SessionConfig
     results  []StepResult
     console  []ConsoleEntry
@@ -501,15 +501,15 @@ func (s *Session) LaunchIfNeeded(ctx context.Context) error {
     s.mu.Lock()
     defer s.mu.Unlock()
 
-    if s.vibe != nil && !s.vibe.IsClosed() {
+    if s.vibe != nil && !s.pilot.IsClosed() {
         return nil
     }
 
     var err error
     if s.config.Headless {
-        s.vibe, err = vibium.LaunchHeadless(ctx)
+        s.pilot, err = webpilot.LaunchHeadless(ctx)
     } else {
-        s.vibe, err = vibium.Launch(ctx)
+        s.pilot, err = webpilot.Launch(ctx)
     }
     return err
 }
@@ -538,7 +538,7 @@ func (s *Session) Close(ctx context.Context) error {
     defer s.mu.Unlock()
 
     if s.vibe != nil {
-        return s.vibe.Quit(ctx)
+        return s.pilot.Quit(ctx)
     }
     return nil
 }
@@ -573,7 +573,7 @@ func NewServer(config Config) *Server {
 
     s.mcpServer = mcp.NewServer(
         &mcp.Implementation{
-            Name:    "vibium-mcp",
+            Name:    "webpilot-mcp",
             Version: "0.2.0",
         },
         nil,
@@ -704,7 +704,7 @@ func (s *Server) handleNavigate(
     }
 
     start := time.Now()
-    err := s.session.vibe.Go(ctx, input.URL)
+    err := s.session.pilot.Go(ctx, input.URL)
     duration := time.Since(start)
 
     result := StepResult{
@@ -729,14 +729,14 @@ func (s *Server) handleNavigate(
     result.Status = StatusGo
     result.Severity = SeverityInfo
     result.Result = map[string]any{
-        "url":   s.session.vibe.URL(),
-        "title": s.session.vibe.Title(),
+        "url":   s.session.pilot.URL(),
+        "title": s.session.pilot.Title(),
     }
     s.session.RecordStep(result)
 
     return nil, NavigateOutput{
-        URL:   s.session.vibe.URL(),
-        Title: s.session.vibe.Title(),
+        URL:   s.session.pilot.URL(),
+        Title: s.session.pilot.Title(),
     }, nil
 }
 
@@ -760,7 +760,7 @@ func (s *Server) handleClick(
     timeout := time.Duration(input.TimeoutMS) * time.Millisecond
 
     start := time.Now()
-    elem, err := s.session.vibe.Find(ctx, input.Selector, vibium.FindOptions{Timeout: timeout})
+    elem, err := s.session.pilot.Find(ctx, input.Selector, webpilot.FindOptions{Timeout: timeout})
 
     result := StepResult{
         ID:     fmt.Sprintf("click-%d", len(s.session.results)),
@@ -785,7 +785,7 @@ func (s *Server) handleClick(
         return nil, ClickOutput{}, err
     }
 
-    err = elem.Click(ctx, vibium.ActionOptions{Timeout: timeout})
+    err = elem.Click(ctx, webpilot.ActionOptions{Timeout: timeout})
     result.DurationMS = time.Since(start).Milliseconds()
 
     if err != nil {
@@ -890,7 +890,7 @@ func (s *Server) findSimilarSelectors(ctx context.Context, selector string) []st
         })()
     `, selector, selector, selector, selector, selector, selector, selector)
 
-    result, err := s.session.vibe.Evaluate(ctx, script)
+    result, err := s.session.pilot.Evaluate(ctx, script)
     if err != nil {
         return nil
     }
@@ -909,8 +909,8 @@ func (s *Server) findSimilarSelectors(ctx context.Context, selector string) []st
 
 func (s *Server) captureContext(ctx context.Context) *StepContext {
     context := &StepContext{
-        PageURL:   s.session.vibe.URL(),
-        PageTitle: s.session.vibe.Title(),
+        PageURL:   s.session.pilot.URL(),
+        PageTitle: s.session.pilot.Title(),
     }
 
     // Get visible interactive elements
@@ -920,7 +920,7 @@ func (s *Server) captureContext(ctx context.Context) *StepContext {
             .map(el => el.id ? '#' + el.id : (el.className ? '.' + el.className.split(' ')[0] : el.tagName))
             .slice(0, 10)
     `
-    if result, err := s.session.vibe.Evaluate(ctx, script); err == nil {
+    if result, err := s.session.pilot.Evaluate(ctx, script); err == nil {
         if elems, ok := result.([]any); ok {
             for _, e := range elems {
                 if str, ok := e.(string); ok {
@@ -934,7 +934,7 @@ func (s *Server) captureContext(ctx context.Context) *StepContext {
 }
 
 func (s *Server) captureScreenshot(ctx context.Context) *ScreenshotRef {
-    data, err := s.session.vibe.Screenshot()
+    data, err := s.session.pilot.Screenshot()
     if err != nil {
         return nil
     }
@@ -947,7 +947,7 @@ func (s *Server) captureScreenshot(ctx context.Context) *ScreenshotRef {
 ## CLI Entry Point
 
 ```go
-// cmd/vibium-mcp/main.go
+// cmd/webpilot-mcp/main.go
 
 package main
 
@@ -956,7 +956,7 @@ import (
     "log"
     "os"
 
-    "github.com/grokify/vibium-go/mcp"
+    "github.com/grokify/webpilot/mcp"
 )
 
 func main() {
@@ -985,8 +985,8 @@ func main() {
 ```json
 {
   "mcpServers": {
-    "vibium": {
-      "command": "vibium-mcp",
+    "webpilot": {
+      "command": "webpilot-mcp",
       "args": ["--headless", "--project", "my-app"]
     }
   }
@@ -998,10 +998,10 @@ func main() {
 ```json
 {
   "mcpServers": {
-    "vibium": {
+    "webpilot": {
       "command": "go",
-      "args": ["run", "./cmd/vibium-mcp", "--headless"],
-      "cwd": "/path/to/vibium-go"
+      "args": ["run", "./cmd/webpilot-mcp", "--headless"],
+      "cwd": "/path/to/webpilot"
     }
   }
 }
@@ -1015,7 +1015,7 @@ func main() {
 2. Create `mcp/` package structure
 3. Implement `mcp/server.go` with MCP protocol handling
 4. Implement `mcp/session.go` for browser lifecycle
-5. Create `cmd/vibium-mcp/main.go` entry point
+5. Create `cmd/webpilot-mcp/main.go` entry point
 
 ### Phase 2: Core Tools
 
@@ -1065,11 +1065,11 @@ func main() {
 
 ```bash
 # Build and run
-go build -o vibium-mcp ./cmd/vibium-mcp
-./vibium-mcp
+go build -o webpilot-mcp ./cmd/webpilot-mcp
+./webpilot-mcp
 
 # Test with MCP inspector
-npx @anthropic-ai/mcp-inspector vibium-mcp
+npx @anthropic-ai/mcp-inspector webpilot-mcp
 ```
 
 ## Error Handling

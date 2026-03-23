@@ -1,4 +1,4 @@
-# Vibium Go
+# WebPilot
 
 [![Go CI][go-ci-svg]][go-ci-url]
 [![Go Lint][go-lint-svg]][go-lint-url]
@@ -8,51 +8,47 @@
 [![Visualization][viz-svg]][viz-url]
 [![License][license-svg]][license-url]
 
- [go-ci-svg]: https://github.com/plexusone/vibium-go/actions/workflows/go-ci.yaml/badge.svg?branch=main
- [go-ci-url]: https://github.com/plexusone/vibium-go/actions/workflows/go-ci.yaml
- [go-lint-svg]: https://github.com/plexusone/vibium-go/actions/workflows/go-lint.yaml/badge.svg?branch=main
- [go-lint-url]: https://github.com/plexusone/vibium-go/actions/workflows/go-lint.yaml
- [go-sast-svg]: https://github.com/plexusone/vibium-go/actions/workflows/go-sast-codeql.yaml/badge.svg?branch=main
- [go-sast-url]: https://github.com/plexusone/vibium-go/actions/workflows/go-sast-codeql.yaml
- [goreport-svg]: https://goreportcard.com/badge/github.com/plexusone/vibium-go
- [goreport-url]: https://goreportcard.com/report/github.com/plexusone/vibium-go
- [docs-godoc-svg]: https://pkg.go.dev/badge/github.com/plexusone/vibium-go
- [docs-godoc-url]: https://pkg.go.dev/github.com/plexusone/vibium-go
+ [go-ci-svg]: https://github.com/plexusone/webpilot/actions/workflows/go-ci.yaml/badge.svg?branch=main
+ [go-ci-url]: https://github.com/plexusone/webpilot/actions/workflows/go-ci.yaml
+ [go-lint-svg]: https://github.com/plexusone/webpilot/actions/workflows/go-lint.yaml/badge.svg?branch=main
+ [go-lint-url]: https://github.com/plexusone/webpilot/actions/workflows/go-lint.yaml
+ [go-sast-svg]: https://github.com/plexusone/webpilot/actions/workflows/go-sast-codeql.yaml/badge.svg?branch=main
+ [go-sast-url]: https://github.com/plexusone/webpilot/actions/workflows/go-sast-codeql.yaml
+ [goreport-svg]: https://goreportcard.com/badge/github.com/plexusone/webpilot
+ [goreport-url]: https://goreportcard.com/report/github.com/plexusone/webpilot
+ [docs-godoc-svg]: https://pkg.go.dev/badge/github.com/plexusone/webpilot
+ [docs-godoc-url]: https://pkg.go.dev/github.com/plexusone/webpilot
  [viz-svg]: https://img.shields.io/badge/visualizaton-Go-blue.svg
- [viz-url]: https://mango-dune-07a8b7110.1.azurestaticapps.net/?repo=plexusone%2Fvibium-go
- [loc-svg]: https://tokei.rs/b1/github/plexusone/vibium-go
- [repo-url]: https://github.com/plexusone/vibium-go
+ [viz-url]: https://mango-dune-07a8b7110.1.azurestaticapps.net/?repo=plexusone%2Fwebpilot
+ [loc-svg]: https://tokei.rs/b1/github/plexusone/webpilot
+ [repo-url]: https://github.com/plexusone/webpilot
  [license-svg]: https://img.shields.io/badge/license-MIT-blue.svg
- [license-url]: https://github.com/plexusone/vibium-go/blob/master/LICENSE
+ [license-url]: https://github.com/plexusone/webpilot/blob/master/LICENSE
 
-Go client and tooling for the [Vibium](https://github.com/VibiumDev/vibium) browser automation platform.
-
-Vibium uses WebDriver BiDi for real-time bidirectional communication with browsers, making it ideal for AI-assisted automation.
+Go browser automation library using WebDriver BiDi for real-time bidirectional communication with browsers, ideal for AI-assisted automation.
 
 ## Overview
 
 This project provides:
 
-| Component | Description | Origin |
-|-----------|-------------|--------|
-| **Go Client SDK** | Programmatic browser control | Feature parity with JS/Python |
-| **MCP Server** | 85+ tools for AI assistants | Go-specific |
-| **CLI** | Command-line browser automation | Go-specific |
-| **Script Runner** | Deterministic test execution | Go-specific |
-| **Session Recording** | Capture actions as replayable scripts | Go-specific |
+| Component | Description |
+|-----------|-------------|
+| **Go Client SDK** | Programmatic browser control |
+| **MCP Server** | 85+ tools for AI assistants |
+| **CLI** | Command-line browser automation |
+| **Script Runner** | Deterministic test execution |
+| **Session Recording** | Capture actions as replayable scripts |
 
 ## Architecture
 
 ```
 ┌────────────────────────────────────────────────────────────────┐
-│                         vibium-go                              │
+│                         webpilot                               │
 ├─────────────┬─────────────┬─────────────┬──────────────────────┤
 │  Go Client  │ MCP Server  │    CLI      │   Script Runner      │
-│    SDK      │  (85 tools) │  (vibium)   │   (vibium run)       │
+│    SDK      │  (85 tools) │  (webpilot) │   (webpilot run)     │
 ├─────────────┴─────────────┴─────────────┴──────────────────────┤
 │                    WebDriver BiDi Protocol                     │
-├────────────────────────────────────────────────────────────────┤
-│                   Vibium Clicker (upstream)                    │
 ├────────────────────────────────────────────────────────────────┤
 │                    Chrome / Chromium                           │
 └────────────────────────────────────────────────────────────────┘
@@ -61,18 +57,8 @@ This project provides:
 ## Installation
 
 ```bash
-go get github.com/plexusone/vibium-go
+go get github.com/plexusone/webpilot
 ```
-
-### Prerequisites
-
-Install the Vibium clicker binary:
-
-```bash
-npm install -g vibium
-```
-
-Or set `VIBIUM_CLICKER_PATH` to point to the binary.
 
 ## Quick Start
 
@@ -85,23 +71,23 @@ import (
     "context"
     "log"
 
-    vibium "github.com/plexusone/vibium-go"
+    "github.com/plexusone/webpilot"
 )
 
 func main() {
     ctx := context.Background()
 
     // Launch browser
-    vibe, err := vibium.Launch(ctx)
+    pilot, err := webpilot.Launch(ctx)
     if err != nil {
         log.Fatal(err)
     }
-    defer vibe.Quit(ctx)
+    defer pilot.Quit(ctx)
 
     // Navigate and interact
-    vibe.Go(ctx, "https://example.com")
+    pilot.Go(ctx, "https://example.com")
 
-    link, _ := vibe.Find(ctx, "a", nil)
+    link, _ := pilot.Find(ctx, "a", nil)
     link.Click(ctx, nil)
 }
 ```
@@ -111,7 +97,7 @@ func main() {
 Start the MCP server for AI assistant integration:
 
 ```bash
-vibium mcp --headless
+webpilot mcp --headless
 ```
 
 Configure in Claude Desktop (`claude_desktop_config.json`):
@@ -119,8 +105,8 @@ Configure in Claude Desktop (`claude_desktop_config.json`):
 ```json
 {
   "mcpServers": {
-    "vibium": {
-      "command": "vibium",
+    "webpilot": {
+      "command": "webpilot",
       "args": ["mcp", "--headless"]
     }
   }
@@ -131,12 +117,12 @@ Configure in Claude Desktop (`claude_desktop_config.json`):
 
 ```bash
 # Launch browser and run commands
-vibium launch --headless
-vibium go https://example.com
-vibium fill "#email" "user@example.com"
-vibium click "#submit"
-vibium screenshot result.png
-vibium quit
+webpilot launch --headless
+webpilot go https://example.com
+webpilot fill "#email" "user@example.com"
+webpilot click "#submit"
+webpilot screenshot result.png
+webpilot quit
 ```
 
 ### Script Runner
@@ -144,7 +130,7 @@ vibium quit
 Execute deterministic test scripts:
 
 ```bash
-vibium run test.json
+webpilot run test.json
 ```
 
 Script format (JSON or YAML):
@@ -164,28 +150,28 @@ Script format (JSON or YAML):
 
 ## Feature Comparison
 
-### Client SDK (Parity with JS/Python)
+### Client SDK
 
-| Feature | JS | Python | Go |
-|---------|:--:|:------:|:--:|
-| Browser launch/quit | ✅ | ✅ | ✅ |
-| Navigation (go, back, forward, reload) | ✅ | ✅ | ✅ |
-| Element finding (CSS selectors) | ✅ | ✅ | ✅ |
-| Click, type, fill | ✅ | ✅ | ✅ |
-| Screenshots | ✅ | ✅ | ✅ |
-| JavaScript evaluation | ✅ | ✅ | ✅ |
-| Keyboard/mouse controllers | ✅ | ✅ | ✅ |
-| Browser context management | ✅ | ✅ | ✅ |
-| Network interception | ✅ | ✅ | ✅ |
-| Tracing | ✅ | ✅ | ✅ |
-| Clock control | ✅ | ✅ | ✅ |
+| Feature | Status |
+|---------|:------:|
+| Browser launch/quit | ✅ |
+| Navigation (go, back, forward, reload) | ✅ |
+| Element finding (CSS selectors) | ✅ |
+| Click, type, fill | ✅ |
+| Screenshots | ✅ |
+| JavaScript evaluation | ✅ |
+| Keyboard/mouse controllers | ✅ |
+| Browser context management | ✅ |
+| Network interception | ✅ |
+| Tracing | ✅ |
+| Clock control | ✅ |
 
-### Go-Specific Features
+### Additional Features
 
 | Feature | Description |
 |---------|-------------|
 | **MCP Server** | 75+ tools for AI-assisted automation |
-| **CLI** | `vibium` command with subcommands |
+| **CLI** | `webpilot` command with subcommands |
 | **Script Runner** | Execute JSON/YAML test scripts |
 | **Session Recording** | Capture MCP actions as replayable scripts |
 | **JSON Schema** | Validated script format |
@@ -232,28 +218,28 @@ Convert natural language test plans into deterministic scripts:
 2. LLM executes via MCP with `start_recording`
 3. LLM explores, finds selectors, handles edge cases
 4. Export with `export_script` to get JSON
-5. Run deterministically with `vibium run`
+5. Run deterministically with `webpilot run`
 
 ## API Reference
 
-See [pkg.go.dev](https://pkg.go.dev/github.com/plexusone/vibium-go) for full API documentation.
+See [pkg.go.dev](https://pkg.go.dev/github.com/plexusone/webpilot) for full API documentation.
 
 ### Key Types
 
 ```go
 // Launch browser
-vibe, err := vibium.Launch(ctx)
-vibe, err := vibium.LaunchHeadless(ctx)
+pilot, err := webpilot.Launch(ctx)
+pilot, err := webpilot.LaunchHeadless(ctx)
 
 // Navigation
-vibe.Go(ctx, url)
-vibe.Back(ctx)
-vibe.Forward(ctx)
-vibe.Reload(ctx)
+pilot.Go(ctx, url)
+pilot.Back(ctx)
+pilot.Forward(ctx)
+pilot.Reload(ctx)
 
 // Finding elements by CSS selector
-elem, err := vibe.Find(ctx, selector, nil)
-elems, err := vibe.FindAll(ctx, selector, nil)
+elem, err := pilot.Find(ctx, selector, nil)
+elems, err := pilot.FindAll(ctx, selector, nil)
 
 // Element interactions
 elem.Click(ctx, nil)
@@ -261,11 +247,11 @@ elem.Fill(ctx, value, nil)
 elem.Type(ctx, text, nil)
 
 // Input controllers
-vibe.Keyboard().Press(ctx, "Enter")
-vibe.Mouse().Click(ctx, x, y)
+pilot.Keyboard().Press(ctx, "Enter")
+pilot.Mouse().Click(ctx, x, y)
 
 // Capture
-data, err := vibe.Screenshot(ctx)
+data, err := pilot.Screenshot(ctx)
 ```
 
 ## Semantic Selectors
@@ -276,37 +262,37 @@ Find elements by accessibility attributes instead of brittle CSS selectors. This
 
 ```go
 // Find by ARIA role and text content
-elem, err := vibe.Find(ctx, "", &vibium.FindOptions{
+elem, err := pilot.Find(ctx, "", &webpilot.FindOptions{
     Role: "button",
     Text: "Submit",
 })
 
 // Find by label (for form inputs)
-elem, err := vibe.Find(ctx, "", &vibium.FindOptions{
+elem, err := pilot.Find(ctx, "", &webpilot.FindOptions{
     Label: "Email address",
 })
 
 // Find by placeholder
-elem, err := vibe.Find(ctx, "", &vibium.FindOptions{
+elem, err := pilot.Find(ctx, "", &webpilot.FindOptions{
     Placeholder: "Enter your email",
 })
 
 // Find by data-testid (recommended for testing)
-elem, err := vibe.Find(ctx, "", &vibium.FindOptions{
+elem, err := pilot.Find(ctx, "", &webpilot.FindOptions{
     TestID: "login-button",
 })
 
 // Combine CSS selector with semantic filtering
-elem, err := vibe.Find(ctx, "form", &vibium.FindOptions{
+elem, err := pilot.Find(ctx, "form", &webpilot.FindOptions{
     Role: "textbox",
     Label: "Password",
 })
 
 // Find all buttons
-buttons, err := vibe.FindAll(ctx, "", &vibium.FindOptions{Role: "button"})
+buttons, err := pilot.FindAll(ctx, "", &webpilot.FindOptions{Role: "button"})
 
 // Find element near another element
-elem, err := vibe.Find(ctx, "", &vibium.FindOptions{
+elem, err := pilot.Find(ctx, "", &webpilot.FindOptions{
     Role: "button",
     Near: "#username-input",
 })
@@ -352,10 +338,10 @@ Inject JavaScript that runs before any page scripts on every navigation. Useful 
 
 ```go
 // Add init script to inject before page scripts
-err := vibe.AddInitScript(ctx, `window.testMode = true;`)
+err := pilot.AddInitScript(ctx, `window.testMode = true;`)
 
 // Mock an API
-err := vibe.AddInitScript(ctx, `
+err := pilot.AddInitScript(ctx, `
     window.fetch = async (url, opts) => {
         if (url.includes('/api/user')) {
             return { json: () => ({ id: 1, name: 'Test User' }) };
@@ -369,10 +355,10 @@ err := vibe.AddInitScript(ctx, `
 
 ```bash
 # Inject scripts when launching
-vibium mcp --init-script=./mock-api.js --init-script=./test-helpers.js
+webpilot mcp --init-script=./mock-api.js --init-script=./test-helpers.js
 
 # Or with the standalone binary
-vibium-mcp -init-script=./mock-api.js
+webpilot-mcp -init-script=./mock-api.js
 ```
 
 ### MCP Tool Usage
@@ -389,19 +375,19 @@ Save and restore complete browser state including cookies, localStorage, and ses
 
 ```go
 // Get complete storage state
-state, err := vibe.StorageState(ctx)
+state, err := pilot.StorageState(ctx)
 
 // Save to file
 jsonBytes, _ := json.Marshal(state)
 os.WriteFile("auth-state.json", jsonBytes, 0600)
 
 // Restore from file
-var savedState vibium.StorageState
+var savedState webpilot.StorageState
 json.Unmarshal(jsonBytes, &savedState)
-err := vibe.SetStorageState(ctx, &savedState)
+err := pilot.SetStorageState(ctx, &savedState)
 
 // Clear all storage
-err := vibe.ClearStorage(ctx)
+err := pilot.ClearStorage(ctx)
 ```
 
 ### MCP Tool Usage
@@ -425,16 +411,16 @@ Record browser actions with screenshots and DOM snapshots for debugging and test
 
 ```go
 // Start tracing
-tracing := vibe.Tracing()
-err := tracing.Start(ctx, &vibium.TracingStartOptions{
+tracing := pilot.Tracing()
+err := tracing.Start(ctx, &webpilot.TracingStartOptions{
     Screenshots: true,
     Snapshots:   true,
     Title:       "Login Flow Test",
 })
 
 // Perform actions...
-vibe.Go(ctx, "https://example.com")
-elem, _ := vibe.Find(ctx, "button", nil)
+pilot.Go(ctx, "https://example.com")
+elem, _ := pilot.Find(ctx, "button", nil)
 elem.Click(ctx, nil)
 
 // Stop and save trace
@@ -458,24 +444,21 @@ os.WriteFile("trace.zip", data, 0600)
 # Unit tests
 go test -v ./...
 
-# Integration tests (requires clicker)
+# Integration tests
 go test -tags=integration -v ./integration/...
 
 # Headless mode
-VIBIUM_HEADLESS=1 go test -tags=integration -v ./integration/...
+WEBPILOT_HEADLESS=1 go test -tags=integration -v ./integration/...
 ```
 
 ## Debug Logging
 
 ```bash
-VIBIUM_DEBUG=1 vibium mcp
+WEBPILOT_DEBUG=1 webpilot mcp
 ```
 
 ## Related Projects
 
-- [Vibium](https://github.com/VibiumDev/vibium) - Upstream platform
-- [vibium-wcag](https://github.com/agentplexus/vibium-wcag) - WCAG 2.2 accessibility testing
-- [omnillm](https://github.com/agentplexus/omnillm) - Unified LLM client
 - [WebDriver BiDi](https://w3c.github.io/webdriver-bidi/) - Protocol specification
 
 ## License

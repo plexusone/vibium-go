@@ -4,27 +4,27 @@
 
 - Go 1.21 or later
 - Chrome, Chromium, or Chrome for Testing
-- Vibium Clicker binary (see below)
+- WebPilot Clicker binary (see below)
 
-## Vibium Clicker
+## WebPilot Clicker
 
 The clicker is a lightweight binary that bridges WebDriver BiDi with the browser.
 
 !!! warning "Clicker Availability"
-    The clicker binary is not yet publicly distributed. Contact the maintainers for access, or check the [releases page](https://github.com/agentplexus/vibium-go/releases) for updates.
+    The clicker binary is not yet publicly distributed. Contact the maintainers for access, or check the [releases page](https://github.com/agentplexus/webpilot/releases) for updates.
 
 ### Specifying the Clicker Path
 
 Once you have the clicker binary, specify its location:
 
 ```bash
-export VIBIUM_CLICKER_PATH=/path/to/clicker
+export WEBPILOT_CLICKER_PATH=/path/to/clicker
 ```
 
 Or in Go code:
 
 ```go
-vibe, err := vibium.Browser.Launch(ctx, &vibium.LaunchOptions{
+pilot, err := webpilot.Browser.Launch(ctx, &webpilot.LaunchOptions{
     ExecutablePath: "/path/to/clicker",
 })
 ```

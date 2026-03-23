@@ -61,7 +61,7 @@ The exported script:
 ### 4. Run Deterministically
 
 ```bash
-vibium run login-test.json
+webpilot run login-test.json
 ```
 
 ## MCP Recording Tools
@@ -190,7 +190,7 @@ Always review exported scripts:
 
 ## Example Session
 
-**User:** Start recording a test called "Search Test", then: navigate to Google, search for "vibium", and verify results appear.
+**User:** Start recording a test called "Search Test", then: navigate to Google, search for "webpilot", and verify results appear.
 
 **Claude:** I'll start recording and execute your test.
 
@@ -198,7 +198,7 @@ Always review exported scripts:
 [start_recording: name="Search Test"]
 [browser_launch]
 [navigate: url="https://google.com"]
-[fill: selector="input[name='q']", value="vibium"]
+[fill: selector="input[name='q']", value="webpilot"]
 [press: selector="input[name='q']", key="Enter"]
 [wait_until: selector="#search", state="visible"]
 [export_script]
@@ -211,11 +211,11 @@ Here's your recorded script:
   "name": "Search Test",
   "steps": [
     {"action": "navigate", "url": "https://google.com"},
-    {"action": "fill", "selector": "input[name='q']", "value": "vibium"},
+    {"action": "fill", "selector": "input[name='q']", "value": "webpilot"},
     {"action": "press", "selector": "input[name='q']", "key": "Enter"},
     {"action": "waitForSelector", "selector": "#search", "state": "visible"}
   ]
 }
 ```
 
-You can run this with `vibium run search-test.json`.
+You can run this with `webpilot run search-test.json`.

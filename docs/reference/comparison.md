@@ -1,13 +1,13 @@
 # Feature Comparison
 
-This document compares vibium-go against VibiumDev clients (Java/JS/Python), the VibiumDev MCP server, and Playwright MCP.
+This document compares webpilot against WebPilotDev clients (Java/JS/Python), the WebPilotDev MCP server, and Playwright MCP.
 
 ## Overview
 
 | Project | Language | Type | Repository |
 |---------|----------|------|------------|
-| **vibium-go** | Go | SDK + MCP Server | [plexusone/vibium-go](https://github.com/plexusone/vibium-go) |
-| **VibiumDev** | Go + JS/Python/Java | Daemon + MCP + Clients | [VibiumDev/vibium](https://github.com/VibiumDev/vibium) |
+| **webpilot** | Go | SDK + MCP Server | [plexusone/webpilot](https://github.com/plexusone/webpilot) |
+| **WebPilotDev** | Go + JS/Python/Java | Daemon + MCP + Clients | [WebPilotDev/vibium](https://github.com/WebPilotDev/vibium) |
 | **Playwright MCP** | TypeScript | MCP Server | [microsoft/playwright-mcp](https://github.com/microsoft/playwright-mcp) |
 
 ---
@@ -20,18 +20,18 @@ Compare the three MCP servers for LLM agent integration.
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                         vibium-go MCP                               │
+│                         webpilot MCP                               │
 ├─────────────────────────────────────────────────────────────────────┤
-│  vibium-mcp ──► vibium-go SDK ──► BiDi Client ──► Chrome            │
+│  webpilot-mcp ──► webpilot SDK ──► BiDi Client ──► Chrome            │
 │       │                                                             │
 │       └── Uses official Go MCP SDK                                  │
 │       └── 100+ tools, comprehensive automation                      │
 └─────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────┐
-│                        VibiumDev MCP                                │
+│                        WebPilotDev MCP                                │
 ├─────────────────────────────────────────────────────────────────────┤
-│  vibium mcp ──► clicker ──► BiDi Client ──► Chrome                  │
+│  webpilot mcp ──► clicker ──► BiDi Client ──► Chrome                  │
 │       │                                                             │
 │       └── Hand-rolled JSON-RPC                                      │
 │       └── ~25 tools, core automation                                │
@@ -50,7 +50,7 @@ Compare the three MCP servers for LLM agent integration.
 
 ### Implementation Details
 
-| Aspect | vibium-go | VibiumDev | Playwright MCP |
+| Aspect | webpilot | WebPilotDev | Playwright MCP |
 |--------|-----------|-----------|----------------|
 | Language | Go | Go | TypeScript |
 | MCP SDK | Official Go SDK | Hand-rolled | Official TS SDK |
@@ -65,7 +65,7 @@ Legend: :white_check_mark: = Supported, :x: = Not supported, (opt) = Requires op
 
 #### Browser Management
 
-| Tool | vibium-go | VibiumDev | Playwright MCP |
+| Tool | webpilot | WebPilotDev | Playwright MCP |
 |------|:---------:|:---------:|:--------------:|
 | Launch browser | `browser_launch` | `browser_start` | (auto-launch) |
 | Quit browser | `browser_quit` | `browser_stop` | `browser_close` |
@@ -74,7 +74,7 @@ Legend: :white_check_mark: = Supported, :x: = Not supported, (opt) = Requires op
 
 #### Navigation
 
-| Tool | vibium-go | VibiumDev | Playwright MCP |
+| Tool | webpilot | WebPilotDev | Playwright MCP |
 |------|:---------:|:---------:|:--------------:|
 | Navigate | `navigate` | `browser_navigate` | `browser_navigate` |
 | Back | `back` | :x: | `browser_navigate_back` |
@@ -84,7 +84,7 @@ Legend: :white_check_mark: = Supported, :x: = Not supported, (opt) = Requires op
 
 #### Element Interaction
 
-| Tool | vibium-go | VibiumDev | Playwright MCP |
+| Tool | webpilot | WebPilotDev | Playwright MCP |
 |------|:---------:|:---------:|:--------------:|
 | Click | `click` | `browser_click` | `browser_click` |
 | Double-click | `dblclick` | :x: | `browser_click` (doubleClick) |
@@ -104,7 +104,7 @@ Legend: :white_check_mark: = Supported, :x: = Not supported, (opt) = Requires op
 
 #### Element State
 
-| Tool | vibium-go | VibiumDev | Playwright MCP |
+| Tool | webpilot | WebPilotDev | Playwright MCP |
 |------|:---------:|:---------:|:--------------:|
 | Get text | `get_text` | `browser_get_text` | `browser_snapshot` |
 | Get value | `get_value` | :x: | :x: |
@@ -123,7 +123,7 @@ Legend: :white_check_mark: = Supported, :x: = Not supported, (opt) = Requires op
 
 #### Page State
 
-| Tool | vibium-go | VibiumDev | Playwright MCP |
+| Tool | webpilot | WebPilotDev | Playwright MCP |
 |------|:---------:|:---------:|:--------------:|
 | Get title | `get_title` | `browser_get_title` | :x: |
 | Get URL | `get_url` | `browser_get_url` | :x: |
@@ -133,7 +133,7 @@ Legend: :white_check_mark: = Supported, :x: = Not supported, (opt) = Requires op
 
 #### Screenshots & PDF
 
-| Tool | vibium-go | VibiumDev | Playwright MCP |
+| Tool | webpilot | WebPilotDev | Playwright MCP |
 |------|:---------:|:---------:|:--------------:|
 | Screenshot | `screenshot` | `browser_screenshot` | `browser_take_screenshot` |
 | Full page screenshot | `screenshot` (fullPage) | :x: | `browser_take_screenshot` (fullPage) |
@@ -142,7 +142,7 @@ Legend: :white_check_mark: = Supported, :x: = Not supported, (opt) = Requires op
 
 #### JavaScript
 
-| Tool | vibium-go | VibiumDev | Playwright MCP |
+| Tool | webpilot | WebPilotDev | Playwright MCP |
 |------|:---------:|:---------:|:--------------:|
 | Evaluate | `evaluate` | `browser_evaluate` | `browser_evaluate` |
 | Element eval | `element_eval` | :x: | `browser_evaluate` (ref) |
@@ -152,7 +152,7 @@ Legend: :white_check_mark: = Supported, :x: = Not supported, (opt) = Requires op
 
 #### Waiting
 
-| Tool | vibium-go | VibiumDev | Playwright MCP |
+| Tool | webpilot | WebPilotDev | Playwright MCP |
 |------|:---------:|:---------:|:--------------:|
 | Wait for element state | `wait_until` | `browser_wait` | `browser_wait_for` |
 | Wait for selector | `wait_for_selector` | :x: | :x: |
@@ -164,7 +164,7 @@ Legend: :white_check_mark: = Supported, :x: = Not supported, (opt) = Requires op
 
 #### Input Controllers
 
-| Tool | vibium-go | VibiumDev | Playwright MCP |
+| Tool | webpilot | WebPilotDev | Playwright MCP |
 |------|:---------:|:---------:|:--------------:|
 | Keyboard press | `keyboard_press` | `browser_keys` | `browser_press_key` |
 | Keyboard down/up | `keyboard_down`, `keyboard_up` | :x: | :x: |
@@ -179,7 +179,7 @@ Legend: :white_check_mark: = Supported, :x: = Not supported, (opt) = Requires op
 
 #### Tab/Page Management
 
-| Tool | vibium-go | VibiumDev | Playwright MCP |
+| Tool | webpilot | WebPilotDev | Playwright MCP |
 |------|:---------:|:---------:|:--------------:|
 | New page | `new_page` | `browser_new_page` | `browser_tabs` (new) |
 | List pages | `get_pages`, `list_tabs` | `browser_list_pages` | `browser_tabs` (list) |
@@ -189,7 +189,7 @@ Legend: :white_check_mark: = Supported, :x: = Not supported, (opt) = Requires op
 
 #### Frame Management
 
-| Tool | vibium-go | VibiumDev | Playwright MCP |
+| Tool | webpilot | WebPilotDev | Playwright MCP |
 |------|:---------:|:---------:|:--------------:|
 | Get frames | `get_frames` | :x: | :x: |
 | Select frame | `select_frame` | :x: | :x: |
@@ -197,7 +197,7 @@ Legend: :white_check_mark: = Supported, :x: = Not supported, (opt) = Requires op
 
 #### Cookie Management
 
-| Tool | vibium-go | VibiumDev | Playwright MCP |
+| Tool | webpilot | WebPilotDev | Playwright MCP |
 |------|:---------:|:---------:|:--------------:|
 | Get cookies | `get_cookies` | :x: | `browser_cookie_list` (opt) |
 | Get cookie | :x: | :x: | `browser_cookie_get` (opt) |
@@ -207,7 +207,7 @@ Legend: :white_check_mark: = Supported, :x: = Not supported, (opt) = Requires op
 
 #### LocalStorage
 
-| Tool | vibium-go | VibiumDev | Playwright MCP |
+| Tool | webpilot | WebPilotDev | Playwright MCP |
 |------|:---------:|:---------:|:--------------:|
 | Get item | `localstorage_get` | :x: | `browser_localstorage_get` (opt) |
 | Set item | `localstorage_set` | :x: | `browser_localstorage_set` (opt) |
@@ -217,7 +217,7 @@ Legend: :white_check_mark: = Supported, :x: = Not supported, (opt) = Requires op
 
 #### SessionStorage
 
-| Tool | vibium-go | VibiumDev | Playwright MCP |
+| Tool | webpilot | WebPilotDev | Playwright MCP |
 |------|:---------:|:---------:|:--------------:|
 | Get item | `sessionstorage_get` | :x: | `browser_sessionstorage_get` (opt) |
 | Set item | `sessionstorage_set` | :x: | `browser_sessionstorage_set` (opt) |
@@ -227,7 +227,7 @@ Legend: :white_check_mark: = Supported, :x: = Not supported, (opt) = Requires op
 
 #### Storage State
 
-| Tool | vibium-go | VibiumDev | Playwright MCP |
+| Tool | webpilot | WebPilotDev | Playwright MCP |
 |------|:---------:|:---------:|:--------------:|
 | Get storage state | `get_storage_state` | :x: | `browser_storage_state` (opt) |
 | Set storage state | `set_storage_state` | :x: | `browser_set_storage_state` (opt) |
@@ -235,7 +235,7 @@ Legend: :white_check_mark: = Supported, :x: = Not supported, (opt) = Requires op
 
 #### Network
 
-| Tool | vibium-go | VibiumDev | Playwright MCP |
+| Tool | webpilot | WebPilotDev | Playwright MCP |
 |------|:---------:|:---------:|:--------------:|
 | Route (mock) | `route` | :x: | `browser_route` (opt) |
 | Route list | `route_list` | :x: | `browser_route_list` (opt) |
@@ -246,28 +246,28 @@ Legend: :white_check_mark: = Supported, :x: = Not supported, (opt) = Requires op
 
 #### Console
 
-| Tool | vibium-go | VibiumDev | Playwright MCP |
+| Tool | webpilot | WebPilotDev | Playwright MCP |
 |------|:---------:|:---------:|:--------------:|
 | Get console messages | `get_console_messages` | :x: | `browser_console_messages` |
 | Clear console | `clear_console_messages` | :x: | :x: |
 
 #### Dialogs
 
-| Tool | vibium-go | VibiumDev | Playwright MCP |
+| Tool | webpilot | WebPilotDev | Playwright MCP |
 |------|:---------:|:---------:|:--------------:|
 | Handle dialog | `handle_dialog` | :x: | `browser_handle_dialog` |
 | Get dialog info | `get_dialog` | :x: | :x: |
 
 #### Emulation
 
-| Tool | vibium-go | VibiumDev | Playwright MCP |
+| Tool | webpilot | WebPilotDev | Playwright MCP |
 |------|:---------:|:---------:|:--------------:|
 | Emulate media | `emulate_media` | :x: | :x: |
 | Set geolocation | `set_geolocation` | :x: | :x: |
 
 #### Recording & Tracing
 
-| Tool | vibium-go | VibiumDev | Playwright MCP |
+| Tool | webpilot | WebPilotDev | Playwright MCP |
 |------|:---------:|:---------:|:--------------:|
 | Start recording | `start_recording` | :x: | :x: |
 | Stop recording | `stop_recording` | :x: | :x: |
@@ -281,7 +281,7 @@ Legend: :white_check_mark: = Supported, :x: = Not supported, (opt) = Requires op
 
 #### Testing & Assertions
 
-| Tool | vibium-go | VibiumDev | Playwright MCP |
+| Tool | webpilot | WebPilotDev | Playwright MCP |
 |------|:---------:|:---------:|:--------------:|
 | Assert text | `assert_text` | :x: | :x: |
 | Assert element | `assert_element` | :x: | :x: |
@@ -300,13 +300,13 @@ Legend: :white_check_mark: = Supported, :x: = Not supported, (opt) = Requires op
 
 #### Human-in-the-Loop
 
-| Tool | vibium-go | VibiumDev | Playwright MCP |
+| Tool | webpilot | WebPilotDev | Playwright MCP |
 |------|:---------:|:---------:|:--------------:|
 | Pause for human | `pause_for_human` | :x: | :x: |
 
 #### Configuration
 
-| Tool | vibium-go | VibiumDev | Playwright MCP |
+| Tool | webpilot | WebPilotDev | Playwright MCP |
 |------|:---------:|:---------:|:--------------:|
 | Get config | `get_config` | :x: | `browser_get_config` (opt) |
 | Add init script | `add_init_script` | :x: | :x: |
@@ -315,17 +315,17 @@ Legend: :white_check_mark: = Supported, :x: = Not supported, (opt) = Requires op
 
 | MCP Server | Core Tools | Opt-in Tools | Total |
 |------------|:----------:|:------------:|:-----:|
-| **vibium-go** | 100+ | - | **100+** |
+| **webpilot** | 100+ | - | **100+** |
 | Playwright MCP | ~20 | ~25 | ~45 |
-| VibiumDev | ~25 | - | ~25 |
+| WebPilotDev | ~25 | - | ~25 |
 
 ### Unique Features by Server
 
-#### vibium-go Only
+#### webpilot Only
 
 | Feature | Description |
 |---------|-------------|
-| Script Runner | YAML/JSON test execution via `vibium run` |
+| Script Runner | YAML/JSON test execution via `webpilot run` |
 | Session Recording | Capture actions as replayable scripts |
 | Human-in-the-Loop | `pause_for_human` for SSO, CAPTCHA, 2FA |
 | Test Reports | Structured reports (box, diagnostic, JSON) |
@@ -342,7 +342,7 @@ Legend: :white_check_mark: = Supported, :x: = Not supported, (opt) = Requires op
 | Multi-browser | Chromium, Firefox, WebKit |
 | Opt-in capabilities | `--caps=network,storage,devtools` |
 
-#### VibiumDev Only
+#### WebPilotDev Only
 
 | Feature | Description |
 |---------|-------------|
@@ -353,11 +353,11 @@ Legend: :white_check_mark: = Supported, :x: = Not supported, (opt) = Requires op
 
 ## Part 2: Client Library Comparison
 
-Compare vibium-go SDK with VibiumDev client libraries.
+Compare webpilot SDK with WebPilotDev client libraries.
 
 ### Language & Integration
 
-| Aspect | vibium-go | vibium-js | vibium-py | vibium-java |
+| Aspect | webpilot | vibium-js | vibium-py | vibium-java |
 |--------|-----------|-----------|-----------|-------------|
 | Language | Go | JavaScript/TS | Python | Java |
 | Async model | Context-based | Promises | async/await | CompletableFuture |
@@ -367,7 +367,7 @@ Compare vibium-go SDK with VibiumDev client libraries.
 
 ### Core Features
 
-| Feature | vibium-go | vibium-js | vibium-py | vibium-java |
+| Feature | webpilot | vibium-js | vibium-py | vibium-java |
 |---------|:---------:|:---------:|:---------:|:-----------:|
 | Launch browser | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | Headless mode | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
@@ -376,7 +376,7 @@ Compare vibium-go SDK with VibiumDev client libraries.
 
 ### Element Finding
 
-| Feature | vibium-go | vibium-js | vibium-py | vibium-java |
+| Feature | webpilot | vibium-js | vibium-py | vibium-java |
 |---------|:---------:|:---------:|:---------:|:-----------:|
 | CSS selector | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | **Semantic selectors** | | | | |
@@ -394,7 +394,7 @@ Compare vibium-go SDK with VibiumDev client libraries.
 
 ### Interactions
 
-| Feature | vibium-go | vibium-js | vibium-py | vibium-java |
+| Feature | webpilot | vibium-js | vibium-py | vibium-java |
 |---------|:---------:|:---------:|:---------:|:-----------:|
 | Click/Type/Fill | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | Check/Uncheck | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
@@ -406,7 +406,7 @@ Compare vibium-go SDK with VibiumDev client libraries.
 
 ### Input Controllers
 
-| Feature | vibium-go | vibium-js | vibium-py | vibium-java |
+| Feature | webpilot | vibium-js | vibium-py | vibium-java |
 |---------|:---------:|:---------:|:---------:|:-----------:|
 | Keyboard | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | Mouse | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
@@ -414,7 +414,7 @@ Compare vibium-go SDK with VibiumDev client libraries.
 
 ### Event Listeners
 
-| Feature | vibium-go | vibium-js | vibium-py | vibium-java |
+| Feature | webpilot | vibium-js | vibium-py | vibium-java |
 |---------|:---------:|:---------:|:---------:|:-----------:|
 | onConsole | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | onError | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
@@ -426,7 +426,7 @@ Compare vibium-go SDK with VibiumDev client libraries.
 
 ### Recording/Tracing
 
-| Feature | vibium-go | vibium-js | vibium-py | vibium-java |
+| Feature | webpilot | vibium-js | vibium-py | vibium-java |
 |---------|:---------:|:---------:|:---------:|:-----------:|
 | Trace recording | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | Trace chunks | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
@@ -435,7 +435,7 @@ Compare vibium-go SDK with VibiumDev client libraries.
 
 ### Storage
 
-| Feature | vibium-go | vibium-js | vibium-py | vibium-java |
+| Feature | webpilot | vibium-js | vibium-py | vibium-java |
 |---------|:---------:|:---------:|:---------:|:-----------:|
 | Cookies | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | LocalStorage | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
@@ -446,7 +446,7 @@ Compare vibium-go SDK with VibiumDev client libraries.
 
 ### Network
 
-| Feature | vibium-go | vibium-js | vibium-py | vibium-java |
+| Feature | webpilot | vibium-js | vibium-py | vibium-java |
 |---------|:---------:|:---------:|:---------:|:-----------:|
 | Route/mock | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | Offline mode | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
@@ -454,7 +454,7 @@ Compare vibium-go SDK with VibiumDev client libraries.
 
 ### Clock Control
 
-| Feature | vibium-go | vibium-js | vibium-py | vibium-java |
+| Feature | webpilot | vibium-js | vibium-py | vibium-java |
 |---------|:---------:|:---------:|:---------:|:-----------:|
 | Install/fastForward | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | pauseAt/resume | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
@@ -463,7 +463,7 @@ Compare vibium-go SDK with VibiumDev client libraries.
 
 ### Accessibility
 
-| Feature | vibium-go | vibium-js | vibium-py | vibium-java |
+| Feature | webpilot | vibium-js | vibium-py | vibium-java |
 |---------|:---------:|:---------:|:---------:|:-----------:|
 | a11yTree | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | interestingOnly option | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
@@ -477,22 +477,22 @@ Compare vibium-go SDK with VibiumDev client libraries.
 
 | Use Case | Recommendation |
 |----------|----------------|
-| **Comprehensive LLM automation** | vibium-go MCP (100+ tools) |
-| **Simple browser control** | VibiumDev MCP or Playwright MCP |
+| **Comprehensive LLM automation** | webpilot MCP (100+ tools) |
+| **Simple browser control** | WebPilotDev MCP or Playwright MCP |
 | **Accessibility-focused** | Playwright MCP (`browser_snapshot`) |
-| **Human-in-the-loop flows** | vibium-go MCP (`pause_for_human`) |
-| **Test automation with reports** | vibium-go MCP (verification + reports) |
+| **Human-in-the-loop flows** | webpilot MCP (`pause_for_human`) |
+| **Test automation with reports** | webpilot MCP (verification + reports) |
 | **Multi-browser support** | Playwright MCP |
 
 ### Client Library Selection
 
 | Use Case | Recommendation |
 |----------|----------------|
-| **Go application** | vibium-go SDK |
+| **Go application** | webpilot SDK |
 | **JavaScript/TypeScript app** | vibium-js |
 | **Python application** | vibium-py |
 | **Java/JVM application** | vibium-java |
-| **Script-based automation** | vibium-go (`vibium run`) |
+| **Script-based automation** | webpilot (`webpilot run`) |
 
 ---
 
@@ -500,7 +500,7 @@ Compare vibium-go SDK with VibiumDev client libraries.
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                      VibiumDev/vibium                               │
+│                      WebPilotDev/vibium                               │
 │                                                                     │
 │   ┌─────────┐  ┌─────────┐  ┌─────────┐                            │
 │   │vibium-js│  │vibium-py│  │vibium-  │                            │
@@ -510,32 +510,32 @@ Compare vibium-go SDK with VibiumDev client libraries.
 │                     │ HTTP API                                      │
 │                     ▼                                               │
 │               ┌──────────┐                                          │
-│               │ clicker  │◄─── vibium mcp                          │
+│               │ clicker  │◄─── webpilot mcp                          │
 │               │ (binary) │                                          │
 │               └────┬─────┘                                          │
 │                    │ BiDi                                           │
 └────────────────────┼────────────────────────────────────────────────┘
                      │
-                     │  vibium-go uses clicker
+                     │  webpilot uses clicker
                      │  ONLY for launching Chrome
                      ▼
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    plexusone/vibium-go                              │
+│                    plexusone/webpilot                              │
 │                                                                     │
 │   ┌────────────────────────────────────────────────────────────┐   │
-│   │                    vibium-go SDK                            │   │
+│   │                    webpilot SDK                            │   │
 │   │              (own BiDi client implementation)               │   │
 │   └────────────────────────┬───────────────────────────────────┘   │
 │                            │                                        │
 │         ┌──────────────────┼──────────────────┐                    │
 │         │                  │                  │                    │
 │         ▼                  ▼                  ▼                    │
-│    vibium-mcp         vibium run        Direct SDK                 │
+│    webpilot-mcp         webpilot run        Direct SDK                 │
 │                                                                     │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-**Key point**: vibium-go is an independent implementation that uses VibiumDev's `clicker` binary only as a Chrome launcher. The BiDi communication, MCP server, and all SDK functionality are implemented independently in Go.
+**Key point**: webpilot is an independent implementation that uses WebPilotDev's `clicker` binary only as a Chrome launcher. The BiDi communication, MCP server, and all SDK functionality are implemented independently in Go.
 
 ---
 

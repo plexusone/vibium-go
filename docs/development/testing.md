@@ -10,7 +10,7 @@ go test -v ./...
 
 ## Integration Tests
 
-Integration tests require the Vibium clicker binary.
+Integration tests require the WebPilot clicker binary.
 
 !!! warning "Clicker Required"
     The clicker binary is not yet publicly distributed. See [Prerequisites](../getting-started/prerequisites.md) for details.
@@ -19,7 +19,7 @@ Integration tests require the Vibium clicker binary.
 
 ```bash
 # Set path to clicker binary
-export VIBIUM_CLICKER_PATH=/path/to/clicker
+export WEBPILOT_CLICKER_PATH=/path/to/clicker
 ```
 
 ### Running
@@ -29,7 +29,7 @@ export VIBIUM_CLICKER_PATH=/path/to/clicker
 go test -tags=integration -v ./integration/...
 
 # Headless mode (for CI)
-VIBIUM_HEADLESS=1 go test -tags=integration -v ./integration/...
+WEBPILOT_HEADLESS=1 go test -tags=integration -v ./integration/...
 
 # Specific tests
 go test -tags=integration -v ./integration/... -run TestExampleCom
@@ -59,7 +59,7 @@ go test -v ./mcp/... -count=1
 go test -v ./script/...
 
 # Run example scripts
-vibium run examples/basic.json --headless
+webpilot run examples/basic.json --headless
 ```
 
 ## Linting
@@ -120,14 +120,14 @@ func TestElementClick(t *testing.T) {
 func TestExampleComNavigation(t *testing.T) {
     ctx := context.Background()
 
-    vibe, err := vibium.LaunchHeadless(ctx)
+    pilot, err := webpilot.LaunchHeadless(ctx)
     require.NoError(t, err)
-    defer vibe.Quit(ctx)
+    defer pilot.Quit(ctx)
 
-    err = vibe.Go(ctx, "https://example.com")
+    err = pilot.Go(ctx, "https://example.com")
     require.NoError(t, err)
 
-    title, err := vibe.Title(ctx)
+    title, err := pilot.Title(ctx)
     require.NoError(t, err)
     require.Equal(t, "Example Domain", title)
 }

@@ -4,8 +4,8 @@
 
 ```bash
 # Clone
-git clone https://github.com/grokify/vibium-go
-cd vibium-go
+git clone https://github.com/grokify/webpilot
+cd webpilot
 
 # Install dependencies
 go mod download
@@ -47,7 +47,7 @@ chore: maintenance
 ## Project Structure
 
 ```
-vibium-go/
+webpilot/
 ├── *.go              # Core client library
 ├── cmd/vibium/       # CLI
 ├── mcp/              # MCP server

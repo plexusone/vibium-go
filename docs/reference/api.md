@@ -1,12 +1,12 @@
 # API Reference
 
-Full API documentation is available at [pkg.go.dev](https://pkg.go.dev/github.com/grokify/vibium-go).
+Full API documentation is available at [pkg.go.dev](https://pkg.go.dev/github.com/grokify/webpilot).
 
 ## Package Structure
 
 ```
-github.com/grokify/vibium-go
-├── vibium.go       # Main Vibe type, browser control
+github.com/grokify/webpilot
+├── webpilot.go       # Main Vibe type, browser control
 ├── element.go      # Element interactions
 ├── types.go        # Options and configuration
 ├── errors.go       # Error types
@@ -40,37 +40,37 @@ type Vibe struct {
 }
 
 // Launch
-func Launch(ctx context.Context) (*Vibe, error)
-func LaunchHeadless(ctx context.Context) (*Vibe, error)
+func Launch(ctx context.Context) (*Pilot, error)
+func LaunchHeadless(ctx context.Context) (*Pilot, error)
 
 // Navigation
-func (v *Vibe) Go(ctx context.Context, url string) error
-func (v *Vibe) URL(ctx context.Context) (string, error)
-func (v *Vibe) Title(ctx context.Context) (string, error)
-func (v *Vibe) Back(ctx context.Context) error
-func (v *Vibe) Forward(ctx context.Context) error
-func (v *Vibe) Reload(ctx context.Context) error
+func (v *Pilot) Go(ctx context.Context, url string) error
+func (v *Pilot) URL(ctx context.Context) (string, error)
+func (v *Pilot) Title(ctx context.Context) (string, error)
+func (v *Pilot) Back(ctx context.Context) error
+func (v *Pilot) Forward(ctx context.Context) error
+func (v *Pilot) Reload(ctx context.Context) error
 
 // Finding elements
-func (v *Vibe) Find(ctx context.Context, selector string, opts *FindOptions) (*Element, error)
-func (v *Vibe) FindAll(ctx context.Context, selector string) ([]*Element, error)
-func (v *Vibe) MustFind(ctx context.Context, selector string) *Element
+func (v *Pilot) Find(ctx context.Context, selector string, opts *FindOptions) (*Element, error)
+func (v *Pilot) FindAll(ctx context.Context, selector string) ([]*Element, error)
+func (v *Pilot) MustFind(ctx context.Context, selector string) *Element
 
 // Screenshots
-func (v *Vibe) Screenshot(ctx context.Context) ([]byte, error)
-func (v *Vibe) PDF(ctx context.Context, opts *PDFOptions) ([]byte, error)
+func (v *Pilot) Screenshot(ctx context.Context) ([]byte, error)
+func (v *Pilot) PDF(ctx context.Context, opts *PDFOptions) ([]byte, error)
 
 // JavaScript
-func (v *Vibe) Evaluate(ctx context.Context, script string) (any, error)
+func (v *Pilot) Evaluate(ctx context.Context, script string) (any, error)
 
 // Input controllers
-func (v *Vibe) Keyboard() *Keyboard
-func (v *Vibe) Mouse() *Mouse
-func (v *Vibe) Touch() *Touch
+func (v *Pilot) Keyboard() *Keyboard
+func (v *Pilot) Mouse() *Mouse
+func (v *Pilot) Touch() *Touch
 
 // Cleanup
-func (v *Vibe) Quit(ctx context.Context) error
-func (v *Vibe) IsClosed() bool
+func (v *Pilot) Quit(ctx context.Context) error
+func (v *Pilot) IsClosed() bool
 ```
 
 ### Element
@@ -132,7 +132,7 @@ type ActionOptions struct {
 ## MCP Server
 
 ```go
-import "github.com/grokify/vibium-go/mcp"
+import "github.com/grokify/webpilot/mcp"
 
 type Config struct {
     Headless       bool
@@ -148,7 +148,7 @@ func (s *Server) Close(ctx context.Context) error
 ## Script Types
 
 ```go
-import "github.com/grokify/vibium-go/script"
+import "github.com/grokify/webpilot/script"
 
 type Script struct {
     Name        string

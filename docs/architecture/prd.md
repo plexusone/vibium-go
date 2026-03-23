@@ -1,8 +1,8 @@
-# Product Requirements Document: Vibium MCP Server
+# Product Requirements Document: WebPilot MCP Server
 
 ## Overview
 
-Vibium MCP Server enables AI assistants (Claude Code, ChatGPT, etc.) to perform browser automation and testing through the Model Context Protocol (MCP). It exposes browser control primitives as MCP tools, allowing agents to navigate websites, interact with elements, and execute test plans.
+WebPilot MCP Server enables AI assistants (Claude Code, ChatGPT, etc.) to perform browser automation and testing through the Model Context Protocol (MCP). It exposes browser control primitives as MCP tools, allowing agents to navigate websites, interact with elements, and execute test plans.
 
 ## Vision
 
@@ -252,7 +252,7 @@ Two report formats for different consumers:
 
 ## Dependencies
 
-- Vibium-Go client library (this repo)
+- WebPilot-Go client library (this repo)
 - Clicker binary (external)
 - multi-agent-spec SDK (for report rendering)
 - MCP Go SDK (for protocol handling)
@@ -261,4 +261,4 @@ Two report formats for different consumers:
 
 - [Model Context Protocol](https://modelcontextprotocol.io/)
 - [multi-agent-spec](https://github.com/agentplexus/multi-agent-spec)
-- [Vibium Clicker](https://github.com/aspect-build/aspect-cli) (example)
+- [WebPilot Clicker](https://github.com/aspect-build/aspect-cli) (example)

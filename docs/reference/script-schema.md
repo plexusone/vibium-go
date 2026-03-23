@@ -11,7 +11,7 @@ script/vibium-script.schema.json
 ## Schema URL
 
 ```
-https://github.com/grokify/vibium-go/script/vibium-script.schema.json
+https://github.com/grokify/webpilot/script/vibium-script.schema.json
 ```
 
 ## Top-Level Fields

@@ -10,30 +10,30 @@ import (
     "fmt"
     "log"
 
-    vibium "github.com/grokify/vibium-go"
+github.com/plexusone/webpilot
 )
 
 func main() {
     ctx := context.Background()
 
     // Launch browser
-    vibe, err := vibium.Launch(ctx)
+    pilot, err := webpilot.Launch(ctx)
     if err != nil {
         log.Fatal(err)
     }
-    defer vibe.Quit(ctx)
+    defer pilot.Quit(ctx)
 
     // Navigate
-    if err := vibe.Go(ctx, "https://example.com"); err != nil {
+    if err := pilot.Go(ctx, "https://example.com"); err != nil {
         log.Fatal(err)
     }
 
     // Get page title
-    title, _ := vibe.Title(ctx)
+    title, _ := pilot.Title(ctx)
     fmt.Println("Title:", title)
 
     // Find and click a link
-    link, err := vibe.Find(ctx, "a", nil)
+    link, err := pilot.Find(ctx, "a", nil)
     if err != nil {
         log.Fatal(err)
     }
@@ -43,7 +43,7 @@ func main() {
     }
 
     // Take screenshot
-    data, _ := vibe.Screenshot(ctx)
+    data, _ := pilot.Screenshot(ctx)
     os.WriteFile("screenshot.png", data, 0644)
 }
 ```
@@ -53,7 +53,7 @@ func main() {
 Start the server:
 
 ```bash
-vibium mcp --headless
+webpilot mcp --headless
 ```
 
 Configure in Claude Desktop (`~/Library/Application Support/Claude/claude_desktop_config.json`):
@@ -61,8 +61,8 @@ Configure in Claude Desktop (`~/Library/Application Support/Claude/claude_deskto
 ```json
 {
   "mcpServers": {
-    "vibium": {
-      "command": "vibium",
+    "webpilot": {
+      "command": "webpilot",
       "args": ["mcp", "--headless"]
     }
   }
@@ -77,20 +77,20 @@ Interactive browser control:
 
 ```bash
 # Launch browser
-vibium launch
+webpilot launch
 
 # Navigate
-vibium go https://example.com
+webpilot go https://example.com
 
 # Interact
-vibium fill "#search" "hello world"
-vibium click "#submit"
+webpilot fill "#search" "hello world"
+webpilot click "#submit"
 
 # Capture
-vibium screenshot result.png
+webpilot screenshot result.png
 
 # Cleanup
-vibium quit
+webpilot quit
 ```
 
 ## Script Runner
@@ -111,5 +111,5 @@ Create `test.json`:
 Run:
 
 ```bash
-vibium run test.json
+webpilot run test.json
 ```

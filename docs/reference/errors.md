@@ -3,10 +3,10 @@
 ## Sentinel Errors
 
 ```go
-import vibium "github.com/grokify/vibium-go"
+import webpilot "github.com/grokify/webpilot"
 
 // Check specific error types
-if errors.Is(err, vibium.ErrElementNotFound) {
+if errors.Is(err, webpilot.ErrElementNotFound) {
     // Element not found
 }
 ```
@@ -36,9 +36,9 @@ func (e ElementNotFoundError) Is(target error) bool
 **Example:**
 
 ```go
-elem, err := vibe.Find(ctx, "#missing", nil)
+elem, err := pilot.Find(ctx, "#missing", nil)
 if err != nil {
-    var notFound vibium.ElementNotFoundError
+    var notFound webpilot.ElementNotFoundError
     if errors.As(err, &notFound) {
         fmt.Printf("Selector not found: %s\n", notFound.Selector)
     }
@@ -61,9 +61,9 @@ func (e TimeoutError) Is(target error) bool
 **Example:**
 
 ```go
-err := elem.Click(ctx, &vibium.ActionOptions{Timeout: time.Second})
+err := elem.Click(ctx, &webpilot.ActionOptions{Timeout: time.Second})
 if err != nil {
-    var timeout vibium.TimeoutError
+    var timeout webpilot.TimeoutError
     if errors.As(err, &timeout) {
         fmt.Printf("Timed out after %v: %s\n", timeout.Timeout, timeout.Reason)
     }
@@ -113,11 +113,11 @@ func (e BiDiError) Error() string
 ### Check Specific Error
 
 ```go
-elem, err := vibe.Find(ctx, selector, nil)
+elem, err := pilot.Find(ctx, selector, nil)
 if err != nil {
-    if errors.Is(err, vibium.ErrElementNotFound) {
+    if errors.Is(err, webpilot.ErrElementNotFound) {
         // Try alternative selector
-        elem, err = vibe.Find(ctx, altSelector, nil)
+        elem, err = pilot.Find(ctx, altSelector, nil)
     }
     if err != nil {
         return err
@@ -130,7 +130,7 @@ if err != nil {
 ```go
 err := elem.Click(ctx, nil)
 if err != nil {
-    var timeout vibium.TimeoutError
+    var timeout webpilot.TimeoutError
     if errors.As(err, &timeout) {
         log.Printf("Click timed out on %s after %v",
             timeout.Selector, timeout.Timeout)
@@ -142,14 +142,14 @@ if err != nil {
 ### Retry on Timeout
 
 ```go
-func clickWithRetry(ctx context.Context, elem *vibium.Element, attempts int) error {
+func clickWithRetry(ctx context.Context, elem *webpilot.Element, attempts int) error {
     var err error
     for i := 0; i < attempts; i++ {
         err = elem.Click(ctx, nil)
         if err == nil {
             return nil
         }
-        if !errors.Is(err, vibium.ErrTimeout) {
+        if !errors.Is(err, webpilot.ErrTimeout) {
             return err // Don't retry non-timeout errors
         }
         time.Sleep(time.Second)
@@ -161,12 +161,12 @@ func clickWithRetry(ctx context.Context, elem *vibium.Element, attempts int) err
 ### Handle Connection Issues
 
 ```go
-vibe, err := vibium.Launch(ctx)
+pilot, err := webpilot.Launch(ctx)
 if err != nil {
-    if errors.Is(err, vibium.ErrClickerNotFound) {
+    if errors.Is(err, webpilot.ErrClickerNotFound) {
         return fmt.Errorf("install vibium: npm install -g vibium")
     }
-    if errors.Is(err, vibium.ErrConnectionFailed) {
+    if errors.Is(err, webpilot.ErrConnectionFailed) {
         return fmt.Errorf("browser failed to start")
     }
     return err

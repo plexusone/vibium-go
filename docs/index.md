@@ -1,18 +1,16 @@
-# Vibium Go
+# WebPilot
 
-Go client and tooling for the [Vibium](https://github.com/VibiumDev/vibium) browser automation platform.
+Go browser automation library using WebDriver BiDi for real-time bidirectional communication with browsers.
 
-## What is Vibium?
+## What is WebPilot?
 
-Vibium is a browser automation platform built for AI agents. It uses the WebDriver BiDi protocol for real-time bidirectional communication with browsers, enabling:
+WebPilot is a browser automation library built for AI agents. It uses the WebDriver BiDi protocol for real-time bidirectional communication with browsers, enabling:
 
 - **Instant feedback** - No polling, real-time events
 - **AI-native** - Designed for LLM tool use
 - **Cross-browser** - Works with Chrome, Firefox, Edge
 
-## What is Vibium Go?
-
-This project provides Go tooling for Vibium:
+## Features
 
 | Component | Description |
 |-----------|-------------|
@@ -26,28 +24,16 @@ This project provides Go tooling for Vibium:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                         vibium-go                                │
+│                         webpilot                                │
 ├─────────────┬─────────────┬─────────────┬──────────────────────┤
 │  Go Client  │ MCP Server  │    CLI      │   Script Runner      │
-│    SDK      │  (75 tools) │  (vibium)   │   (vibium run)       │
+│    SDK      │  (75 tools) │  (webpilot) │   (webpilot run)     │
 ├─────────────┴─────────────┴─────────────┴──────────────────────┤
-│                    WebDriver BiDi Protocol                       │
+│                    WebDriver BiDi Protocol                     │
 ├─────────────────────────────────────────────────────────────────┤
-│                   Vibium Clicker (upstream)                      │
-├─────────────────────────────────────────────────────────────────┤
-│                    Chrome / Chromium                             │
+│                    Chrome / Chromium                           │
 └─────────────────────────────────────────────────────────────────┘
 ```
-
-## Feature Origin
-
-| Feature | Source |
-|---------|--------|
-| Core browser automation | Upstream Vibium (JS/Python parity) |
-| MCP server | Go-specific |
-| CLI | Go-specific |
-| Script runner | Go-specific |
-| Session recording | Go-specific |
 
 ## Quick Links
 
@@ -61,5 +47,4 @@ This project provides Go tooling for Vibium:
 
 | Project | Description |
 |---------|-------------|
-| [vibium-wcag](https://github.com/agentplexus/vibium-wcag) | WCAG 2.2 accessibility testing using vibium-go |
-| [omnillm](https://github.com/agentplexus/omnillm) | Unified LLM client for multiple providers |
+| [WebDriver BiDi](https://w3c.github.io/webdriver-bidi/) | Protocol specification |

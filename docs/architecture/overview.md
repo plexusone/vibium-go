@@ -7,9 +7,9 @@
 │                              User Layer                                  │
 ├─────────────────┬─────────────────┬─────────────────┬──────────────────┤
 │    Go Client    │   MCP Server    │      CLI        │  Script Runner   │
-│      SDK        │   (75+ tools)   │    (vibium)     │  (vibium run)    │
+│      SDK        │   (75+ tools)   │    (vibium)     │  (webpilot run)    │
 ├─────────────────┴─────────────────┴─────────────────┴──────────────────┤
-│                           vibium-go Core                                │
+│                           webpilot Core                                │
 │  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐     │
 │  │   Vibe   │ │ Element  │ │ Keyboard │ │  Mouse   │ │  Touch   │     │
 │  │ (page)   │ │ (DOM)    │ │ (input)  │ │ (input)  │ │ (input)  │     │
@@ -20,9 +20,9 @@
 │  └──────────┘ └──────────┘ └──────────┘ └──────────┘                   │
 ├─────────────────────────────────────────────────────────────────────────┤
 │                        BiDi Client Layer                                │
-│           WebSocket connection to Vibium Clicker                        │
+│           WebSocket connection to WebPilot Clicker                        │
 ├─────────────────────────────────────────────────────────────────────────┤
-│                        Vibium Clicker                                   │
+│                        WebPilot Clicker                                   │
 │          Custom commands (vibium:*) + WebDriver BiDi                    │
 ├─────────────────────────────────────────────────────────────────────────┤
 │                   WebDriver BiDi Protocol                               │
@@ -38,7 +38,7 @@
 
 The core programmatic API for browser automation:
 
-- **Vibe**: Page-level operations (navigation, screenshots, JS evaluation)
+- **Pilot**: Page-level operations (navigation, screenshots, JS evaluation)
 - **Element**: DOM element interactions (click, type, fill, state queries)
 - **Input Controllers**: Low-level keyboard, mouse, touch control
 - **Context**: Isolated browser sessions with separate cookies/storage
@@ -57,7 +57,7 @@ Model Context Protocol server for AI assistant integration:
 
 Command-line interface for scripted automation:
 
-- Subcommand structure (`vibium launch`, `vibium click`, etc.)
+- Subcommand structure (`webpilot launch`, `webpilot click`, etc.)
 - Session persistence between commands
 - YAML/JSON script execution
 
@@ -123,7 +123,7 @@ Claude                    MCP Server              Recorder
 
 ### WebDriver BiDi
 
-Vibium uses WebDriver BiDi instead of Chrome DevTools Protocol (CDP) for:
+WebPilot uses WebDriver BiDi instead of Chrome DevTools Protocol (CDP) for:
 
 - Standardization across browsers
 - Bidirectional events (no polling)
@@ -131,7 +131,7 @@ Vibium uses WebDriver BiDi instead of Chrome DevTools Protocol (CDP) for:
 
 ### Custom Commands
 
-Vibium extends BiDi with `vibium:*` commands for:
+WebPilot extends BiDi with `vibium:*` commands for:
 
 - High-level actions (fill, check, selectOption)
 - Actionability checks (wait for visible, enabled, stable)

@@ -5,8 +5,8 @@ Execute deterministic test scripts in JSON or YAML format.
 ## Running Scripts
 
 ```bash
-vibium run test.json
-vibium run test.yaml --headless
+webpilot run test.json
+webpilot run test.yaml --headless
 ```
 
 ## Script Format

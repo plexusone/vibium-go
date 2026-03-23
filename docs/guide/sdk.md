@@ -5,7 +5,7 @@ The Go client SDK provides programmatic browser control with full feature parity
 ## Installation
 
 ```bash
-go get github.com/plexusone/vibium-go
+go get github.com/plexusone/webpilot
 ```
 
 ## Basic Usage
@@ -17,22 +17,22 @@ import (
     "context"
     "log"
 
-    vibium "github.com/plexusone/vibium-go"
+    webpilot "github.com/plexusone/webpilot"
 )
 
 func main() {
     ctx := context.Background()
 
     // Launch browser
-    vibe, err := vibium.Launch(ctx)
+    pilot, err := webpilot.Launch(ctx)
     if err != nil {
         log.Fatal(err)
     }
-    defer vibe.Quit(ctx)
+    defer pilot.Quit(ctx)
 
     // Navigate and interact
-    vibe.Go(ctx, "https://example.com")
-    elem, _ := vibe.Find(ctx, "a", nil)
+    pilot.Go(ctx, "https://example.com")
+    elem, _ := pilot.Find(ctx, "a", nil)
     elem.Click(ctx, nil)
 }
 ```
@@ -43,13 +43,13 @@ func main() {
 
 ```go
 // Default launch (visible browser)
-vibe, err := vibium.Launch(ctx)
+pilot, err := webpilot.Launch(ctx)
 
 // Headless launch
-vibe, err := vibium.LaunchHeadless(ctx)
+pilot, err := webpilot.LaunchHeadless(ctx)
 
 // Custom options
-vibe, err := vibium.Browser.Launch(ctx, &vibium.LaunchOptions{
+pilot, err := webpilot.Browser.Launch(ctx, &webpilot.LaunchOptions{
     Headless:       true,
     Port:           9515,
     ExecutablePath: "/path/to/clicker",
@@ -60,10 +60,10 @@ vibe, err := vibium.Browser.Launch(ctx, &vibium.LaunchOptions{
 
 ```go
 // Close browser
-err := vibe.Quit(ctx)
+err := pilot.Quit(ctx)
 
 // Check if closed
-if vibe.IsClosed() {
+if pilot.IsClosed() {
     // ...
 }
 ```
@@ -72,27 +72,27 @@ if vibe.IsClosed() {
 
 ```go
 // Navigate to URL
-err := vibe.Go(ctx, "https://example.com")
+err := pilot.Go(ctx, "https://example.com")
 
 // Get current URL
-url, err := vibe.URL(ctx)
+url, err := pilot.URL(ctx)
 
 // Get page title
-title, err := vibe.Title(ctx)
+title, err := pilot.Title(ctx)
 
 // History navigation
-err := vibe.Back(ctx)
-err := vibe.Forward(ctx)
-err := vibe.Reload(ctx)
+err := pilot.Back(ctx)
+err := pilot.Forward(ctx)
+err := pilot.Reload(ctx)
 
 // Wait for navigation
-err := vibe.WaitForNavigation(ctx, 30*time.Second)
+err := pilot.WaitForNavigation(ctx, 30*time.Second)
 
 // Wait for URL pattern
-err := vibe.WaitForURL(ctx, "/dashboard", nil)
+err := pilot.WaitForURL(ctx, "/dashboard", nil)
 
 // Wait for load state
-err := vibe.WaitForLoad(ctx, "networkidle", nil)
+err := pilot.WaitForLoad(ctx, "networkidle", nil)
 ```
 
 ## Finding Elements
@@ -101,22 +101,22 @@ err := vibe.WaitForLoad(ctx, "networkidle", nil)
 
 ```go
 // Find single element
-elem, err := vibe.Find(ctx, "button.submit", nil)
+elem, err := pilot.Find(ctx, "button.submit", nil)
 
 // Find with timeout
-elem, err := vibe.Find(ctx, "button.submit", &vibium.FindOptions{
+elem, err := pilot.Find(ctx, "button.submit", &webpilot.FindOptions{
     Timeout: 10 * time.Second,
 })
 
 // Find all matching elements
-elements, err := vibe.FindAll(ctx, "li.item", nil)
+elements, err := pilot.FindAll(ctx, "li.item", nil)
 for _, elem := range elements {
     text, _ := elem.Text(ctx)
     fmt.Println(text)
 }
 
 // Must find (panics if not found)
-elem := vibe.MustFind(ctx, "button.submit")
+elem := pilot.MustFind(ctx, "button.submit")
 ```
 
 ### By Semantic Selectors
@@ -129,43 +129,43 @@ Semantic selectors find elements by accessibility attributes instead of brittle 
 
 ```go
 // Find by ARIA role and text
-elem, err := vibe.Find(ctx, "", &vibium.FindOptions{
+elem, err := pilot.Find(ctx, "", &webpilot.FindOptions{
     Role: "button",
     Text: "Submit",
 })
 
 // Find by associated label (great for form inputs)
-elem, err := vibe.Find(ctx, "", &vibium.FindOptions{
+elem, err := pilot.Find(ctx, "", &webpilot.FindOptions{
     Label: "Email address",
 })
 
 // Find by placeholder text
-elem, err := vibe.Find(ctx, "", &vibium.FindOptions{
+elem, err := pilot.Find(ctx, "", &webpilot.FindOptions{
     Placeholder: "Enter your email",
 })
 
 // Find by data-testid (recommended for testing)
-elem, err := vibe.Find(ctx, "", &vibium.FindOptions{
+elem, err := pilot.Find(ctx, "", &webpilot.FindOptions{
     TestID: "login-button",
 })
 
 // Find by image alt text
-elem, err := vibe.Find(ctx, "", &vibium.FindOptions{
+elem, err := pilot.Find(ctx, "", &webpilot.FindOptions{
     Alt: "Company logo",
 })
 
 // Find by title attribute
-elem, err := vibe.Find(ctx, "", &vibium.FindOptions{
+elem, err := pilot.Find(ctx, "", &webpilot.FindOptions{
     Title: "Close dialog",
 })
 
 // Find by XPath
-elem, err := vibe.Find(ctx, "", &vibium.FindOptions{
+elem, err := pilot.Find(ctx, "", &webpilot.FindOptions{
     XPath: "//button[@type='submit']",
 })
 
 // Find element near another element
-elem, err := vibe.Find(ctx, "", &vibium.FindOptions{
+elem, err := pilot.Find(ctx, "", &webpilot.FindOptions{
     Role: "button",
     Near: "#username-input",
 })
@@ -177,13 +177,13 @@ You can combine CSS selectors with semantic filtering:
 
 ```go
 // Find within a form, then filter by role and label
-elem, err := vibe.Find(ctx, "form.login", &vibium.FindOptions{
+elem, err := pilot.Find(ctx, "form.login", &webpilot.FindOptions{
     Role:  "textbox",
     Label: "Password",
 })
 
 // Find all buttons within a specific container
-buttons, err := vibe.FindAll(ctx, ".dialog-footer", &vibium.FindOptions{
+buttons, err := pilot.FindAll(ctx, ".dialog-footer", &webpilot.FindOptions{
     Role: "button",
 })
 ```
@@ -208,15 +208,15 @@ Find elements within a parent element:
 
 ```go
 // Find a container first
-form, err := vibe.Find(ctx, "form.signup", nil)
+form, err := pilot.Find(ctx, "form.signup", nil)
 
 // Then find within it
-emailInput, err := form.Find(ctx, "", &vibium.FindOptions{
+emailInput, err := form.Find(ctx, "", &webpilot.FindOptions{
     Label: "Email",
 })
 
 // Find all checkboxes within the form
-checkboxes, err := form.FindAll(ctx, "", &vibium.FindOptions{
+checkboxes, err := form.FindAll(ctx, "", &webpilot.FindOptions{
     Role: "checkbox",
 })
 ```
@@ -230,7 +230,7 @@ checkboxes, err := form.FindAll(ctx, "", &vibium.FindOptions{
 err := elem.Click(ctx, nil)
 
 // Click with timeout
-err := elem.Click(ctx, &vibium.ActionOptions{
+err := elem.Click(ctx, &webpilot.ActionOptions{
     Timeout: 5 * time.Second,
 })
 
@@ -262,7 +262,7 @@ err := elem.Check(ctx, nil)
 err := elem.Uncheck(ctx, nil)
 
 // Select dropdown
-err := elem.SelectOption(ctx, vibium.SelectOptionValues{
+err := elem.SelectOption(ctx, webpilot.SelectOptionValues{
     Values: []string{"option1"},
 }, nil)
 
@@ -328,7 +328,7 @@ err := elem.WaitUntil(ctx, "visible", nil)
 ### Keyboard
 
 ```go
-keyboard := vibe.Keyboard()
+keyboard := pilot.Keyboard()
 
 // Press key
 err := keyboard.Press(ctx, "Enter")
@@ -344,7 +344,7 @@ err := keyboard.Type(ctx, "hello world")
 ### Mouse
 
 ```go
-mouse := vibe.Mouse()
+mouse := pilot.Mouse()
 
 // Click at coordinates
 err := mouse.Click(ctx, 100, 200)
@@ -363,7 +363,7 @@ err := mouse.Wheel(ctx, 0, 100)
 ### Touch
 
 ```go
-touch := vibe.Touch()
+touch := pilot.Touch()
 
 // Tap at coordinates
 err := touch.Tap(ctx, 100, 200)
@@ -373,59 +373,59 @@ err := touch.Tap(ctx, 100, 200)
 
 ```go
 // Screenshot
-data, err := vibe.Screenshot(ctx)
+data, err := pilot.Screenshot(ctx)
 os.WriteFile("page.png", data, 0644)
 
 // Element screenshot
 data, err := elem.Screenshot(ctx)
 
 // PDF
-data, err := vibe.PDF(ctx, nil)
+data, err := pilot.PDF(ctx, nil)
 ```
 
 ## JavaScript
 
 ```go
 // Evaluate script
-result, err := vibe.Evaluate(ctx, "document.title")
+result, err := pilot.Evaluate(ctx, "document.title")
 
 // Evaluate with element
 result, err := elem.Eval(ctx, "el => el.textContent")
 
 // Add script tag
-err := vibe.AddScript(ctx, "console.log('injected')", nil)
+err := pilot.AddScript(ctx, "console.log('injected')", nil)
 
 // Add stylesheet
-err := vibe.AddStyle(ctx, "body { background: red }", nil)
+err := pilot.AddStyle(ctx, "body { background: red }", nil)
 ```
 
 ## Page Management
 
 ```go
 // Create new page
-newVibe, err := vibe.NewPage(ctx)
+newVibe, err := pilot.NewPage(ctx)
 
 // Get all pages
-pages, err := vibe.Pages(ctx)
+pages, err := pilot.Pages(ctx)
 
 // Close current page
-err := vibe.Close(ctx)
+err := pilot.Close(ctx)
 
 // Bring to front
-err := vibe.BringToFront(ctx)
+err := pilot.BringToFront(ctx)
 
 // Get frames
-frames, err := vibe.Frames(ctx)
+frames, err := pilot.Frames(ctx)
 
 // Get frame by name/URL
-frame, err := vibe.Frame(ctx, "iframe-name")
+frame, err := pilot.Frame(ctx, "iframe-name")
 ```
 
 ## Browser Context
 
 ```go
 // Create new context (isolated session)
-browserCtx, err := vibe.NewContext(ctx)
+browserCtx, err := pilot.NewContext(ctx)
 
 // Cookies
 cookies, err := browserCtx.Cookies(ctx)
@@ -442,19 +442,19 @@ Full storage state management including cookies, localStorage, and sessionStorag
 
 ```go
 // Get complete storage state (cookies + localStorage + sessionStorage)
-state, err := vibe.StorageState(ctx)
+state, err := pilot.StorageState(ctx)
 
 // Save to file for later restoration
 jsonBytes, _ := json.Marshal(state)
 os.WriteFile("storage.json", jsonBytes, 0600)
 
 // Restore storage state from JSON
-var savedState vibium.StorageState
+var savedState webpilot.StorageState
 json.Unmarshal(jsonBytes, &savedState)
-err := vibe.SetStorageState(ctx, &savedState)
+err := pilot.SetStorageState(ctx, &savedState)
 
 // Clear all storage (cookies, localStorage, sessionStorage)
-err := vibe.ClearStorage(ctx)
+err := pilot.ClearStorage(ctx)
 ```
 
 The `StorageState` type contains:
@@ -478,10 +478,10 @@ Inject JavaScript that runs before any page scripts on every navigation:
 
 ```go
 // Add script that runs before page loads
-err := vibe.AddInitScript(ctx, `window.testMode = true;`)
+err := pilot.AddInitScript(ctx, `window.testMode = true;`)
 
 // Mock APIs before page scripts run
-err := vibe.AddInitScript(ctx, `
+err := pilot.AddInitScript(ctx, `
     const originalFetch = window.fetch;
     window.fetch = async (url, opts) => {
         if (url.includes('/api/user')) {
@@ -495,13 +495,13 @@ err := vibe.AddInitScript(ctx, `
 `)
 
 // Disable analytics
-err := vibe.AddInitScript(ctx, `
+err := pilot.AddInitScript(ctx, `
     window.gtag = () => {};
     window.analytics = { track: () => {} };
 `)
 
 // Via BrowserContext for isolated contexts
-browserCtx, _ := vibe.NewContext(ctx)
+browserCtx, _ := pilot.NewContext(ctx)
 err := browserCtx.AddInitScript(ctx, `window.contextId = 'isolated';`)
 ```
 
@@ -511,10 +511,10 @@ Record browser actions with screenshots and DOM snapshots:
 
 ```go
 // Get tracing controller
-tracing := vibe.Tracing()
+tracing := pilot.Tracing()
 
 // Start with options
-err := tracing.Start(ctx, &vibium.TracingStartOptions{
+err := tracing.Start(ctx, &webpilot.TracingStartOptions{
     Name:        "login-test",
     Screenshots: true,
     Snapshots:   true,
@@ -523,8 +523,8 @@ err := tracing.Start(ctx, &vibium.TracingStartOptions{
 })
 
 // Perform actions to record
-vibe.Go(ctx, "https://example.com")
-elem, _ := vibe.Find(ctx, "button", nil)
+pilot.Go(ctx, "https://example.com")
+elem, _ := pilot.Find(ctx, "button", nil)
 elem.Click(ctx, nil)
 
 // Stop and get trace data
@@ -532,7 +532,7 @@ data, err := tracing.Stop(ctx, nil)
 os.WriteFile("trace.zip", data, 0600)
 
 // Use chunks for segmented recording
-err := tracing.StartChunk(ctx, &vibium.TracingChunkOptions{
+err := tracing.StartChunk(ctx, &webpilot.TracingChunkOptions{
     Name: "step-1",
 })
 // ... actions ...
@@ -548,19 +548,19 @@ err := tracing.StopGroup(ctx)
 
 ```go
 // Viewport
-err := vibe.SetViewport(ctx, vibium.Viewport{
+err := pilot.SetViewport(ctx, webpilot.Viewport{
     Width:  1920,
     Height: 1080,
 })
 
 // Media emulation
-err := vibe.EmulateMedia(ctx, &vibium.EmulateMediaOptions{
+err := pilot.EmulateMedia(ctx, &webpilot.EmulateMediaOptions{
     Media:       "print",
     ColorScheme: "dark",
 })
 
 // Geolocation
-err := vibe.SetGeolocation(ctx, &vibium.Geolocation{
+err := pilot.SetGeolocation(ctx, &webpilot.Geolocation{
     Latitude:  37.7749,
     Longitude: -122.4194,
 })
@@ -571,12 +571,12 @@ err := vibe.SetGeolocation(ctx, &vibium.Geolocation{
 ```go
 import "errors"
 
-elem, err := vibe.Find(ctx, "#missing", nil)
+elem, err := pilot.Find(ctx, "#missing", nil)
 if err != nil {
-    if errors.Is(err, vibium.ErrElementNotFound) {
+    if errors.Is(err, webpilot.ErrElementNotFound) {
         // Element not found
     }
-    if errors.Is(err, vibium.ErrTimeout) {
+    if errors.Is(err, webpilot.ErrTimeout) {
         // Timeout
     }
 }
@@ -585,16 +585,16 @@ if err != nil {
 ## Debug Logging
 
 ```bash
-VIBIUM_DEBUG=1 go run main.go
+WEBPILOT_DEBUG=1 go run main.go
 ```
 
 ```go
 // Check debug mode
-if vibium.Debug() {
+if webpilot.Debug() {
     // ...
 }
 
 // Custom logger
-logger := vibium.NewDebugLogger()
-ctx = vibium.ContextWithLogger(ctx, logger)
+logger := webpilot.NewDebugLogger()
+ctx = webpilot.ContextWithLogger(ctx, logger)
 ```

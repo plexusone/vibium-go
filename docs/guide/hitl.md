@@ -11,7 +11,7 @@ Some automation tasks require human interaction:
 - **2FA/MFA verification**
 - **Manual data entry or review**
 
-Vibium supports these workflows with two key tools:
+WebPilot supports these workflows with two key tools:
 
 | Tool | Purpose |
 |------|---------|
@@ -236,7 +236,7 @@ The saved session is no longer valid. Would you like me to:
 For HITL workflows, start the MCP server with visible browser:
 
 ```bash
-vibium mcp --headless=false
+webpilot mcp --headless=false
 ```
 
 Or configure in Claude Desktop:
@@ -244,8 +244,8 @@ Or configure in Claude Desktop:
 ```json
 {
   "mcpServers": {
-    "vibium": {
-      "command": "vibium",
+    "webpilot": {
+      "command": "webpilot",
       "args": ["mcp"]
     }
   }
