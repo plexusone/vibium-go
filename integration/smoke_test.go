@@ -167,9 +167,11 @@ func TestSmoke_SemanticSelector(t *testing.T) {
 	}
 	defer func() { _ = pilot.Quit(ctx) }()
 
+	// Note: href="#" cannot be used in data URLs because # is interpreted
+	// as a fragment identifier, truncating the HTML content. Use a full URL instead.
 	html := `<html><body>
 		<button>Submit Form</button>
-		<a href="#">Learn More</a>
+		<a href="https://example.com">Learn More</a>
 	</body></html>`
 	if err := pilot.Go(ctx, "data:text/html,"+html); err != nil {
 		t.Fatalf("Failed to navigate: %v", err)
@@ -189,9 +191,10 @@ func TestSmoke_SemanticSelector(t *testing.T) {
 	}
 
 	// Find by role (link)
-	// TODO: Fix clicker's handling of role="link" - currently times out
-	// See: https://github.com/plexusone/w3pilot/issues/XXX
-	link, err := pilot.Find(ctx, "a", nil) // Use CSS selector as workaround
+	link, err := pilot.Find(ctx, "", &w3pilot.FindOptions{
+		Role: "link",
+		Text: "Learn More",
+	})
 	if err != nil {
 		t.Fatalf("Failed to find link: %v", err)
 	}
