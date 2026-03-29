@@ -27,24 +27,27 @@ jobs:
           go-version: '1.22'
           cache: true
 
-      - name: Setup Chrome
-        uses: browser-actions/setup-chrome@v1
-        with:
-          chrome-version: stable
-        id: setup-chrome
-
       - name: Install Clicker Binary
         run: |
           git clone --depth 1 https://github.com/VibiumDev/vibium.git /tmp/vibium
-          cd /tmp/vibium/clicker/cmd/clicker
+          cd /tmp/vibium/clicker
+          # Patch launcher_unix.go to add --no-sandbox for CI environments
+          sed -i 's/return nil/return []string{"--no-sandbox"}/' internal/browser/launcher_unix.go
+          cd cmd/clicker
           touch SKILL.md  # Required for go:embed
           go build -o $HOME/go/bin/clicker .
           rm -rf /tmp/vibium
 
-      - name: Verify Chrome
+      - name: Cache Browser
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/vibium
+          key: vibium-browser-${{ runner.os }}-v1
+
+      - name: Install Chrome for Testing
         run: |
-          echo "Chrome path: ${{ steps.setup-chrome.outputs.chrome-path }}"
-          ${{ steps.setup-chrome.outputs.chrome-path }} --version
+          clicker install
+          clicker paths
 
       - name: Build CLI
         run: go build -o w3pilot ./cmd/w3pilot
@@ -52,8 +55,6 @@ jobs:
       - name: Run specific script
         if: ${{ github.event.inputs.script != '' }}
         run: ./w3pilot run ${{ github.event.inputs.script }} --headless
-        env:
-          CHROME_PATH: ${{ steps.setup-chrome.outputs.chrome-path }}
 
       - name: Run all E2E tests
         if: ${{ github.event.inputs.script == '' }}
@@ -68,8 +69,6 @@ jobs:
               done
             fi
           done
-        env:
-          CHROME_PATH: ${{ steps.setup-chrome.outputs.chrome-path }}
 
       - name: Upload screenshots on failure
         if: failure()

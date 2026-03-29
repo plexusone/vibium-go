@@ -60,36 +60,33 @@ jobs:
           go-version-file: go.mod
           cache: true
 
-      - name: Setup Chrome
-        uses: browser-actions/setup-chrome@v1
-        with:
-          chrome-version: stable
-        id: setup-chrome
-
       - name: Install Clicker Binary
         run: |
           git clone --depth 1 https://github.com/VibiumDev/vibium.git /tmp/vibium
-          cd /tmp/vibium/clicker/cmd/clicker
+          cd /tmp/vibium/clicker
+          # Patch launcher_unix.go to add --no-sandbox for CI environments
+          sed -i 's/return nil/return []string{"--no-sandbox"}/' internal/browser/launcher_unix.go
+          cd cmd/clicker
           touch SKILL.md  # Required for go:embed
           go build -o $HOME/go/bin/clicker .
           rm -rf /tmp/vibium
 
-      - name: Verify Chrome
+      - name: Cache Browser
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/vibium
+          key: vibium-browser-${{ runner.os }}-v1
+
+      - name: Install Chrome for Testing
         run: |
-          echo "Chrome path: ${{ steps.setup-chrome.outputs.chrome-path }}"
-          ${{ steps.setup-chrome.outputs.chrome-path }} --version
-        env:
-          CHROME_PATH: ${{ steps.setup-chrome.outputs.chrome-path }}
+          clicker install
+          clicker paths
 
       - name: Run Smoke Tests
         run: go test -tags=integration -v -timeout=2m ./integration/... -run 'TestSmoke'
-        env:
-          CHROME_PATH: ${{ steps.setup-chrome.outputs.chrome-path }}
 
       - name: Run Full Integration Tests
         run: go test -tags=integration -v -timeout=10m ./integration/...
-        env:
-          CHROME_PATH: ${{ steps.setup-chrome.outputs.chrome-path }}
 
       - name: Upload Screenshots on Failure
         if: failure()
