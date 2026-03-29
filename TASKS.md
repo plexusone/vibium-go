@@ -14,6 +14,127 @@ Reference: [Feature Comparison](docs/reference/comparison.md)
 
 ## Open Tasks
 
+### P0 - Critical
+
+#### Live Session Mode for CLI
+
+**Problem**: `w3pilot run` launches a browser, runs the script, and quits. We need a live session mode where the browser stays open for interactive use by AI agents, similar to how the MCP server works.
+
+**Use Case**: AI assistant + human working together - the AI uses MCP tools while the human can also interact with the browser and use CLI commands interactively.
+
+**Proposed Solution**:
+
+- [ ] `w3pilot session start` - Launch browser and keep session alive
+- [ ] `w3pilot session attach` - Attach to existing session
+- [ ] `w3pilot session detach` - Detach without closing browser
+- [ ] `w3pilot session stop` - Close browser and end session
+- [ ] Session file stores connection info (`~/.w3pilot/session.json`)
+- [ ] All CLI commands check for active session before launching new browser
+- [ ] `w3pilot run --keep-alive` flag to keep browser open after script
+
+**Architecture**:
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    Live Session Mode                         │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│  w3pilot session start ──► Browser launched                 │
+│          │                     │                             │
+│          ▼                     ▼                             │
+│  session.json ◄────── Connection info saved                 │
+│          │                                                   │
+│          ▼                                                   │
+│  w3pilot page navigate ...  ──► Reuses existing session     │
+│  w3pilot element click ...  ──► Reuses existing session     │
+│  w3pilot run script.yaml    ──► Reuses existing session     │
+│          │                                                   │
+│          ▼                                                   │
+│  w3pilot session stop ──► Browser closed                    │
+│                                                              │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+### P1 - CLI/MCP Parity
+
+#### Current Status
+
+| Category | MCP Tools | CLI Commands | Gap |
+|----------|-----------|--------------|-----|
+| browser | 2 | 2 | ✅ Parity |
+| page | 20 | 14 | ⚠️ 6 missing |
+| element | 33 | 19 | ⚠️ 14 missing |
+| js | 4 | 4 | ✅ Parity |
+| wait | 6 | 5 | ⚠️ 1 missing |
+| state | 4 | 4 | ✅ Parity |
+| test | 16 | 1 | ⚠️ 15 missing |
+| cdp | 20 | 0 | ❌ Stub only |
+| storage | 17 | 0 | ❌ Stub only |
+| input | 12 | 0 | ❌ Stub only |
+| network | 6 | 0 | ❌ Stub only |
+| trace | 6 | 0 | ❌ Stub (disabled) |
+| record | 5 | 0 | ❌ Stub only |
+| tab | 3 | 0 | ❌ Stub only |
+| dialog | 2 | 0 | ❌ Stub only |
+| console | 2 | 0 | ❌ Stub only |
+| video | 2 | 0 | ❌ Stub only |
+| frame | 2 | 0 | ❌ Stub only |
+| workflow | 2 | 0 | ❌ Not in CLI |
+| a11y | 1 | 0 | ❌ Stub only |
+| config | 1 | 0 | ❌ Not in CLI |
+| human | 1 | 0 | ❌ MCP-only |
+| **Total** | **167** | **~45** | **122 missing** |
+
+#### Priority Order for CLI Implementation
+
+1. **High Priority** (most useful for scripting):
+   - [ ] `storage` commands (localStorage, sessionStorage, cookies)
+   - [ ] `network` commands (offline, requests, routes)
+   - [ ] `console` commands (messages, clear)
+   - [ ] `test` commands (assertions, verification)
+
+2. **Medium Priority** (useful for debugging):
+   - [ ] `cdp` commands (performance, memory, coverage)
+   - [ ] `input` commands (keyboard, mouse, touch)
+   - [ ] `tab` commands (list, select, close)
+   - [ ] `dialog` commands (handle, get)
+
+3. **Lower Priority** (specialized use cases):
+   - [ ] `frame` commands (select, main)
+   - [ ] `record` commands (start, stop, export)
+   - [ ] `video` commands (start, stop)
+   - [ ] `a11y` commands (snapshot)
+
+---
+
+### Blocked - Pending Clicker Support
+
+Features that are implemented but disabled because clicker doesn't support the required commands.
+
+#### Tracing (vibium:tracing.*)
+
+Action recording for debugging and test creation. Commented out in v0.7.0.
+
+- [ ] `vibium:tracing.start` - Start trace recording
+- [ ] `vibium:tracing.stop` - Stop and get trace data
+- [ ] `vibium:tracing.startChunk` / `stopChunk` - Chunk recording
+- [ ] `vibium:tracing.startGroup` / `stopGroup` - Logical grouping
+
+**Files affected**: `tracing.go`, `pilot.go`, `context.go`, `mcp/tools_tracing.go`, `mcp/server.go`
+
+**Note**: CDP has `Tracing.start/end` but it's for performance tracing, not action recording.
+
+#### Storage State (vibium:context.storageState)
+
+Full browser state capture including localStorage and sessionStorage.
+
+- [ ] `vibium:context.storageState` - Get complete storage state
+
+**Workaround**: Use JavaScript evaluation to access localStorage/sessionStorage directly.
+
+---
+
 ### P0 - Critical (Chrome DevTools MCP Parity)
 
 Features that provide significant differentiation from other browser automation tools.

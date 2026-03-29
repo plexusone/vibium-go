@@ -7,6 +7,40 @@
   "maintainers": ["plexusone"],
   "releases": [
     {
+      "version": "v0.7.0",
+      "date": "2026-03-29",
+      "highlights": [
+        { "description": "Protocol-agnostic SDK with BiDi-first, CDP-fallback architecture" },
+        { "description": "Automatic protocol selection for maximum compatibility" },
+        { "description": "Fixed BiDi command names for dialog and headers" }
+      ],
+      "added": [
+        { "description": "`IsUnsupportedCommand()` helper function for detecting unsupported BiDi commands", "commit": "8aaa295" },
+        { "description": "Protocol-agnostic `SetOffline()` with CDP fallback via network emulation", "commit": "8aaa295" },
+        { "description": "Protocol-agnostic `ConsoleMessages()` with CDP fallback via console debugger", "commit": "8aaa295" },
+        { "description": "Protocol-agnostic `ClearConsoleMessages()` with CDP fallback via console debugger", "commit": "8aaa295" }
+      ],
+      "fixed": [
+        { "description": "`HandleDialog()` now uses `vibium:dialog.accept`/`vibium:dialog.dismiss` instead of `vibium:dialog.handle`", "commit": "e292854" },
+        { "description": "`SetExtraHTTPHeaders()` now uses `vibium:page.setHeaders` instead of `vibium:network.setHeaders`", "commit": "e292854" },
+        { "description": "Integration test cleanup now uses fresh context to prevent Chrome process leaks", "commit": "cf4d7d6" },
+        { "description": "Test cleanup registered via `t.Cleanup()` for automatic handling on test end/panic", "commit": "cf4d7d6" }
+      ],
+      "deprecated": [
+        { "description": "Tracing functionality commented out pending clicker support for `vibium:tracing.*` commands", "commit": "f5ce625" },
+        { "description": "`StorageState()` limited pending clicker support for `vibium:context.storageState`" }
+      ],
+      "documentation": [
+        { "description": "Protocol-agnostic SDK documentation in README and architecture docs", "commit": "3600f69" },
+        { "description": "Updated CDP guide with protocol-agnostic methods section", "commit": "3600f69" },
+        { "description": "v0.7.0 release notes" }
+      ],
+      "tests": [
+        { "description": "Re-enabled integration tests for CDP-backed features (SetOffline, ConsoleMessages)", "commit": "8c70acd" },
+        { "description": "Skipped tests for unimplemented features (tracing, storageState) and external services", "commit": "8a01866" }
+      ]
+    },
+    {
       "version": "v0.6.0",
       "date": "2026-03-28",
       "highlights": [
