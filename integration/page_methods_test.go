@@ -115,7 +115,7 @@ func TestScrollInElement(t *testing.T) {
 
 // TestSetExtraHTTPHeaders tests setting extra HTTP headers.
 func TestSetExtraHTTPHeaders(t *testing.T) {
-	t.Skip("clicker does not implement vibium:network.setHeaders")
+	// Note: SDK now uses vibium:page.setHeaders (fixed from vibium:network.setHeaders)
 	bt := newBrowserTest(t)
 	defer bt.cleanup()
 

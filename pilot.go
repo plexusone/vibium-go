@@ -1738,7 +1738,7 @@ func (p *Pilot) SetExtraHTTPHeaders(ctx context.Context, headers map[string]stri
 		"headers": headers,
 	}
 
-	_, err = p.client.Send(ctx, "vibium:network.setHeaders", params)
+	_, err = p.client.Send(ctx, "vibium:page.setHeaders", params)
 	return err
 }
 
@@ -2224,14 +2224,17 @@ func (p *Pilot) HandleDialog(ctx context.Context, accept bool, promptText string
 
 	params := map[string]interface{}{
 		"context": browsingCtx,
-		"accept":  accept,
 	}
 
-	if accept && promptText != "" {
-		params["userText"] = promptText
+	// Use the correct clicker commands: vibium:dialog.accept or vibium:dialog.dismiss
+	if accept {
+		if promptText != "" {
+			params["userText"] = promptText
+		}
+		_, err = p.client.Send(ctx, "vibium:dialog.accept", params)
+	} else {
+		_, err = p.client.Send(ctx, "vibium:dialog.dismiss", params)
 	}
-
-	_, err = p.client.Send(ctx, "vibium:dialog.handle", params)
 	return err
 }
 

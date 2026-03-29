@@ -222,6 +222,52 @@ Code coverage for JavaScript and CSS.
 
 ## In Progress
 
+### SDK/Clicker Compatibility - v0.7.0
+
+SDK methods must match actual clicker command implementations.
+
+#### Command Name Mismatches
+
+SDK sends wrong command names that clicker doesn't recognize:
+
+| SDK Method | Sends | Clicker Has | Fix |
+|------------|-------|-------------|-----|
+| `HandleDialog()` | `vibium:dialog.handle` | `dialog.accept`, `dialog.dismiss` | [x] Split into two calls |
+| `SetExtraHTTPHeaders()` | `vibium:network.setHeaders` | `vibium:page.setHeaders` | [x] Fix command name |
+
+#### Not Implemented in Clicker
+
+SDK methods that send commands clicker doesn't implement at all:
+
+| SDK Method | Sends | Status |
+|------------|-------|--------|
+| `NetworkRequests()` | `vibium:network.requests` | [ ] Return "not supported" error |
+| `ClearNetworkRequests()` | `vibium:network.clearRequests` | [ ] Return "not supported" error |
+| `SetOffline()` | `vibium:network.setOffline` | [ ] Return "not supported" error |
+| `ConsoleMessages()` | `vibium:console.messages` | [ ] Return "not supported" error |
+| `ClearConsoleMessages()` | `vibium:console.clear` | [ ] Return "not supported" error |
+
+#### Working but Flaky
+
+Features that exist in clicker but have issues:
+
+| Feature | Issue | Status |
+|---------|-------|--------|
+| `EmulateMedia()` | CSS changes not persisting | [ ] Investigate |
+| `Fill()` | Timeout issues | [ ] Investigate |
+| `FindAll` with semantic selectors | Not working | [ ] Investigate |
+| `role="alert"`, `role="dialog"` | Not found | [ ] Investigate |
+
+#### Tasks
+
+- [x] Fix `HandleDialog()` to use `dialog.accept`/`dialog.dismiss`
+- [x] Fix `SetExtraHTTPHeaders()` command name
+- [ ] Add "not supported" errors for unimplemented features
+- [ ] Document SDK/clicker compatibility matrix
+- [ ] Update integration tests to reflect actual capabilities
+
+---
+
 ### v0.5.1 - Bug Fixes
 
 - [x] Fix clicker WebSocket transport (pipe.go → clicker.go + transport_ws.go)
