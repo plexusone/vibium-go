@@ -79,7 +79,7 @@ func FindClickerBinary() (string, error) {
 		}
 	}
 
-	return "", fmt.Errorf("clicker binary not found; install with: go install github.com/vibium/clicker/cmd/clicker@latest, or set %s", VibiumBinaryEnvVar)
+	return "", fmt.Errorf("clicker binary not found; build from https://github.com/VibiumDev/vibium/tree/main/clicker, or set %s", VibiumBinaryEnvVar)
 }
 
 // getGoBinPaths returns Go bin directories to search.
