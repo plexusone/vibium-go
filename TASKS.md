@@ -67,6 +67,42 @@ CLI Commands (TODO):
 
 ---
 
+#### SDK Assertion & Verification Methods
+
+**Problem**: Test assertion and verification logic exists only in MCP handlers (`mcp/tools_testing.go`). This prevents CLI from using these features and creates code duplication.
+
+**Goal**: Move assertion/verification logic to the SDK so both CLI and MCP can use it.
+
+**SDK Methods to Add**:
+
+Pilot Assertion Methods:
+- [x] `Pilot.AssertText(ctx, text, opts)` - Assert text exists on page
+- [x] `Pilot.AssertElement(ctx, selector, opts)` - Assert element exists
+- [x] `Pilot.AssertURL(ctx, pattern, opts)` - Assert URL matches pattern
+- [x] `Pilot.GenerateLocator(ctx, selector, opts)` - Generate robust locator for element
+
+Element Verification Methods:
+- [x] `Element.VerifyValue(ctx, expected)` - Verify input value matches
+- [x] `Element.VerifyText(ctx, expected, opts)` - Verify element text matches
+- [x] `Element.VerifyVisible(ctx)` - Verify element is visible
+- [x] `Element.VerifyHidden(ctx)` - Verify element is hidden
+- [x] `Element.VerifyEnabled(ctx)` - Verify element is enabled
+- [x] `Element.VerifyDisabled(ctx)` - Verify element is disabled
+- [x] `Element.VerifyChecked(ctx)` - Verify checkbox/radio is checked
+- [x] `Element.VerifyUnchecked(ctx)` - Verify checkbox/radio is unchecked (bonus)
+
+**Files Created/Modified**:
+- [x] `assert.go` - New file with Pilot assertion methods and types
+- [x] `element.go` - Added Element verification methods
+- [x] `assert_test.go` - Unit tests for assertion methods
+- [x] `element_verify_test.go` - Unit tests for verification types
+
+**Remaining Work**:
+- [ ] `mcp/tools_testing.go` - Refactor to use SDK methods
+- [ ] `cmd/w3pilot/cmd/test_*.go` - Add CLI commands using SDK
+
+---
+
 ### P1 - CLI/MCP Parity
 
 #### Current Status
