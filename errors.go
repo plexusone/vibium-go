@@ -29,6 +29,14 @@ var (
 	ErrConnectionClosed = errors.New("connection closed")
 )
 
+// PageContext provides context about the page state when an error occurred.
+// This helps AI agents understand the situation and recover from errors.
+type PageContext struct {
+	URL         string `json:"url"`
+	Title       string `json:"title"`
+	VisibleText string `json:"visible_text,omitempty"`
+}
+
 // ConnectionError represents a WebSocket connection failure.
 type ConnectionError struct {
 	URL   string
@@ -48,9 +56,11 @@ func (e *ConnectionError) Unwrap() error {
 
 // TimeoutError represents a timeout waiting for an element or action.
 type TimeoutError struct {
-	Selector string
-	Timeout  int64 // milliseconds
-	Reason   string
+	Selector    string       `json:"selector"`
+	Timeout     int64        `json:"timeout_ms"` // milliseconds
+	Reason      string       `json:"reason,omitempty"`
+	PageContext *PageContext `json:"page_context,omitempty"`
+	Suggestions []string     `json:"suggestions,omitempty"`
 }
 
 func (e *TimeoutError) Error() string {
@@ -62,7 +72,9 @@ func (e *TimeoutError) Error() string {
 
 // ElementNotFoundError represents an element that could not be found.
 type ElementNotFoundError struct {
-	Selector string
+	Selector    string       `json:"selector"`
+	PageContext *PageContext `json:"page_context,omitempty"`
+	Suggestions []string     `json:"suggestions,omitempty"`
 }
 
 func (e *ElementNotFoundError) Error() string {
