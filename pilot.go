@@ -127,6 +127,54 @@ func (b *browserLauncher) launchWebSocket(ctx context.Context, opts *LaunchOptio
 	return pilot, nil
 }
 
+// Connect connects to an existing clicker instance via WebSocket URL.
+// This is used to reconnect to a browser session that was previously launched.
+func (b *browserLauncher) Connect(ctx context.Context, wsURL string) (*Pilot, error) {
+	if logger := NewDebugLogger(); logger != nil {
+		ctx = ContextWithLogger(ctx, logger)
+		debugLog(ctx, "connecting to existing browser", "url", wsURL)
+	}
+
+	// Connect WebSocket transport for BiDi
+	wsTransport := newWSTransport()
+	if err := wsTransport.Connect(ctx, wsURL); err != nil {
+		return nil, fmt.Errorf("failed to connect to WebSocket: %w", err)
+	}
+
+	client := NewBiDiClient(wsTransport)
+
+	pilot := &Pilot{
+		client: client,
+	}
+
+	// Try to discover existing browsing context
+	result, err := client.Send(ctx, "browsingContext.getTree", map[string]interface{}{})
+	if err != nil {
+		_ = wsTransport.Close()
+		return nil, fmt.Errorf("failed to get browsing context: %w", err)
+	}
+
+	var tree struct {
+		Contexts []struct {
+			Context string `json:"context"`
+		} `json:"contexts"`
+	}
+	if err := json.Unmarshal(result, &tree); err == nil && len(tree.Contexts) > 0 {
+		pilot.browsingContext = tree.Contexts[0].Context
+	}
+
+	// Connect CDP (best-effort)
+	connectCDP(ctx, pilot)
+
+	debugLog(ctx, "connected to existing browser", "context", pilot.browsingContext)
+	return pilot, nil
+}
+
+// Connect is a convenience function that connects to an existing browser.
+func Connect(ctx context.Context, wsURL string) (*Pilot, error) {
+	return Browser.Connect(ctx, wsURL)
+}
+
 // connectCDP discovers and connects the CDP client (best-effort).
 func connectCDP(ctx context.Context, pilot *Pilot) {
 	// Give Chrome a moment to start and write DevToolsActivePort
@@ -637,6 +685,11 @@ func (p *Pilot) Quit(ctx context.Context) error {
 // IsClosed returns whether the browser has been closed.
 func (p *Pilot) IsClosed() bool {
 	return p.closed
+}
+
+// Clicker returns the clicker process, or nil if using pipe mode.
+func (p *Pilot) Clicker() *ClickerProcess {
+	return p.clicker
 }
 
 // BrowsingContext returns the browsing context ID for this page.

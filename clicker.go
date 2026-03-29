@@ -212,3 +212,11 @@ func (p *ClickerProcess) Wait() error {
 	}
 	return p.cmd.Wait()
 }
+
+// Process returns the underlying os.Process.
+func (p *ClickerProcess) Process() *os.Process {
+	if p.cmd == nil {
+		return nil
+	}
+	return p.cmd.Process
+}
