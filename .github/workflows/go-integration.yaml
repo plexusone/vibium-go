@@ -60,13 +60,8 @@ jobs:
           go-version-file: go.mod
           cache: true
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Install Vibium
-        run: pip install vibium
+      - name: Install Clicker Binary
+        run: go install github.com/VibiumDev/vibium/clicker/cmd/clicker@latest
 
       - name: Cache Browser
         uses: actions/cache@v4
@@ -75,7 +70,7 @@ jobs:
           key: vibium-browser-${{ runner.os }}
 
       - name: Ensure Browser Installed
-        run: vibium install
+        run: clicker install
 
       - name: Run Smoke Tests
         run: go test -tags=integration -v -timeout=2m ./integration/... -run 'TestSmoke'
