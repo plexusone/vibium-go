@@ -99,7 +99,7 @@ Element Verification Methods:
 
 **Remaining Work**:
 - [x] `mcp/tools_testing.go` - Refactored to use SDK methods
-- [ ] `cmd/w3pilot/cmd/test_*.go` - Add CLI commands using SDK
+- [x] `cmd/w3pilot/cmd/test_*.go` - Add CLI commands using SDK
 
 ---
 
@@ -115,7 +115,7 @@ Element Verification Methods:
 | js | 4 | 4 | ✅ Parity |
 | wait | 6 | 5 | ⚠️ 1 missing |
 | state | 4 | 4 | ✅ Parity |
-| test | 16 | 1 | ⚠️ 15 missing |
+| test | 16 | 13 | ⚠️ 3 missing |
 | cdp | 20 | 0 | ❌ Stub only |
 | storage | 17 | 0 | ❌ Stub only |
 | input | 12 | 0 | ❌ Stub only |
@@ -131,7 +131,7 @@ Element Verification Methods:
 | a11y | 1 | 0 | ❌ Stub only |
 | config | 1 | 0 | ❌ Not in CLI |
 | human | 1 | 0 | ❌ MCP-only |
-| **Total** | **167** | **~45** | **122 missing** |
+| **Total** | **167** | **~57** | **~110 missing** |
 
 #### Priority Order for CLI Implementation
 
@@ -139,7 +139,7 @@ Element Verification Methods:
    - [ ] `storage` commands (localStorage, sessionStorage, cookies)
    - [ ] `network` commands (offline, requests, routes)
    - [ ] `console` commands (messages, clear)
-   - [ ] `test` commands (assertions, verification)
+   - [x] `test` commands (assertions, verification) - 13/16 commands
 
 2. **Medium Priority** (useful for debugging):
    - [ ] `cdp` commands (performance, memory, coverage)
