@@ -8,7 +8,7 @@
   "releases": [
     {
       "version": "v0.8.0",
-      "date": "2026-03-29",
+      "date": "2026-03-30",
       "highlights": [
         { "description": "Session management SDK for live browser sessions" },
         { "description": "SDK assertion and verification methods for testing" },
