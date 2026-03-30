@@ -7,7 +7,7 @@
     },
     {
       "name": "batch_execute",
-      "description": "Execute multiple operations in a single MCP call to reduce round-trip latency.",
+      "description": "Execute multiple tools sequentially in a single call.",
       "category": "batch"
     },
     {
@@ -321,14 +321,14 @@
       "category": "frame"
     },
     {
+      "name": "http_request",
+      "description": "Make an HTTP request from the browser context with automatic credential inclusion.",
+      "category": "http"
+    },
+    {
       "name": "human_pause",
       "description": "Pause automation for human interaction (CAPTCHA, login, etc.).",
       "category": "human"
-    },
-    {
-      "name": "http_request",
-      "description": "Make HTTP requests in the browser context with session cookies.",
-      "category": "http"
     },
     {
       "name": "input_keyboard_down",
@@ -491,6 +491,11 @@
       "category": "page"
     },
     {
+      "name": "page_inspect",
+      "description": "Inspect page elements to discover buttons, links, inputs, and other interactive elements. Designed for AI agents.",
+      "category": "page"
+    },
+    {
       "name": "page_navigate",
       "description": "Navigate to a URL.",
       "category": "page"
@@ -559,6 +564,26 @@
       "name": "record_stop",
       "description": "Stop recording.",
       "category": "record"
+    },
+    {
+      "name": "state_delete",
+      "description": "Delete a saved state snapshot.",
+      "category": "state"
+    },
+    {
+      "name": "state_list",
+      "description": "List all saved state snapshots.",
+      "category": "state"
+    },
+    {
+      "name": "state_load",
+      "description": "Load browser state from a named snapshot.",
+      "category": "state"
+    },
+    {
+      "name": "state_save",
+      "description": "Save browser state (cookies, localStorage, sessionStorage) to a named snapshot.",
+      "category": "state"
     },
     {
       "name": "storage_clear_all",
@@ -696,6 +721,11 @@
       "category": "test"
     },
     {
+      "name": "test_validate_selectors",
+      "description": "Validate CSS selectors before use. Returns whether elements exist, are visible, and suggests alternatives if not found.",
+      "category": "test"
+    },
+    {
       "name": "test_verify_checked",
       "description": "Verify checkbox/radio is checked.",
       "category": "test"
@@ -804,6 +834,16 @@
       "name": "wait_for_url",
       "description": "Wait for URL to match a pattern.",
       "category": "wait"
+    },
+    {
+      "name": "workflow_extract_table",
+      "description": "Extract HTML table data to structured JSON with headers and rows.",
+      "category": "workflow"
+    },
+    {
+      "name": "workflow_login",
+      "description": "Automated login workflow: fill credentials, submit form, wait for success indicator.",
+      "category": "workflow"
     }
   ],
   "categories": {
@@ -821,14 +861,16 @@
     "input": 12,
     "js": 4,
     "network": 6,
-    "page": 19,
+    "page": 20,
     "record": 5,
+    "state": 4,
     "storage": 17,
     "tab": 3,
-    "test": 15,
+    "test": 16,
     "trace": 6,
     "video": 2,
-    "wait": 6
+    "wait": 6,
+    "workflow": 2
   },
-  "total": 161
+  "total": 169
 }

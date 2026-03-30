@@ -1,6 +1,6 @@
 # MCP Tools Reference
 
-Complete reference for all **161 MCP tools across 21 namespaces**.
+Complete reference for all **169 MCP tools across 24 namespaces**.
 
 ## Naming Convention
 
@@ -29,14 +29,16 @@ All tool names follow the pattern: `{namespace}_{verb}_{target}`
 | `input_` | Low-level keyboard/mouse/touch | 12 |
 | `js_` | JavaScript execution | 4 |
 | `network_` | Network requests and mocking | 6 |
-| `page_` | Page navigation, state, screenshots, emulation | 19 |
+| `page_` | Page navigation, state, screenshots, emulation | 20 |
 | `record_` | Script recording | 5 |
+| `state_` | Named state snapshots | 4 |
 | `storage_` | Cookies, localStorage, sessionStorage | 17 |
 | `tab_` | Tab management | 3 |
-| `test_` | Assertions, verification, reporting | 15 |
+| `test_` | Assertions, verification, reporting | 16 |
 | `trace_` | Tracing | 6 |
 | `video_` | Video recording | 2 |
 | `wait_` | Waiting operations | 6 |
+| `workflow_` | High-level automation workflows | 2 |
 
 ## Machine-Readable Format
 
@@ -64,7 +66,7 @@ The JSON format follows the MCP protocol structure:
   "categories": {
     "Category Name": 5
   },
-  "total": 161
+  "total": 169
 }
 ```
 
@@ -1366,6 +1368,118 @@ Clear test results.
 ### test_set_target
 
 Set test target description.
+
+## State Management
+
+Named state snapshots for saving and restoring browser state across sessions.
+
+### state_save
+
+Save current browser state (cookies, localStorage, sessionStorage) to a named snapshot.
+
+**Input:**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `name` | string | ✅ | Name for the state snapshot |
+
+**Output:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `message` | string | Status message |
+| `path` | string | Path to saved state file |
+
+### state_load
+
+Load a previously saved state snapshot.
+
+**Input:**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `name` | string | ✅ | Name of the state snapshot to load |
+
+**Output:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `message` | string | Status message |
+
+### state_list
+
+List all saved state snapshots.
+
+**Output:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `states` | array | List of state names |
+| `count` | integer | Number of saved states |
+
+### state_delete
+
+Delete a saved state snapshot.
+
+**Input:**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `name` | string | ✅ | Name of the state snapshot to delete |
+
+**Output:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `message` | string | Status message |
+
+## Workflow Automation
+
+High-level workflow tools for common automation patterns.
+
+### workflow_login
+
+Automated login workflow with credential input and success verification.
+
+**Input:**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `url` | string | ✅ | Login page URL |
+| `username_selector` | string | ✅ | CSS selector for username field |
+| `password_selector` | string | ✅ | CSS selector for password field |
+| `submit_selector` | string | ✅ | CSS selector for submit button |
+| `username` | string | ✅ | Username to enter |
+| `password` | string | ✅ | Password to enter |
+| `success_url` | string | | Expected URL after successful login |
+| `success_selector` | string | | Element that indicates successful login |
+
+**Output:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `success` | boolean | Whether login succeeded |
+| `url` | string | Final URL after login |
+| `message` | string | Status message |
+
+### workflow_extract_table
+
+Extract data from an HTML table to structured JSON.
+
+**Input:**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `selector` | string | ✅ | CSS selector for the table |
+| `headers` | boolean | | Whether first row contains headers (default: true) |
+
+**Output:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `rows` | array | Array of row objects |
+| `columns` | array | Column names |
+| `count` | integer | Number of rows |
 
 ## Configuration
 

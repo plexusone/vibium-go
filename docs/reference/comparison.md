@@ -431,7 +431,7 @@ Legend: :white_check_mark: = Supported, :x: = Not supported, (opt) = Requires op
 
 | MCP Server | Tools |
 |------------|:-----:|
-| **W3Pilot** | **161** |
+| **W3Pilot** | **169** |
 | ChromeDevTools MCP | 29 |
 | Playwright MCP | ~45 |
 | VibiumDev MCP | ~25 |
@@ -440,7 +440,7 @@ Legend: :white_check_mark: = Supported, :x: = Not supported, (opt) = Requires op
 
 | Use Case | Recommendation |
 |----------|----------------|
-| Comprehensive automation | W3Pilot (161 tools) |
+| Comprehensive automation | W3Pilot (169 tools) |
 | Simple debugging tasks | ChromeDevTools MCP |
 | Performance tracing only | ChromeDevTools MCP |
 | Test automation with assertions | W3Pilot |

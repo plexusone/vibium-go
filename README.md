@@ -34,7 +34,7 @@ This project provides:
 | Component | Description |
 |-----------|-------------|
 | **Go Client SDK** | Programmatic browser control |
-| **MCP Server** | 161 tools across 21 namespaces for AI assistants |
+| **MCP Server** | 169 tools across 24 namespaces for AI assistants |
 | **CLI** | Command-line browser automation |
 | **Script Runner** | Deterministic test execution |
 | **Session Recording** | Capture actions as replayable scripts |
@@ -314,7 +314,7 @@ Script format (JSON or YAML):
 
 | Feature | Description |
 |---------|-------------|
-| **MCP Server** | 161 tools across 21 namespaces for AI-assisted automation |
+| **MCP Server** | 169 tools across 24 namespaces for AI-assisted automation |
 | **CLI** | `w3pilot` command with subcommands |
 | **Script Runner** | Execute JSON/YAML test scripts |
 | **Session Management** | Persistent browser sessions with reconnection support |
@@ -324,7 +324,7 @@ Script format (JSON or YAML):
 
 ## MCP Server Tools
 
-The MCP server provides **161 tools across 21 namespaces**. Export the full list as JSON with `w3pilot mcp --list-tools`.
+The MCP server provides **169 tools across 24 namespaces**. Export the full list as JSON with `w3pilot mcp --list-tools`.
 
 **Namespaces:**
 
@@ -344,14 +344,16 @@ The MCP server provides **161 tools across 21 namespaces**. Export the full list
 | `input_` | 12 | `input_keyboard_press`, `input_mouse_click`, `input_touch_tap` |
 | `js_` | 4 | `js_evaluate`, `js_add_script`, `js_add_style`, `js_init_script` |
 | `network_` | 6 | `network_get_requests`, `network_route`, `network_set_offline` |
-| `page_` | 19 | `page_navigate`, `page_go_back`, `page_screenshot`, `page_emulate_media` |
+| `page_` | 20 | `page_navigate`, `page_go_back`, `page_screenshot`, `page_inspect` |
 | `record_` | 5 | `record_start`, `record_stop`, `record_export` |
+| `state_` | 4 | `state_save`, `state_load`, `state_list`, `state_delete` |
 | `storage_` | 17 | `storage_get_cookies`, `storage_local_get`, `storage_session_set` |
 | `tab_` | 3 | `tab_list`, `tab_select`, `tab_close` |
-| `test_` | 15 | `test_assert_text`, `test_verify_value`, `test_generate_locator` |
+| `test_` | 16 | `test_assert_text`, `test_verify_value`, `test_generate_locator` |
 | `trace_` | 6 | `trace_start`, `trace_stop`, `trace_chunk_start` |
 | `video_` | 2 | `video_start`, `video_stop` |
 | `wait_` | 6 | `wait_for_state`, `wait_for_url`, `wait_for_load`, `wait_for_text` |
+| `workflow_` | 2 | `workflow_login`, `workflow_extract_table` |
 
 See [docs/reference/mcp-tools.md](docs/reference/mcp-tools.md) for the complete reference.
 
