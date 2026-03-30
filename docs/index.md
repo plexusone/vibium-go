@@ -15,7 +15,7 @@ W3Pilot is a browser automation library built for AI agents. It uses a **dual-pr
 | Component | Description |
 |-----------|-------------|
 | **Go Client SDK** | Programmatic browser control with full feature parity |
-| **MCP Server** | 159 tools across 20 namespaces for AI assistants |
+| **MCP Server** | 161 tools across 21 namespaces for AI assistants |
 | **CLI** | Command-line browser automation |
 | **Script Runner** | Deterministic JSON/YAML test execution |
 | **Session Recording** | Capture LLM actions as replayable scripts |

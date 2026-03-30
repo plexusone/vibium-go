@@ -34,7 +34,7 @@ This project provides:
 | Component | Description |
 |-----------|-------------|
 | **Go Client SDK** | Programmatic browser control |
-| **MCP Server** | 159 tools across 20 namespaces for AI assistants |
+| **MCP Server** | 161 tools across 21 namespaces for AI assistants |
 | **CLI** | Command-line browser automation |
 | **Script Runner** | Deterministic test execution |
 | **Session Recording** | Capture actions as replayable scripts |
@@ -314,7 +314,7 @@ Script format (JSON or YAML):
 
 | Feature | Description |
 |---------|-------------|
-| **MCP Server** | 159 tools across 20 namespaces for AI-assisted automation |
+| **MCP Server** | 161 tools across 21 namespaces for AI-assisted automation |
 | **CLI** | `w3pilot` command with subcommands |
 | **Script Runner** | Execute JSON/YAML test scripts |
 | **Session Management** | Persistent browser sessions with reconnection support |
@@ -324,13 +324,14 @@ Script format (JSON or YAML):
 
 ## MCP Server Tools
 
-The MCP server provides **159 tools across 20 namespaces**. Export the full list as JSON with `w3pilot mcp --list-tools`.
+The MCP server provides **161 tools across 21 namespaces**. Export the full list as JSON with `w3pilot mcp --list-tools`.
 
 **Namespaces:**
 
 | Namespace | Tools | Examples |
 |-----------|------:|----------|
 | `accessibility_` | 1 | `accessibility_snapshot` |
+| `batch_` | 1 | `batch_execute` |
 | `browser_` | 2 | `browser_launch`, `browser_quit` |
 | `cdp_` | 20 | `cdp_take_heap_snapshot`, `cdp_run_lighthouse`, `cdp_start_coverage` |
 | `config_` | 1 | `config_get` |
@@ -338,6 +339,7 @@ The MCP server provides **159 tools across 20 namespaces**. Export the full list
 | `dialog_` | 2 | `dialog_handle`, `dialog_get` |
 | `element_` | 33 | `element_click`, `element_fill`, `element_get_text`, `element_is_visible` |
 | `frame_` | 2 | `frame_select`, `frame_select_main` |
+| `http_` | 1 | `http_request` |
 | `human_` | 1 | `human_pause` |
 | `input_` | 12 | `input_keyboard_press`, `input_mouse_click`, `input_touch_tap` |
 | `js_` | 4 | `js_evaluate`, `js_add_script`, `js_add_style`, `js_init_script` |
